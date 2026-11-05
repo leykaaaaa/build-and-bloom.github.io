@@ -1,12 +1,13 @@
-
 /* =========================================
-   MY PLANTS PAGE
+   MY PLANTS PAGE (green theme)
+   Same class names as before.
+   Uses the CSS variables from globals.css (:root).
 ========================================= */
 
 .plantsPage {
     min-height: 100vh;
     padding: 70px 7% 80px;
-    background: radial-gradient(circle at top, #f9fff7 0%, #fffafc 42%, #fff 100%);
+    background: linear-gradient(180deg, #eaf4ec 0%, var(--green-50) 380px);
     box-sizing: border-box;
 }
 
@@ -18,14 +19,14 @@
 .sectionBadge {
     display: inline-block;
     margin-bottom: 12px;
-    padding: 7px 14px;
-    border: 1px solid rgba(77, 121, 88, 0.18);
+    padding: 8px 16px;
+    border: 1px solid var(--border);
     border-radius: 999px;
-    background: rgba(237, 246, 237, 0.9);
-    color: #4d7958;
+    background: #ffffff;
+    color: var(--accent);
     font-size: 0.72rem;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
 }
 
@@ -41,7 +42,7 @@
 
 .plantsHeader h1 {
     margin-bottom: 12px;
-    color: #315c3b;
+    color: var(--green-800);
     font-size: clamp(2.5rem, 5vw, 3.4rem);
     line-height: 1.08;
     letter-spacing: -0.05em;
@@ -49,7 +50,7 @@
 
 .plantsHeader p {
     max-width: 650px;
-    color: #5f6d63;
+    color: var(--muted);
     line-height: 1.7;
     font-size: 1rem;
 }
@@ -59,22 +60,22 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    padding: 13px 22px;
+    min-height: 56px;
+    padding: 0 28px;
     border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #315c3b 0%, #4a7b55 100%);
+    border-radius: 14px;
+    background: var(--green-700);
     color: #fff;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 800;
     text-decoration: none;
-    box-shadow: 0 8px 18px rgba(49, 92, 59, 0.18);
-    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--shadow-btn);
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .createPlantButton:hover {
-    background: linear-gradient(135deg, #264d30 0%, #396b45 100%);
+    background: var(--green-800);
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(49, 92, 59, 0.2);
 }
 
 .catalogueState {
@@ -82,7 +83,7 @@
     align-items: center;
     justify-content: center;
     min-height: 240px;
-    color: #5f6d63;
+    color: var(--muted);
     text-align: center;
 }
 
@@ -91,6 +92,7 @@
     font-size: 1rem;
 }
 
+/* error stays red on purpose: it is a warning state */
 .assessmentError {
     display: flex;
     align-items: flex-start;
@@ -122,10 +124,9 @@
     margin: 50px auto;
     padding: 50px 32px;
     text-align: center;
-    border: 1px solid #f0dfe7;
-    border-radius: 24px;
-    background: linear-gradient(180deg, #ffffff 0%, #fffafc 100%);
-    box-shadow: 0 12px 30px rgba(70, 90, 70, 0.04);
+    border: 1.5px dashed #b9d3c0;
+    border-radius: 28px;
+    background: #ffffff;
 }
 
 .plantsEmptyIcon {
@@ -136,20 +137,20 @@
     height: 78px;
     margin: 0 auto 20px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #edf7ef 0%, #f4fbf4 100%);
+    background: var(--green-100);
+    color: var(--green-700);
     font-size: 2.5rem;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
 }
 
 .plantsEmpty h2 {
     margin-bottom: 12px;
-    color: #315c3b;
+    color: var(--green-800);
 }
 
 .plantsEmpty p {
     margin: 0 auto 24px;
     max-width: 480px;
-    color: #6d746e;
+    color: var(--muted);
     line-height: 1.7;
 }
 
@@ -157,19 +158,20 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 46px;
-    padding: 0 22px;
-    border-radius: 12px;
-    background: #315c3b;
+    min-height: 52px;
+    padding: 0 26px;
+    border-radius: 14px;
+    background: var(--green-700);
     color: #fff;
-    font-weight: 700;
+    font-weight: 800;
     text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--shadow-btn);
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .plantsEmptyButton:hover {
+    background: var(--green-800);
     transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(49, 92, 59, 0.15);
 }
 
 /* PLANTING PLANS GRID */
@@ -185,18 +187,19 @@
 
 .plantPlanCard {
     min-width: 0;
-    padding: 27px;
+    padding: 28px;
     overflow: hidden;
-    border: 1px solid #f0dfe7;
-    border-radius: 24px;
-    background: linear-gradient(180deg, #ffffff 0%, #fffcfd 100%);
-    box-shadow: 0 12px 28px rgba(70, 90, 70, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .plantPlanCard:hover {
     transform: translateY(-3px);
-    box-shadow: 0 16px 34px rgba(70, 90, 70, 0.1);
+    border-color: #b9d3c0;
+    box-shadow: 0 18px 36px rgba(31, 77, 54, 0.1);
 }
 
 .plantPlanTop {
@@ -214,25 +217,31 @@
     width: 68px;
     height: 68px;
     border-radius: 18px;
-    background: linear-gradient(135deg, #edf7ef 0%, #f3fff5 100%);
+    background: #ddede1;
+    color: var(--green-700);
     font-size: 2rem;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.plantPlanCard:nth-child(even) .plantPlanIcon {
+    background: var(--lime);
+    color: var(--lime-ink);
 }
 
 .plantPlanTop span {
     display: block;
     margin-bottom: 5px;
-    color: #cf6f8f;
+    color: var(--accent);
     font-size: 0.72rem;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
 .plantPlanTop h2 {
     overflow-wrap: anywhere;
-    color: #315c3b;
+    color: var(--green-800);
     font-size: 1.45rem;
+    letter-spacing: -0.02em;
     line-height: 1.35;
     font-weight: 800;
 }
@@ -242,13 +251,13 @@
 .plantPlanCrop {
     margin-bottom: 22px;
     padding: 14px 16px;
-    border: 1px solid #f2e4e9;
-    border-radius: 13px;
-    background: linear-gradient(135deg, #fff7fa 0%, #fffdfd 100%);
+    border: 1px solid #dde8bc;
+    border-radius: 14px;
+    background: #f1f8e3;
 }
 
 .plantPlanCrop strong {
-    color: #4d6754;
+    color: #3a5209;
     font-size: 0.95rem;
 }
 
@@ -267,11 +276,11 @@
     flex-direction: column;
     gap: 5px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #f1e6ea;
+    border-bottom: 1px solid #e3ece5;
 }
 
 .plantPlanDetails span {
-    color: #858b85;
+    color: var(--muted);
     font-size: 0.76rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -279,8 +288,8 @@
 }
 
 .plantPlanDetails strong {
-    color: #39483e;
-    font-size: 0.88rem;
+    color: var(--green-800);
+    font-size: 0.92rem;
     overflow-wrap: anywhere;
 }
 
@@ -289,14 +298,14 @@
 .plantWeatherSection {
     margin-top: 22px;
     padding: 20px;
-    border: 1px solid #dfece1;
-    border-radius: 17px;
-    background: linear-gradient(180deg, #f5faf5 0%, #f9fff9 100%);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: #f3f9f4;
 }
 
 .plantWeatherSection h3 {
     margin-bottom: 18px;
-    color: #315c3b;
+    color: var(--green-800);
     font-size: 1rem;
     font-weight: 800;
 }
@@ -314,7 +323,7 @@
 .plantWeatherGrid span {
     display: block;
     margin-bottom: 5px;
-    color: #788278;
+    color: var(--muted);
     font-size: 0.76rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -323,8 +332,8 @@
 
 .plantWeatherGrid strong {
     display: block;
-    color: #315c3b;
-    font-size: 0.95rem;
+    color: var(--green-800);
+    font-size: 0.98rem;
     overflow-wrap: anywhere;
 }
 
@@ -333,9 +342,9 @@
 .plantAdvisorySection {
     margin-top: 22px;
     padding: 20px;
-    border: 1px solid #f0dfe7;
-    border-radius: 17px;
-    background: linear-gradient(180deg, #fff9fb 0%, #fffdfd 100%);
+    border: 1px solid #dde8bc;
+    border-radius: 18px;
+    background: #f8fbee;
 }
 
 .plantAdvisoryHeading {
@@ -350,14 +359,14 @@
 .plantAdvisoryHeading span {
     display: block;
     margin-bottom: 6px;
-    color: #d66b8a;
+    color: var(--accent);
     font-size: 0.68rem;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
 }
 
 .plantAdvisoryHeading h3 {
-    color: #315c3b;
+    color: var(--green-800);
     font-size: 1rem;
     font-weight: 800;
 }
@@ -368,17 +377,16 @@
 }
 
 .plantAdvisoryCard {
-    padding: 15px;
-    border: 1px solid #eee5e8;
-    border-left: 4px solid #9aab9d;
-    border-radius: 12px;
+    padding: 15px 16px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green-500);
+    border-radius: 14px;
     background: #fff;
-    box-shadow: 0 6px 16px rgba(49, 92, 59, 0.02);
 }
 
 .plantAdvisoryCard p {
     margin-top: 9px;
-    color: #667066;
+    color: var(--muted);
     font-size: 0.85rem;
     line-height: 1.65;
     overflow-wrap: anywhere;
@@ -392,26 +400,27 @@
 }
 
 .plantAdvisoryCardHeader strong {
-    color: #39483e;
-    font-size: 0.88rem;
+    color: var(--green-800);
+    font-size: 0.9rem;
 }
 
 .plantAdvisoryPriority {
     flex-shrink: 0;
-    padding: 4px 9px;
-    border-radius: 20px;
-    background: #edf6ee;
-    color: #3d7048;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: #d9f0dc;
+    color: #1f5c33;
     font-size: 0.7rem;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 /* ADVISORY PRIORITIES
    Use these as additional classes alongside plantAdvisoryCard.
-*/
+   Priority colours keep a warm scale (amber, orange, red) on purpose,
+   so urgency is still obvious inside a green theme. */
 
 .low {
-    border-left-color: #6b9b76;
+    border-left-color: var(--green-600);
 }
 
 .medium {
@@ -419,7 +428,7 @@
 }
 
 .high {
-    border-left-color: #d66b8a;
+    border-left-color: #e08a3c;
 }
 
 .urgent {
@@ -432,14 +441,14 @@
 .advisoryLoadError {
     padding: 14px;
     border-radius: 12px;
-    color: #667066;
+    color: var(--muted);
     font-size: 0.84rem;
     line-height: 1.6;
 }
 
 .plantAdvisoryEmpty {
-    background: #f5faf5;
-    border: 1px solid #e0e9e1;
+    background: #f3f9f4;
+    border: 1px solid var(--border);
 }
 
 .advisoryLoadError {
@@ -469,33 +478,36 @@
     gap: 15px;
     margin-top: 23px;
     padding-top: 20px;
-    border-top: 1px solid #f1e6ea;
+    border-top: 1px solid #e3ece5;
 }
 
 .plantStatusLabel {
     display: block;
     margin-bottom: 7px;
-    color: #6d746e;
+    color: var(--muted);
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .plantStatusSelect {
     width: 100%;
     min-width: 150px;
-    padding: 10px 12px;
-    border: 1px solid #d9e3da;
-    border-radius: 10px;
+    height: 46px;
+    padding: 0 14px;
+    border: 1.5px solid var(--border-input);
+    border-radius: 12px;
     outline: none;
-    background: #fff;
-    color: #39483e;
-    font-size: 0.85rem;
+    background: #f8fbf9;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 600;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .plantStatusSelect:focus {
-    border-color: #6b9b76;
-    box-shadow: 0 0 0 3px rgba(107, 155, 118, 0.12);
+    border-color: var(--green-700);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(47, 107, 71, 0.12);
 }
 
 .plantStatusSelect:disabled {
@@ -504,30 +516,30 @@
 }
 
 .plantStatusSaving {
-    color: #6d746e;
+    color: var(--muted);
     font-size: 0.75rem;
 }
 
-/* STATUS LABELS */
+/* STATUS LABELS (same colours as the dashboard badges) */
 
 .statusPlanned {
-    background: #fff4d8;
-    color: #8b6b21;
+    background: var(--lime);
+    color: var(--lime-ink);
 }
 
 .statusGrowing {
-    background: #eaf7ed;
-    color: #3d7048;
+    background: #d9f0dc;
+    color: #1f5c33;
 }
 
 .statusHarvested {
-    background: #fcefdc;
-    color: #876326;
+    background: #d3efe6;
+    color: #1d6b5a;
 }
 
 .statusCompleted {
-    background: #e9f1f9;
-    color: #49677e;
+    background: #e3ebdd;
+    color: var(--text-soft);
 }
 
 /* PLAN FOOTER */
@@ -542,9 +554,18 @@
 }
 
 .plantPlanId {
-    color: #a0a5a1;
+    color: #8a9a90;
     font-size: 0.7rem;
     overflow-wrap: anywhere;
+}
+
+/* FOCUS */
+
+.createPlantButton:focus-visible,
+.plantsEmptyButton:focus-visible,
+.plantStatusSelect:focus-visible {
+    outline: 3px solid rgba(47, 107, 71, 0.4);
+    outline-offset: 3px;
 }
 
 /* RESPONSIVE */
@@ -624,5 +645,19 @@
 
     .plantAdvisoryCardHeader {
         flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .plantPlanCard,
+    .createPlantButton,
+    .plantsEmptyButton {
+        transition: none;
+    }
+
+    .plantPlanCard:hover,
+    .createPlantButton:hover,
+    .plantsEmptyButton:hover {
+        transform: none;
     }
 }

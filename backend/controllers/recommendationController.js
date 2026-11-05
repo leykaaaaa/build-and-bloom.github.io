@@ -740,7 +740,7 @@ function getCropLocationRisk(
     return { level, message };
 }
 
-const HIGH_SUITABILITY_THRESHOLD = 80;
+const HIGH_SUITABILITY_THRESHOLD = 70;
 
 function getCompatibilityLevel(score) {
 

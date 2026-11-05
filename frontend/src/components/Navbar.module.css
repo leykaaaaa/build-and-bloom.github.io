@@ -1,3 +1,10 @@
+/* =========================================
+   USER SIDEBAR / NAVBAR (green theme)
+   Same class names as before.
+   Uses the CSS variables from globals.css (:root).
+   Width is still 264px so your page margins keep working.
+========================================= */
+
 .sidebar {
     position: fixed;
     z-index: 110;
@@ -6,37 +13,38 @@
     flex-direction: column;
     width: 264px;
     min-height: 100vh;
-    border-right: 1px solid #e5ebe3;
+    border-right: 1px solid var(--border);
     background: #ffffff;
-    box-shadow: 8px 0 30px rgba(37, 64, 42, 0.035);
+    box-shadow: 8px 0 30px rgba(31, 77, 54, 0.04);
 }
 
 .brand {
     display: flex;
     align-items: center;
-    gap: 11px;
-    min-height: 82px;
+    gap: 12px;
+    min-height: 88px;
     padding: 18px 20px;
-    border-bottom: 1px solid #edf1ec;
-    color: #315c3b;
-    font-size: 1.05rem;
+    border-bottom: 1px solid #e3ece5;
+    color: var(--green-800);
+    font-size: 1.1rem;
     font-weight: 800;
     letter-spacing: -0.02em;
+    text-decoration: none;
 }
 
 .brandText span {
-    color: #d66b8a;
+    color: var(--accent);
 }
 
 .brandMark {
     display: block;
-    flex: 0 0 42px;
-    width: 42px;
-    height: 42px;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
     overflow: hidden;
-    border: 1px solid #dbe9dc;
+    border: 1px solid var(--border);
     border-radius: 14px;
-    background: linear-gradient(145deg, #edf7ef, #fff3f7);
+    background: var(--green-100);
 }
 
 .brandMark img {
@@ -49,73 +57,86 @@
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
     overflow-y: auto;
-    padding: 22px 13px;
+    padding: 22px 14px;
 }
 
 .navItem {
     display: flex;
     align-items: center;
-    min-height: 45px;
-    padding: 10px 13px;
+    gap: 12px;
+    min-height: 50px;
+    padding: 10px 14px;
     border: 1px solid transparent;
-    border-radius: 12px;
-    color: #5c6c5f;
-    font-size: 0.86rem;
+    border-radius: 14px;
+    color: var(--text-soft);
+    font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
-    transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    transition: color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.navIcon {
+    display: inline-flex;
+    flex: 0 0 20px;
+    justify-content: center;
+    color: currentColor;
 }
 
 .navItem:hover {
-    border-color: #e8efe7;
-    background: #f8faf7;
-    color: #315c3b;
+    border-color: transparent;
+    background: var(--green-100);
+    color: var(--green-800);
 }
 
-.activeNavItem {
-    border-color: #dceadc;
-    background: #edf6ed;
-    color: #315c3b;
-    font-weight: 750;
+.activeNavItem,
+.activeNavItem:hover {
+    border-color: transparent;
+    background: var(--green-700);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 8px 18px rgba(47, 107, 71, 0.25);
 }
 
 .sidebarBottom {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 16px 13px 20px;
-    border-top: 1px solid #edf1ec;
+    padding: 16px 14px 20px;
+    border-top: 1px solid #e3ece5;
 }
 
 .userName {
     overflow: hidden;
     padding: 0 8px;
-    color: #738075;
-    font-size: 0.8rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+/* logout is a soft green button, like the mockup */
 .logoutButton {
     width: 100%;
-    min-height: 43px;
-    padding: 10px 13px;
-    border: 1px solid #f2dddd;
-    border-radius: 11px;
-    background: #fff7f7;
-    color: #a74c4c;
+    min-height: 48px;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--green-100);
+    color: #1f5c33;
     font: inherit;
-    font-size: 0.83rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    text-align: left;
+    text-align: center;
     cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
 }
 
 .logoutButton:hover {
-    border-color: #eccdcd;
-    background: #fff0f0;
+    background: var(--mint);
+    color: var(--green-800);
 }
 
 .mobileToggle,
@@ -127,7 +148,7 @@
 .logoutButton:focus-visible,
 .brand:focus-visible,
 .mobileToggle:focus-visible {
-    outline: 3px solid rgba(107, 155, 118, 0.55);
+    outline: 3px solid rgba(47, 107, 71, 0.4);
     outline-offset: 2px;
 }
 
@@ -151,14 +172,14 @@
         flex-direction: column;
         justify-content: center;
         gap: 5px;
-        width: 44px;
-        height: 44px;
-        padding: 10px;
-        border: 1px solid #e3ebe3;
-        border-radius: 12px;
-        background: #ffffff;
-        color: #315c3b;
-        box-shadow: 0 4px 14px rgba(38, 53, 43, 0.1);
+        width: 46px;
+        height: 46px;
+        padding: 11px;
+        border: 0;
+        border-radius: 14px;
+        background: var(--green-700);
+        color: #ffffff;
+        box-shadow: var(--shadow-btn);
         cursor: pointer;
     }
 
@@ -175,12 +196,14 @@
         inset: 0;
         display: block;
         border: 0;
-        background: rgba(28, 41, 31, 0.35);
+        background: rgba(18, 36, 26, 0.45);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sidebar {
+    .sidebar,
+    .navItem,
+    .logoutButton {
         transition: none;
     }
 }

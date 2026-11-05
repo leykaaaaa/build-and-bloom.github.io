@@ -37,37 +37,37 @@ export default function AdminLayout({ children }) {
         {
             name: "Dashboard",
             path: "/admin",
-            icon: " "
+            icon: <i className="fa-solid fa-grip" />
         },
         {
             name: "Crop Management",
             path: "/admin/crops",
-            icon: ""
+            icon: <i className="fa-solid fa-wheat-awn" />
         },
         {
             name: "Location Management",
             path: "/admin/locations",
-            icon: " "
+            icon: <i className="fa-solid fa-map" />
         },
         {
             name: "Planting Calendar",
             path: "/admin/calendar",
-            icon: " "
+            icon: <i className="fa-solid fa-calendar" />
         },
         {
             name: "User Management",
             path: "/admin/users",
-            icon: ""
+            icon: <i className="fa-solid fa-users"/>
         },
         {
             name: "Recommendations",
             path: "/admin/recommendations",
-            icon: ""
+            icon: <i className="fa-solid fa-bolt" />
         },
         {
             name: "Settings",
             path: "/admin/settings",
-            icon: ""
+            icon: <i className="fa-solid fa-gear" />
         }
     ];
 

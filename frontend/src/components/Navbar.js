@@ -14,12 +14,12 @@ export default function Navbar() {
     const pathname = usePathname();
 
     const menuItems = [
-        { label: "Dashboard", href: "/dashboard" },
-        { label: "Crop Catalogue", href: "/crops" },
-        { label: "Crop Assessment", href: "/assessment" },
-        { label: "Weather", href: "/weather" },
-        { label: "Planting Calendar", href: "/calendar" },
-        { label: "My Plants", href: "/plants" },
+        { label: "Dashboard", href: "/dashboard", icon: "fa-solid fa-grip" },
+        { label: "Crop Catalogue", href: "/crops", icon: "fa-solid fa-book-open" },
+        { label: "Crop Assessment", href: "/assessment", icon: "fa-solid fa-clipboard-check" },
+        { label: "Weather", href: "/weather", icon: "fa-solid fa-cloud-sun" },
+        { label: "Planting Calendar", href: "/calendar", icon: "fa-solid fa-calendar" },
+        { label: "My Plants", href: "/plants", icon: "fa-solid fa-seedling" },
     ];
 
     useEffect(() => {
@@ -154,6 +154,11 @@ export default function Navbar() {
                                     aria-current={isActive ? "page" : undefined}
                                     onClick={() => setMenuOpen(false)}
                                 >
+                                    {item.icon && (
+                                        <span className={styles.navIcon} aria-hidden="true">
+                                            <i className={item.icon} />
+                                        </span>
+                                    )}
                                     {item.label}
                                 </Link>
                             );

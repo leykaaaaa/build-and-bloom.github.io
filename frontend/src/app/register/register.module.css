@@ -1,20 +1,31 @@
+/* =========================================
+   REGISTER PAGE (green theme)
+   Split card: green panel on the left, form on the right.
+   Same class names as before. Works with globals.updated.css.
+========================================= */
+
 .registerPage:global(.auth-page) {
     min-height: calc(100vh - 80px);
-    padding: 24px 20px;
+    padding: 40px 20px;
 }
 
 .registerCard:global(.auth-card) {
     display: grid;
-    grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.4fr);
+    grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.2fr);
     grid-template-areas:
         "header error"
         "header form"
         "header footer";
-    gap: 0 36px;
-    width: min(100%, 960px);
-    max-width: 960px;
-    padding: 30px 36px;
+    grid-template-rows: auto 1fr auto;
+    gap: 0;
+    width: min(100%, 1040px);
+    max-width: 1040px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 32px;
 }
+
+/* LEFT PANEL */
 
 .registerCard .registerHeader {
     grid-area: header;
@@ -22,64 +33,127 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
+    gap: 14px;
     margin: 0;
-    padding-right: 28px;
-    border-right: 1px solid #e3ebe4;
+    padding: 48px 40px;
+    border: 0;
+    background: linear-gradient(160deg, var(--green-700) 0%, var(--green-800) 100%);
+    color: #ffffff;
+    text-align: left;
 }
+
+.registerCard .registerHeader :global(.auth-icon) {
+    width: 76px;
+    height: 76px;
+    margin: 0 0 6px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.registerCard .registerHeader h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 2.2rem;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.registerCard .registerHeader p {
+    margin: 0;
+    color: var(--green-200);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* RIGHT SIDE */
 
 .registerCard .registerError {
     grid-area: error;
-    margin: 0 0 14px;
+    margin: 36px 48px 0;
 }
 
 .registerCard .registerForm {
     grid-area: form;
+    align-self: center;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px 18px;
+    gap: 18px 22px;
+    padding: 40px 48px 8px;
 }
 
 .registerCard .registerForm > :global(.auth-button) {
     grid-column: 1 / -1;
-    margin-top: 2px;
-    padding: 11px 13px;
+    margin-top: 6px;
 }
 
 .registerCard .registerFooter {
     grid-area: footer;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid #e3ebe4;
+    margin: 6px 48px 0;
+    padding: 18px 0 32px;
+    border-top: 1px solid #e3ece5;
 }
 
-@media (max-width: 700px) {
+/* TABLET AND MOBILE */
+
+@media (max-width: 800px) {
     .registerCard:global(.auth-card) {
         display: block;
-        padding: 28px 24px;
     }
 
     .registerCard .registerHeader {
-        margin-bottom: 24px;
-        padding: 0;
-        border: 0;
+        padding: 32px 28px;
+    }
+
+    .registerCard .registerHeader :global(.auth-icon) {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+    }
+
+    .registerCard .registerHeader h1 {
+        font-size: 1.8rem;
     }
 
     .registerCard .registerError {
-        margin-bottom: 16px;
+        margin: 24px 24px 0;
+    }
+
+    .registerCard .registerForm {
+        padding: 28px 24px 4px;
+    }
+
+    .registerCard .registerFooter {
+        margin: 6px 24px 0;
+        padding-bottom: 26px;
     }
 }
 
 @media (max-width: 480px) {
-    .registerPage {
+    .registerPage:global(.auth-page) {
         padding: 24px 14px;
     }
 
     .registerCard:global(.auth-card) {
-        padding: 24px 18px;
+        border-radius: 24px;
+    }
+
+    .registerCard .registerHeader {
+        padding: 26px 20px;
+    }
+
+    .registerCard .registerError {
+        margin: 20px 18px 0;
     }
 
     .registerCard .registerForm {
         grid-template-columns: minmax(0, 1fr);
         gap: 14px;
+        padding: 24px 18px 4px;
+    }
+
+    .registerCard .registerFooter {
+        margin: 6px 18px 0;
     }
 }

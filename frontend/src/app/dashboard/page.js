@@ -411,7 +411,9 @@ export default function DashboardPage() {
                                 className={styles.dashboardActionCard}
                             >
 
-                                <span aria-hidden="true"></span>
+                                <span aria-hidden="true">
+                                    <i className="fa-solid fa-clipboard-check" />
+                                </span>
 
                                 <div>
 
@@ -433,7 +435,9 @@ export default function DashboardPage() {
                                 className={styles.dashboardActionCard}
                             >
 
-                                <span aria-hidden="true"></span>
+                                   <span aria-hidden="true">
+                                    <i className="fa-solid fa-book-open" />
+                                </span>
 
                                 <div>
 
@@ -454,8 +458,9 @@ export default function DashboardPage() {
                                 href="/weather"
                                 className={styles.dashboardActionCard}
                             >
-
-                                <span aria-hidden="true">️</span>
+                            <span aria-hidden="true">
+                                    <i className="fa-solid fa-cloud-sun" />
+                                </span>
 
                                 <div>
 
@@ -477,8 +482,9 @@ export default function DashboardPage() {
                                 className={styles.dashboardActionCard}
                             >
 
-                                <span aria-hidden="true">️</span>
-
+                                <span aria-hidden="true">
+                                    <i className="fa-solid fa-calendar" />
+                                </span>
                                 <div>
 
                                     <strong>

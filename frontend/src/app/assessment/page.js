@@ -863,8 +863,8 @@ const result = await assessCrops({
 
                                 <p>
                                     {specificCrop
-                                        ? `${specificCrop.crop_name} did not meet the 80% minimum score for a highly suitable recommendation based on the conditions you entered.`
-                                        : "None of the available crops met the 80% minimum score for a highly suitable recommendation based on the conditions you entered."}
+                                        ? `${specificCrop.crop_name} did not meet the 70% minimum score for a highly suitable recommendation based on the conditions you entered.`
+                                        : "None of the available crops met the 70% minimum score for a highly suitable recommendation based on the conditions you entered."}
                                     {" "}Try adjusting your growing conditions or explore the Crop Catalogue to learn more about different crops.
                                 </p>
 

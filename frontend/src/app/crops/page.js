@@ -8,6 +8,65 @@ import { getCrops } from "../../services/cropService";
 import CropImage from "../../components/CropImage";
 import styles from "./crops.module.css";
 
+
+// =========================================================
+// SMALL INLINE ICONS (no extra package needed)
+// =========================================================
+
+function Icon({ size = 14, strokeWidth = 2.2, children }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    );
+}
+
+const LayersIcon = () => (
+    <Icon>
+        <path d="m12 2 10 5-10 5L2 7z" />
+        <path d="m2 12 10 5 10-5" />
+        <path d="m2 17 10 5 10-5" />
+    </Icon>
+);
+
+const DropIcon = () => (
+    <Icon>
+        <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
+    </Icon>
+);
+
+const SunIcon = () => (
+    <Icon>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </Icon>
+);
+
+const SearchIcon = () => (
+    <Icon size={20} strokeWidth={2}>
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
+    </Icon>
+);
+
+const ArrowIcon = () => (
+    <Icon size={16} strokeWidth={2.4}>
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+    </Icon>
+);
+
+
 export default function CropsPage() {
 
     const router = useRouter();
@@ -142,7 +201,7 @@ export default function CropsPage() {
             <div className={styles.catalogueHeader}>
 
                 <span className={styles.sectionBadge}>
-                    Build & Bloom
+                    Explore
                 </span>
 
                 <h1>
@@ -150,9 +209,9 @@ export default function CropsPage() {
                 </h1>
 
                 <p>
-                    Explore crops and learn about their
-                    growing requirements before making
-                    a planting decision.
+                    {!loading && !error && crops.length > 0
+                        ? `Browse ${crops.length} crops and their growing requirements.`
+                        : "Explore crops and learn about their growing requirements before making a planting decision."}
                 </p>
 
             </div>
@@ -184,48 +243,62 @@ export default function CropsPage() {
             )}
 
             {!loading && !error && crops.length > 0 && (
-                <div className={styles.catalogueToolbar}>
-                    <label className={styles.searchField}>
-                        <span className={styles.searchIcon} aria-hidden="true" />
-                        <span className={styles.visuallyHidden}>Search crops</span>
-                        <input
-                            type="search"
-                            value={searchTerm}
-                            onChange={(event) => setSearchTerm(event.target.value)}
-                            placeholder="Search by crop, category, or growing need..."
-                        />
-                        {searchTerm && (
-                            <button
-                                type="button"
-                                className={styles.clearSearch}
-                                onClick={() => setSearchTerm("")}
-                                aria-label="Clear crop search"
-                            >
-                                ×
-                            </button>
-                        )}
-                    </label>
+                <>
+                    {/* Filtering is live as you type; the Search button just
+                        matches the mockup and keeps keyboard users happy. */}
+                    <form
+                        className={styles.catalogueToolbar}
+                        role="search"
+                        onSubmit={(event) => event.preventDefault()}
+                    >
+                        <label className={styles.searchField}>
+                            <span className={styles.searchIcon} aria-hidden="true">
+                                <SearchIcon />
+                            </span>
+                            <span className={styles.visuallyHidden}>Search crops</span>
+                            <input
+                                type="search"
+                                value={searchTerm}
+                                onChange={(event) => setSearchTerm(event.target.value)}
+                                placeholder="Search crops by name..."
+                            />
+                            {searchTerm && (
+                                <button
+                                    type="button"
+                                    className={styles.clearSearch}
+                                    onClick={() => setSearchTerm("")}
+                                    aria-label="Clear crop search"
+                                >
+                                    ×
+                                </button>
+                            )}
+                        </label>
 
-                    <label className={styles.categoryFilter}>
-                        <span className={styles.visuallyHidden}>Filter by category</span>
-                        <select
-                            value={selectedCategory}
-                            onChange={(event) => setSelectedCategory(event.target.value)}
-                        >
-                            <option value="">All categories</option>
-                            {categories.map((category) => (
-                                <option key={category} value={category}>
-                                    {category}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
+                        <label className={styles.categoryFilter}>
+                            <span className={styles.visuallyHidden}>Filter by category</span>
+                            <select
+                                value={selectedCategory}
+                                onChange={(event) => setSelectedCategory(event.target.value)}
+                            >
+                                <option value="">All categories</option>
+                                {categories.map((category) => (
+                                    <option key={category} value={category}>
+                                        {category}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+
+                        <button type="submit" className={styles.searchButton}>
+                            Search
+                        </button>
+                    </form>
 
                     <p className={styles.resultCount} aria-live="polite">
-                        <strong>{filteredCrops.length}</strong>
+                        Showing <strong>{filteredCrops.length}</strong>
                         {" "}of {crops.length} crops
                     </p>
-                </div>
+                </>
             )}
 
             {!loading && !error && crops.length === 0 && (
@@ -244,33 +317,46 @@ export default function CropsPage() {
                                 className={styles.cropCard}
                                 key={crop.crop_id}
                             >
-                                <CropImage
-                                    cropName={crop.crop_name}
-                                    className={styles.cropCardImage}
-                                    sizes="(max-width: 650px) 90vw, (max-width: 1050px) 45vw, 30vw"
-                                />
+                                <div className={styles.cropCardMedia}>
+                                    <CropImage
+                                        cropName={crop.crop_name}
+                                        className={styles.cropCardImage}
+                                        sizes="(max-width: 650px) 90vw, (max-width: 1050px) 45vw, 30vw"
+                                    />
+
+                                    {crop.category && (
+                                        <span className={styles.cropCategory}>
+                                            {crop.category}
+                                        </span>
+                                    )}
+                                </div>
 
                                 <div className={styles.cropCardContent}>
-                                    <span className={styles.cropCategory}>
-                                        {crop.category}
-                                    </span>
-
                                     <h2>{crop.crop_name}</h2>
                                     <p>{crop.description}</p>
 
-                                    <div className={styles.cropInfo}>
-                                        <div>
-                                            <strong>Soil</strong>
-                                            <span>{crop.soil_type}</span>
-                                        </div>
-                                        <div>
-                                            <strong>Water</strong>
-                                            <span>{crop.water_requirement}</span>
-                                        </div>
-                                        <div>
-                                            <strong>Sunlight</strong>
-                                            <span>{crop.sunlight_requirement}</span>
-                                        </div>
+                                    <div className={styles.cropChips}>
+                                        {crop.soil_type && (
+                                            <span className={`${styles.cropChip} ${styles.chipSoil}`}>
+                                                <LayersIcon />
+                                                <span className={styles.visuallyHidden}>Soil: </span>
+                                                {crop.soil_type}
+                                            </span>
+                                        )}
+                                        {crop.water_requirement && (
+                                            <span className={`${styles.cropChip} ${styles.chipWater}`}>
+                                                <DropIcon />
+                                                <span className={styles.visuallyHidden}>Water: </span>
+                                                {crop.water_requirement}
+                                            </span>
+                                        )}
+                                        {crop.sunlight_requirement && (
+                                            <span className={`${styles.cropChip} ${styles.chipSun}`}>
+                                                <SunIcon />
+                                                <span className={styles.visuallyHidden}>Sunlight: </span>
+                                                {crop.sunlight_requirement}
+                                            </span>
+                                        )}
                                     </div>
 
                                     <Link
@@ -278,6 +364,7 @@ export default function CropsPage() {
                                         className={styles.viewCropButton}
                                     >
                                         View Details
+                                        <ArrowIcon />
                                     </Link>
                                 </div>
                             </article>

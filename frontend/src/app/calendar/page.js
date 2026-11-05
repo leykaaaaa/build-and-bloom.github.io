@@ -170,7 +170,9 @@ export default function CalendarPage() {
                             Build & Bloom
                         </span>
 
-                        <h1>Planting Calendar</h1>
+                        <h1>
+                            Planting Calendar
+                        </h1>
 
                         <p>
                             Find the right time to plant. Browse general crop schedules
