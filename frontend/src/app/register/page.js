@@ -214,7 +214,6 @@ export default function RegisterPage() {
                 <div className={`auth-header ${styles.registerHeader}`}>
 
                     <div className="auth-icon">
-                        
                     </div>
 
                     <h1>
@@ -302,15 +301,21 @@ export default function RegisterPage() {
                             Full Name
                         </label>
 
-                        <input
-                            id="full_name"
-                            name="full_name"
-                            type="text"
-                            value={form.full_name}
-                            onChange={handleChange}
-                            placeholder="Enter your full name"
-                            required
-                        />
+                        <div className={styles.fieldInputWrapper}>
+                            <i
+                                className={`fa-solid fa-user ${styles.fieldInputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <input
+                                id="full_name"
+                                name="full_name"
+                                type="text"
+                                value={form.full_name}
+                                onChange={handleChange}
+                                placeholder="Enter your full name"
+                                required
+                            />
+                        </div>
 
                     </div>
 
@@ -323,15 +328,21 @@ export default function RegisterPage() {
                             Email Address
                         </label>
 
-                        <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            value={form.email}
-                            onChange={handleChange}
-                            placeholder="Enter your email"
-                            required
-                        />
+                        <div className={styles.fieldInputWrapper}>
+                            <i
+                                className={`fa-solid fa-envelope ${styles.fieldInputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value={form.email}
+                                onChange={handleChange}
+                                placeholder="Enter your email"
+                                required
+                            />
+                        </div>
 
                     </div>
 
@@ -344,32 +355,38 @@ export default function RegisterPage() {
                             Location
                         </label>
 
-                        <select
-                            id="location_id"
-                            name="location_id"
-                            value={form.location_id}
-                            onChange={handleChange}
-                            required
-                        >
+                        <div className={styles.fieldInputWrapper}>
+                            <i
+                                className={`fa-solid fa-location-dot ${styles.fieldInputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <select
+                                id="location_id"
+                                name="location_id"
+                                value={form.location_id}
+                                onChange={handleChange}
+                                required
+                            >
 
-                            <option value="">
-                                Select your location
-                            </option>
+                                <option value="">
+                                    Select your location
+                                </option>
 
-                            {locations.map(
-                                (location) => (
+                                {locations.map(
+                                    (location) => (
 
-                                    <option
-                                        key={location.id}
-                                        value={location.id}
-                                    >
-                                        {location.name}
-                                    </option>
+                                        <option
+                                            key={location.id}
+                                            value={location.id}
+                                        >
+                                            {location.name}
+                                        </option>
 
-                                )
-                            )}
+                                    )
+                                )}
 
-                        </select>
+                            </select>
+                        </div>
 
                     </div>
 
@@ -382,15 +399,21 @@ export default function RegisterPage() {
                             Password
                         </label>
 
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            value={form.password}
-                            onChange={handleChange}
-                            placeholder="Create a password"
-                            required
-                        />
+                        <div className={styles.fieldInputWrapper}>
+                            <i
+                                className={`fa-solid fa-lock ${styles.fieldInputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                value={form.password}
+                                onChange={handleChange}
+                                placeholder="Create a password"
+                                required
+                            />
+                        </div>
 
                     </div>
 
@@ -403,17 +426,23 @@ export default function RegisterPage() {
                             Confirm Password
                         </label>
 
-                        <input
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            type="password"
-                            value={
-                                form.confirmPassword
-                            }
-                            onChange={handleChange}
-                            placeholder="Confirm your password"
-                            required
-                        />
+                        <div className={styles.fieldInputWrapper}>
+                            <i
+                                className={`fa-solid fa-lock ${styles.fieldInputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <input
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                type="password"
+                                value={
+                                    form.confirmPassword
+                                }
+                                onChange={handleChange}
+                                placeholder="Confirm your password"
+                                required
+                            />
+                        </div>
 
                     </div>
 

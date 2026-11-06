@@ -1,0 +1,944 @@
+/* =========================================
+   ADMIN PAGES (shared) - green theme
+   Page header, stat cards, search toolbar, data table, badges,
+   action buttons and the Add/Edit modal + form.
+   Matches the "Admin Calendar" and "Admin Calendar Modal" boards.
+   Planned to be reused by Crop / Location / User / Recommendation pages.
+   Class names are prefixed so they do not clash with admin.module.css
+   (the dashboard file). Uses the CSS variables from globals.css (:root).
+========================================= */
+
+.adminPage {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 1480px;
+    margin: 0 auto;
+}
+
+/* PAGE HEADER */
+
+.pageHeader {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.pageHeading {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.pageTitle {
+    margin: 0;
+    color: var(--green-800);
+    font-size: clamp(2rem, 3.4vw, 2.5rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.pageSubtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* BUTTONS */
+
+.primaryButton,
+.secondaryButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 0;
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primaryButton {
+    height: 56px;
+    padding: 0 26px;
+    border-radius: 14px;
+    background: var(--green-700);
+    color: #ffffff;
+    font-size: 1rem;
+    box-shadow: var(--shadow-btn);
+}
+
+.primaryButton:hover:not(:disabled) {
+    background: var(--green-800);
+    transform: translateY(-1px);
+}
+
+.primaryButton:disabled {
+    background: #9db3a5;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.secondaryButton {
+    height: 52px;
+    padding: 0 26px;
+    border-radius: 12px;
+    background: var(--green-100);
+    color: #1f5c33;
+    font-size: 0.95rem;
+}
+
+.secondaryButton:hover {
+    background: var(--mint);
+}
+
+/* SUMMARY CARDS */
+
+.statGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.statBox {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: #ffffff;
+}
+
+.statIconBox {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+}
+
+.statText {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.statText span {
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.statText strong {
+    color: var(--green-800);
+    font-size: 2.125rem;
+    line-height: 1.1;
+}
+
+/* icon tile colours (green family) */
+.toneMint {
+    background: var(--mint);
+    color: #1f5c33;
+}
+
+.toneLeaf {
+    background: #ddede1;
+    color: var(--green-700);
+}
+
+.toneWater {
+    background: #d3efe6;
+    color: #1d6b5a;
+}
+
+.toneSun {
+    background: var(--lime);
+    color: var(--lime-ink);
+}
+
+/* SEARCH / FILTER TOOLBAR */
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: #ffffff;
+}
+
+.searchBox {
+    position: relative;
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.searchBoxIcon {
+    position: absolute;
+    top: 0;
+    left: 18px;
+    display: flex;
+    align-items: center;
+    height: 54px;
+    color: #6f8377;
+    pointer-events: none;
+}
+
+.searchInput,
+.filterSelect {
+    box-sizing: border-box;
+    height: 54px;
+    border: 1.5px solid var(--border-input);
+    border-radius: var(--radius-input);
+    background: #f8fbf9;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0 16px 0 50px;
+}
+
+.filterSelect {
+    min-width: 220px;
+    padding: 0 16px;
+    cursor: pointer;
+}
+
+.searchInput:focus,
+.filterSelect:focus {
+    border-color: var(--green-700);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(47, 107, 71, 0.12);
+    outline: none;
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+/* MESSAGES */
+
+.stateBox {
+    padding: 30px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: #ffffff;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* error stays red on purpose: it is a warning state */
+.errorBox {
+    padding: 16px 18px;
+    border: 1px solid #f0d5d5;
+    border-radius: 14px;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* TABLE CARD */
+
+.tableCard {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
+}
+
+.tableCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 24px 28px;
+}
+
+.tableCardHeader h2 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: 1.375rem;
+    letter-spacing: -0.02em;
+}
+
+.tableScroll {
+    overflow-x: auto;
+}
+
+.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dataTable th {
+    padding: 16px 20px;
+    background: #f3f9f4;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.dataTable th.alignRight,
+.dataTable td.alignRight {
+    text-align: right;
+}
+
+.dataTable td {
+    padding: 16px 20px;
+    border-top: 1px solid #e3ece5;
+    color: #2c3b32;
+    font-size: 0.875rem;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.dataTable tbody tr:hover td {
+    background: #fafdfb;
+}
+
+.cellStrong {
+    color: #1f5c33;
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.emptyRow {
+    padding: 30px;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* BADGES */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.badgeVeg {
+    background: #d9f0dc;
+    color: #1f5c33;
+}
+
+.badgeFruit {
+    background: var(--lime);
+    color: var(--lime-ink);
+}
+
+.badgeNeutral {
+    background: #e3ebdd;
+    color: var(--text-soft);
+}
+
+.badgeSeason {
+    background: #d3efe6;
+    color: #1d6b5a;
+}
+
+/* low / unsuitable result: soft red because it is a warning-type status */
+.badgeLow {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+/* USER ROLE BADGES + AVATAR */
+
+.badgeAdmin {
+    background: var(--mint);
+    color: #1f5c33;
+}
+
+.badgeUser {
+    background: #eef4ef;
+    color: var(--text-soft);
+}
+
+.userCell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--mint);
+    color: #1f5c33;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+/* SCORE BAR (compatibility score) */
+
+.scoreWrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+}
+
+.scoreTrack {
+    flex: 1;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--green-100);
+}
+
+.scoreFill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green-700), var(--green-600));
+}
+
+.scoreValue {
+    width: 64px;
+    color: var(--green-800);
+    font-weight: 800;
+}
+
+/* small helper text inside a stat card / table header / under a table */
+.statNote {
+    color: var(--muted);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+}
+
+.statText .statNote {
+    font-weight: 400;
+}
+
+.tableCardHeader {
+    flex-wrap: wrap;
+}
+
+.tableNote {
+    color: var(--muted);
+    font-size: 0.875rem;
+}
+
+.recordCount {
+    margin: 0;
+    padding: 16px 28px 20px;
+    border-top: 1px solid #e3ece5;
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
+/* INFO CARD (lime, like the "Grower tip" card) */
+
+.infoCard {
+    display: flex;
+    gap: 16px;
+    padding: 28px;
+    border: 1px solid #dde8bc;
+    border-radius: var(--radius-card);
+    background: #f1f8e3;
+}
+
+.infoCardIcon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--lime);
+    color: var(--lime-ink);
+}
+
+.infoCard h2 {
+    margin: 0 0 8px;
+    color: #3a5209;
+    font-size: 1.0625rem;
+}
+
+.infoCard p {
+    margin: 0 0 10px;
+    color: #4a5c51;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.infoCard p:last-child {
+    margin-bottom: 0;
+}
+
+/* SETTINGS PAGE: info list + feature cards */
+
+.settingsCard {
+    padding: 32px 36px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
+}
+
+.settingsCard h2 {
+    margin: 0 0 8px;
+    color: var(--green-800);
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.infoRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid #e3ece5;
+    font-size: 1rem;
+}
+
+.infoRow:last-child {
+    border-bottom: 0;
+}
+
+.infoRow > span {
+    color: var(--muted);
+}
+
+.infoRow > strong {
+    color: var(--green-800);
+    text-align: right;
+}
+
+.featureCard {
+    display: flex;
+    align-items: flex-start;
+    gap: 22px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
+}
+
+.featureIcon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+}
+
+.featureBody {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+}
+
+.featureBody h2 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.featureBody p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.statusPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #d9f0dc;
+    color: #1f5c33;
+    font-size: 0.875rem;
+    font-weight: 800;
+}
+
+.statusDot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--green-700);
+}
+
+@media (max-width: 700px) {
+    .settingsCard,
+    .featureCard {
+        padding: 24px;
+    }
+
+    .infoRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .infoRow > strong {
+        text-align: left;
+    }
+
+    .featureCard {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+/* ROW ACTIONS */
+
+.rowActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.editButton,
+.deleteButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.editButton {
+    background: var(--green-100);
+    color: #1f5c33;
+}
+
+.editButton:hover {
+    background: var(--mint);
+}
+
+/* delete stays red on purpose: it is a destructive action */
+.deleteButton {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.deleteButton:hover {
+    background: #f7d6d1;
+}
+
+/* MODAL */
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 6vh 20px 20px;
+    box-sizing: border-box;
+    background: rgba(18, 36, 26, 0.58);
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    max-width: 100%;
+    max-height: 88vh;
+    overflow: hidden;
+    border-radius: 26px;
+    background: #ffffff;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+}
+
+.modal > form {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.modalHeader {
+    flex: none;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 30px 36px;
+    border-bottom: 1px solid #e3ece5;
+}
+
+.modalHeader h2 {
+    margin: 0 0 6px;
+    color: var(--green-800);
+    font-size: 1.625rem;
+    letter-spacing: -0.02em;
+}
+
+.modalHeader p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.closeButton {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 12px;
+    background: #eef4ef;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.closeButton:hover {
+    background: var(--mint);
+}
+
+.modalBody {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 30px 36px;
+}
+
+/* small green section label inside long forms (BASIC INFORMATION, TIMING...) */
+.formSectionLabel {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.modalWide {
+    width: 860px;
+}
+
+/* disabled states for buttons used in rows and modal footers */
+.deleteButton:disabled,
+.secondaryButton:disabled,
+.closeButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* amber on purpose: it is a caution, not an error */
+.legacyNote {
+    margin: 10px 0 0;
+    padding: 10px 14px;
+    border: 1px solid #f1e0a8;
+    border-radius: 10px;
+    background: #fff8e1;
+    color: #7a5a00;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 22px;
+}
+
+.formField {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.formField.fullWidth {
+    grid-column: 1 / -1;
+}
+
+.formField label {
+    color: var(--green-800);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.required {
+    color: var(--accent);
+}
+
+.formInput,
+.formTextarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1.5px solid var(--border-input);
+    border-radius: 12px;
+    background: #f8fbf9;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.formInput {
+    height: 54px;
+    padding: 0 16px;
+}
+
+.formTextarea {
+    min-height: 130px;
+    padding: 14px 16px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.formInput::placeholder,
+.formTextarea::placeholder {
+    color: #8a9a90;
+}
+
+.formInput:focus,
+.formTextarea:focus {
+    border-color: var(--green-700);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(47, 107, 71, 0.12);
+    outline: none;
+}
+
+.modalFooter {
+    flex: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 22px 36px;
+    border-top: 1px solid #e3ece5;
+    background: #f8fbf9;
+}
+
+.modalFooter .primaryButton {
+    height: 52px;
+    padding: 0 28px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+}
+
+/* FOCUS */
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.editButton:focus-visible,
+.deleteButton:focus-visible,
+.closeButton:focus-visible {
+    outline: 3px solid rgba(47, 107, 71, 0.4);
+    outline-offset: 3px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+    .statGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .pageHeader {
+        align-items: stretch;
+    }
+
+    .pageHeader .primaryButton {
+        width: 100%;
+    }
+
+    .filterSelect {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .tableCardHeader {
+        padding: 20px;
+    }
+
+    .modalHeader,
+    .modalBody,
+    .modalFooter {
+        padding-right: 22px;
+        padding-left: 22px;
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .modalFooter {
+        flex-direction: column-reverse;
+    }
+
+    .modalFooter .primaryButton,
+    .modalFooter .secondaryButton {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .primaryButton,
+    .secondaryButton,
+    .editButton,
+    .deleteButton,
+    .closeButton,
+    .searchInput,
+    .filterSelect,
+    .formInput,
+    .formTextarea {
+        transition: none;
+    }
+
+    .primaryButton:hover:not(:disabled) {
+        transform: none;
+    }
+}

@@ -2,6 +2,83 @@
 
 import { useEffect, useState } from "react";
 
+import styles from "../adminPages.module.css";
+
+
+// =========================================================
+// SMALL INLINE ICONS (no extra package needed)
+// =========================================================
+
+function Icon({ size = 20, strokeWidth = 2, children }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    );
+}
+
+const PlusIcon = () => (
+    <Icon strokeWidth={2.4}>
+        <path d="M5 12h14" />
+        <path d="M12 5v14" />
+    </Icon>
+);
+
+const SearchIcon = () => (
+    <Icon>
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
+    </Icon>
+);
+
+const MapPinIcon = () => (
+    <Icon size={24}>
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+        <circle cx="12" cy="10" r="3" />
+    </Icon>
+);
+
+const HomeIcon = () => (
+    <Icon size={24}>
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <path d="M9 22V12h6v10" />
+    </Icon>
+);
+
+const BuildingIcon = () => (
+    <Icon size={24}>
+        <rect width="16" height="20" x="4" y="2" rx="2" />
+        <path d="M9 22v-4h6v4" />
+        <path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01" />
+    </Icon>
+);
+
+
+// Type badge colour: municipality = green, city = lime, anything else = neutral
+function typeBadgeClass(type) {
+    const value = String(type || "").trim().toLowerCase();
+
+    if (value.includes("municipal")) {
+        return styles.badgeVeg;
+    }
+
+    if (value.includes("city")) {
+        return styles.badgeFruit;
+    }
+
+    return styles.badgeNeutral;
+}
+
 export default function LocationManagement() {
     const [locations, setLocations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -39,270 +116,181 @@ export default function LocationManagement() {
     }, []);
 
     const filteredLocations = locations.filter((location) =>
-        location.location_name
+        (location.location_name || "")
             .toLowerCase()
             .includes(search.toLowerCase())
     );
 
+    // Summary numbers (display only)
+    const municipalityCount = locations.filter((location) =>
+        String(location.location_type || "")
+            .toLowerCase()
+            .includes("municipal")
+    ).length;
+
+    const cityCount = locations.filter((location) =>
+        String(location.location_type || "")
+            .toLowerCase()
+            .includes("city")
+    ).length;
+
     return (
-        <div
-            style={{
-                minHeight: "100vh",
-                background: "#f8faf9",
-                padding: "30px",
-                fontFamily: "Arial, sans-serif",
-            }}
-        >
-            <div
-                style={{
-                    maxWidth: "1200px",
-                    margin: "0 auto",
-                }}
-            >
-                {/* Header */}
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "25px",
-                    }}
-                >
-                    <div>
-                        <h1
-                            style={{
-                                margin: 0,
-                                color: "#1f2937",
-                                fontSize: "30px",
-                            }}
-                        >
-                            Location Management
-                        </h1>
+        <div className={styles.adminPage}>
 
-                        <p
-                            style={{
-                                marginTop: "8px",
-                                color: "#6b7280",
-                            }}
-                        >
-                            Manage the Pangasinan locations used by the system.
-                        </p>
-                    </div>
+            {/* Header */}
+            <div className={styles.pageHeader}>
+                <div className={styles.pageHeading}>
+                    <h1 className={styles.pageTitle}>
+                        Location Management
+                    </h1>
 
-                    <button
-                        style={{
-                            background: "#166534",
-                            color: "white",
-                            border: "none",
-                            padding: "12px 18px",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                            fontWeight: "600",
-                        }}
-                    >
-                        + Add Location
-                    </button>
+                    <p className={styles.pageSubtitle}>
+                        Manage the Pangasinan locations used by the system.
+                    </p>
                 </div>
 
-                {/* Summary */}
-                <div
-                    style={{
-                        background: "white",
-                        borderRadius: "12px",
-                        padding: "20px",
-                        marginBottom: "25px",
-                        border: "1px solid #e5e7eb",
-                    }}
+                {/* Not connected yet in the original code either */}
+                <button
+                    type="button"
+                    className={styles.primaryButton}
                 >
-                    <div
-                        style={{
-                            color: "#6b7280",
-                            fontSize: "14px",
-                        }}
-                    >
-                        Total Pangasinan Locations
-                    </div>
+                    <PlusIcon />
+                    Add Location
+                </button>
+            </div>
 
-                    <div
-                        style={{
-                            fontSize: "28px",
-                            fontWeight: "700",
-                            color: "#166534",
-                            marginTop: "5px",
-                        }}
-                    >
-                        {loading ? "..." : locations.length}
+            {/* Summary */}
+            <div className={styles.statGrid}>
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneWater}`}>
+                        <MapPinIcon />
+                    </span>
+
+                    <div className={styles.statText}>
+                        <span>Total Pangasinan Locations</span>
+                        <strong>{loading ? "..." : locations.length}</strong>
                     </div>
                 </div>
 
-                {/* Error */}
-                {error && (
-                    <div
-                        style={{
-                            background: "#fee2e2",
-                            color: "#991b1b",
-                            padding: "15px",
-                            borderRadius: "8px",
-                            marginBottom: "20px",
-                        }}
-                    >
-                        {error}
-                    </div>
-                )}
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneLeaf}`}>
+                        <HomeIcon />
+                    </span>
 
-                {/* Search */}
-                {!loading && !error && (
-                    <div
-                        style={{
-                            background: "white",
-                            padding: "18px",
-                            borderRadius: "12px",
-                            border: "1px solid #e5e7eb",
-                            marginBottom: "20px",
-                        }}
-                    >
+                    <div className={styles.statText}>
+                        <span>Municipalities</span>
+                        <strong>{loading ? "..." : municipalityCount}</strong>
+                    </div>
+                </div>
+
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneSun}`}>
+                        <BuildingIcon />
+                    </span>
+
+                    <div className={styles.statText}>
+                        <span>Cities</span>
+                        <strong>{loading ? "..." : cityCount}</strong>
+                    </div>
+                </div>
+            </div>
+
+            {/* Error */}
+            {error && (
+                <div className={styles.errorBox}>
+                    {error}
+                </div>
+            )}
+
+            {/* Search */}
+            {!loading && !error && (
+                <div className={styles.toolbar}>
+                    <div className={styles.searchBox}>
+                        <span className={styles.searchBoxIcon}>
+                            <SearchIcon />
+                        </span>
+
+                        <label
+                            htmlFor="location-search"
+                            className={styles.visuallyHidden}
+                        >
+                            Search location
+                        </label>
+
                         <input
-                            type="text"
+                            id="location-search"
+                            className={styles.searchInput}
+                            type="search"
                             placeholder="Search location..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            style={{
-                                width: "100%",
-                                padding: "12px 14px",
-                                border: "1px solid #d1d5db",
-                                borderRadius: "8px",
-                                fontSize: "14px",
-                                outline: "none",
-                                boxSizing: "border-box",
-                            }}
                         />
                     </div>
-                )}
+                </div>
+            )}
 
-                {/* Loading */}
-                {loading && (
-                    <div
-                        style={{
-                            background: "white",
-                            padding: "30px",
-                            borderRadius: "12px",
-                            textAlign: "center",
-                            color: "#6b7280",
-                        }}
-                    >
-                        Loading location data...
+            {/* Loading */}
+            {loading && (
+                <div className={styles.stateBox}>
+                    Loading location data...
+                </div>
+            )}
+
+            {/* Location Table */}
+            {!loading && !error && (
+                <section className={styles.tableCard}>
+                    <div className={styles.tableCardHeader}>
+                        <h2>Pangasinan Location Database</h2>
                     </div>
-                )}
 
-                {/* Location Table */}
-                {!loading && !error && (
-                    <div
-                        style={{
-                            background: "white",
-                            borderRadius: "12px",
-                            border: "1px solid #e5e7eb",
-                            overflow: "hidden",
-                        }}
-                    >
-                        <div
-                            style={{
-                                padding: "20px",
-                                borderBottom: "1px solid #e5e7eb",
-                            }}
-                        >
-                            <h2
-                                style={{
-                                    margin: 0,
-                                    fontSize: "18px",
-                                    color: "#1f2937",
-                                }}
-                            >
-                                Pangasinan Location Database
-                            </h2>
-                        </div>
+                    <div className={styles.tableScroll}>
+                        <table className={styles.dataTable}>
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Province</th>
+                                </tr>
+                            </thead>
 
-                        <div style={{ overflowX: "auto" }}>
-                            <table
-                                style={{
-                                    width: "100%",
-                                    borderCollapse: "collapse",
-                                }}
-                            >
-                                <thead>
-                                    <tr
-                                        style={{
-                                            background: "#f9fafb",
-                                        }}
-                                    >
-                                        <th style={thStyle}>ID</th>
-                                        <th style={thStyle}>Location</th>
-                                        <th style={thStyle}>Type</th>
-                                        <th style={thStyle}>Province</th>
-                                    </tr>
-                                </thead>
+                            <tbody>
+                                {filteredLocations.map((location) => (
+                                    <tr key={location.location_id}>
+                                        <td>{location.location_id}</td>
 
-                                <tbody>
-                                    {filteredLocations.map((location) => (
-                                        <tr key={location.location_id}>
-                                            <td style={tdStyle}>
-                                                {location.location_id}
-                                            </td>
-
-                                            <td
-                                                style={{
-                                                    ...tdStyle,
-                                                    fontWeight: "600",
-                                                    color: "#166534",
-                                                }}
-                                            >
+                                        <td>
+                                            <span className={styles.cellStrong}>
                                                 {location.location_name}
-                                            </td>
+                                            </span>
+                                        </td>
 
-                                            <td style={tdStyle}>
-                                                {location.location_type || "—"}
-                                            </td>
+                                        <td>
+                                            {location.location_type ? (
+                                                <span
+                                                    className={`${styles.badge} ${typeBadgeClass(location.location_type)}`}
+                                                >
+                                                    {location.location_type}
+                                                </span>
+                                            ) : (
+                                                "—"
+                                            )}
+                                        </td>
 
-                                            <td style={tdStyle}>
-                                                {location.province || "—"}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {filteredLocations.length === 0 && (
-                            <div
-                                style={{
-                                    padding: "30px",
-                                    textAlign: "center",
-                                    color: "#6b7280",
-                                }}
-                            >
-                                No locations found.
-                            </div>
-                        )}
+                                        <td>{location.province || "—"}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                )}
-            </div>
+
+                    {filteredLocations.length === 0 && (
+                        <div className={styles.emptyRow}>
+                            No locations found.
+                        </div>
+                    )}
+                </section>
+            )}
         </div>
     );
 }
-
-const thStyle = {
-    padding: "14px 16px",
-    textAlign: "left",
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#6b7280",
-    borderBottom: "1px solid #e5e7eb",
-    whiteSpace: "nowrap",
-};
-
-const tdStyle = {
-    padding: "14px 16px",
-    fontSize: "14px",
-    color: "#374151",
-    borderBottom: "1px solid #f1f5f9",
-    whiteSpace: "nowrap",
-};

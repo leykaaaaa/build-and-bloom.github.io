@@ -255,7 +255,7 @@ export default function Home() {
                     <div className="feature-card">
 
                         <div className="feature-icon">
-                            
+                            <i className="fa-solid fa-book-open" aria-hidden="true" />
                         </div>
 
                         <span className="feature-number">
@@ -280,6 +280,7 @@ export default function Home() {
                     <div className="feature-card">
 
                         <div className="feature-icon">
+                          <i className="fa-solid fa-clipboard-check" aria-hidden="true" />
                             
                         </div>
 
@@ -305,6 +306,7 @@ export default function Home() {
                     <div className="feature-card">
 
                         <div className="feature-icon">
+                            <i className="fa-solid fa-location-dot" aria-hidden="true" />
                             
                         </div>
 
@@ -330,7 +332,7 @@ export default function Home() {
                     <div className="feature-card">
 
                         <div className="feature-icon">
-                            ️
+                            <i className="fa-solid fa-cloud-sun" aria-hidden="true" />
                         </div>
 
                         <span className="feature-number">
@@ -355,6 +357,7 @@ export default function Home() {
                     <div className="feature-card">
 
                         <div className="feature-icon">
+                            <i className="fa-solid fa-calendar-days" aria-hidden="true" />
                             
                         </div>
 
@@ -380,6 +383,7 @@ export default function Home() {
                     <div className="feature-card">
 
                         <div className="feature-icon">
+                            <i className="fa-solid fa-seedling" aria-hidden="true" />
                             
                         </div>
 
@@ -702,4 +706,3 @@ export default function Home() {
         </div>
     );
 }
-

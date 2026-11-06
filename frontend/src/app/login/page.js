@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { loginUser } from "../../services/authService";
+import styles from "./login.module.css";
 
 
 export default function LoginPage() {
@@ -188,15 +189,21 @@ localStorage.setItem(
                             Email Address
                         </label>
 
-                        <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            value={form.email}
-                            onChange={handleChange}
-                            placeholder="Enter your email"
-                            required
-                        />
+                        <div className={styles.inputWrapper}>
+                            <i
+                                className={`fa-solid fa-envelope ${styles.inputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value={form.email}
+                                onChange={handleChange}
+                                placeholder="Enter your email"
+                                required
+                            />
+                        </div>
 
                     </div>
 
@@ -209,15 +216,21 @@ localStorage.setItem(
                             Password
                         </label>
 
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            value={form.password}
-                            onChange={handleChange}
-                            placeholder="Enter your password"
-                            required
-                        />
+                        <div className={styles.inputWrapper}>
+                            <i
+                                className={`fa-solid fa-lock ${styles.inputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                value={form.password}
+                                onChange={handleChange}
+                                placeholder="Enter your password"
+                                required
+                            />
+                        </div>
 
                     </div>
 

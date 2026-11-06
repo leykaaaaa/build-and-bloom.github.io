@@ -2,6 +2,45 @@
 
 import { useEffect, useState } from "react";
 
+import styles from "../adminPages.module.css";
+
+
+// =========================================================
+// SMALL INLINE ICONS (no extra package needed)
+// =========================================================
+
+function Icon({ size = 28, strokeWidth = 2, children }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {children}
+    </svg>
+  );
+}
+
+const SparklesIcon = () => (
+  <Icon>
+    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z" />
+  </Icon>
+);
+
+const CloudSunIcon = () => (
+  <Icon>
+    <path d="M12 2v2M4.9 4.9l1.4 1.4M20 12h2M19.1 4.9l-1.4 1.4M15.9 11.5a4 4 0 0 0-7.8-.5" />
+    <path d="M17.5 19H9a5 5 0 1 1 4.9-6.1" />
+    <path d="M17.5 19a3.5 3.5 0 0 0 0-7h-.4" />
+  </Icon>
+);
+
 export default function AdminSettingsPage() {
   const [totalCrops, setTotalCrops] = useState(0);
   const [totalLocations, setTotalLocations] = useState(0);
@@ -87,48 +126,48 @@ export default function AdminSettingsPage() {
   }, []);
 
   return (
-    <main style={styles.page}>
-      <div style={styles.header}>
-        <h1 style={styles.title}>
-          Settings
-        </h1>
+    <div className={styles.adminPage}>
+      <div className={styles.pageHeader}>
+        <div className={styles.pageHeading}>
+          <h1 className={styles.pageTitle}>
+            Settings
+          </h1>
 
-        <p style={styles.subtitle}>
-          Manage and monitor basic Build & Bloom system information.
-        </p>
+          <p className={styles.pageSubtitle}>
+            Manage and monitor basic Build &amp; Bloom system information.
+          </p>
+        </div>
       </div>
 
       {/* System Information */}
-      <section style={styles.card}>
-        <h2 style={styles.sectionTitle}>
-          System Information
-        </h2>
+      <section className={styles.settingsCard}>
+        <h2>System Information</h2>
 
-        <div style={styles.infoRow}>
+        <div className={styles.infoRow}>
           <span>System Name</span>
-          <strong>Build & Bloom</strong>
+          <strong>Build &amp; Bloom</strong>
         </div>
 
-        <div style={styles.infoRow}>
+        <div className={styles.infoRow}>
           <span>System Type</span>
           <strong>
             Plant Management Decision Support System
           </strong>
         </div>
 
-        <div style={styles.infoRow}>
+        <div className={styles.infoRow}>
           <span>Coverage</span>
           <strong>Pangasinan</strong>
         </div>
 
-        <div style={styles.infoRow}>
+        <div className={styles.infoRow}>
           <span>Crop Dataset</span>
           <strong>
             {loadingCrops ? "Loading..." : `${totalCrops} Crops`}
           </strong>
         </div>
 
-        <div style={styles.infoRow}>
+        <div className={styles.infoRow}>
           <span>Location Dataset</span>
           <strong>
             {loadingLocations
@@ -137,7 +176,7 @@ export default function AdminSettingsPage() {
           </strong>
         </div>
 
-        <div style={styles.infoRow}>
+        <div className={styles.infoRow}>
           <span>Planting Calendar Records</span>
           <strong>
             {loadingCalendar
@@ -148,113 +187,48 @@ export default function AdminSettingsPage() {
       </section>
 
       {/* Recommendation Engine */}
-      <section style={styles.card}>
-        <h2 style={styles.sectionTitle}>
-          Recommendation Engine
-        </h2>
+      <section className={styles.featureCard}>
+        <span className={`${styles.featureIcon} ${styles.toneLeaf}`}>
+          <SparklesIcon />
+        </span>
 
-        <p style={styles.description}>
-          The recommendation engine evaluates soil, water,
-          sunlight, environment, weather, planting season,
-          and location suitability.
-        </p>
+        <div className={styles.featureBody}>
+          <h2>Recommendation Engine</h2>
 
-        <div style={styles.status}>
-          <span style={styles.statusDot}></span>
-          Recommendation Engine Active
+          <p>
+            The recommendation engine evaluates soil, water,
+            sunlight, environment, weather, planting season,
+            and location suitability.
+          </p>
+
+          <span className={styles.statusPill}>
+            <span className={styles.statusDot} aria-hidden="true"></span>
+            Recommendation Engine Active
+          </span>
         </div>
       </section>
 
       {/* Weather Integration */}
-      <section style={styles.card}>
-        <h2 style={styles.sectionTitle}>
-          Weather Integration
-        </h2>
+      <section className={styles.featureCard}>
+        <span className={`${styles.featureIcon} ${styles.toneWater}`}>
+          <CloudSunIcon />
+        </span>
 
-        <p style={styles.description}>
-          Build & Bloom uses weather information to improve
-          crop compatibility and provide weather-based
-          planting and care advisories.
-        </p>
+        <div className={styles.featureBody}>
+          <h2>Weather Integration</h2>
 
-        <div style={styles.status}>
-          <span style={styles.statusDot}></span>
-          Weather Integration Active
+          <p>
+            Build &amp; Bloom uses weather information to improve
+            crop compatibility and provide weather-based
+            planting and care advisories.
+          </p>
+
+          <span className={styles.statusPill}>
+            <span className={styles.statusDot} aria-hidden="true"></span>
+            Weather Integration Active
+          </span>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    backgroundColor: "#f5f7f5",
-    padding: "40px",
-    color: "#1f2937",
-    boxSizing: "border-box",
-  },
-
-  header: {
-    marginBottom: "30px",
-  },
-
-  title: {
-    margin: 0,
-    fontSize: "32px",
-    fontWeight: "700",
-  },
-
-  subtitle: {
-    marginTop: "8px",
-    color: "#6b7280",
-  },
-
-  card: {
-    backgroundColor: "white",
-    borderRadius: "12px",
-    padding: "25px",
-    marginBottom: "20px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-  },
-
-  sectionTitle: {
-    marginTop: 0,
-    marginBottom: "20px",
-    color: "#1f5134",
-  },
-
-  infoRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "14px 0",
-    borderBottom: "1px solid #e5e7eb",
-    gap: "20px",
-  },
-
-  description: {
-    color: "#6b7280",
-    lineHeight: "1.6",
-    fontSize: "14px",
-  },
-
-  status: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "8px",
-    backgroundColor: "#e8f5e9",
-    color: "#1f5134",
-    padding: "8px 12px",
-    borderRadius: "20px",
-    fontSize: "13px",
-    fontWeight: "600",
-  },
-
-  statusDot: {
-    width: "8px",
-    height: "8px",
-    borderRadius: "50%",
-    backgroundColor: "#2e7d32",
-  },
-};

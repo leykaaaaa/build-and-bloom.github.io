@@ -2,18 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-export default function CropManagement() {
-    const [crops, setCrops] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [editingCrop, setEditingCrop] = useState(null);
-const [saving, setSaving] = useState(false);
-const [formError, setFormError] = useState("");
-const [deleteError, setDeleteError] = useState("");
-const [deletingCropId, setDeletingCropId] = useState(null);
+import styles from "../adminPages.module.css";
 
-const [formData, setFormData] = useState({
+const EMPTY_FORM = {
     crop_name: "",
     category: "",
     description: "",
@@ -26,7 +17,120 @@ const [formData, setFormData] = useState({
     max_temperature: "",
     season: "",
     environment: ""
-});
+};
+
+
+// =========================================================
+// SMALL INLINE ICONS (no extra package needed)
+// =========================================================
+
+function Icon({ size = 20, strokeWidth = 2, children }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    );
+}
+
+const PlusIcon = () => (
+    <Icon strokeWidth={2.4}>
+        <path d="M5 12h14" />
+        <path d="M12 5v14" />
+    </Icon>
+);
+
+const SearchIcon = () => (
+    <Icon>
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
+    </Icon>
+);
+
+const SproutIcon = () => (
+    <Icon size={24}>
+        <path d="M7 20h10" />
+        <path d="M10 20c5.5-2.5.8-6.4 3-10" />
+        <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
+        <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
+    </Icon>
+);
+
+const TagIcon = () => (
+    <Icon size={24}>
+        <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+        <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+    </Icon>
+);
+
+const SunIcon = () => (
+    <Icon size={24}>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </Icon>
+);
+
+const EditIcon = () => (
+    <Icon size={15} strokeWidth={2.4}>
+        <path d="M12 20h9" />
+        <path d="M16.4 3.6a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+    </Icon>
+);
+
+const TrashIcon = () => (
+    <Icon size={15} strokeWidth={2.4}>
+        <path d="M3 6h18" />
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    </Icon>
+);
+
+const CloseIcon = () => (
+    <Icon strokeWidth={2.4}>
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+    </Icon>
+);
+
+
+// Category badge colour: vegetables = green, fruit = lime, anything else = neutral
+function categoryBadgeClass(category) {
+    const value = String(category || "").trim().toLowerCase();
+
+    if (value.includes("veg")) {
+        return styles.badgeVeg;
+    }
+
+    if (value.includes("fruit")) {
+        return styles.badgeFruit;
+    }
+
+    return styles.badgeNeutral;
+}
+
+export default function CropManagement() {
+    const [crops, setCrops] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [editingCrop, setEditingCrop] = useState(null);
+    const [saving, setSaving] = useState(false);
+    const [formError, setFormError] = useState("");
+    const [deleteError, setDeleteError] = useState("");
+    const [deletingCropId, setDeletingCropId] = useState(null);
+    const [search, setSearch] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState("");
+
+    const [formData, setFormData] = useState(EMPTY_FORM);
 
     useEffect(() => {
         const fetchCrops = async () => {
@@ -57,932 +161,731 @@ const [formData, setFormData] = useState({
         fetchCrops();
     }, []);
 
-
-    const handleSaveCrop = async () => {
-    setFormError("");
-    setSaving(true);
-
-    try {
-        const token = localStorage.getItem(
-            "buildAndBloomToken"
-        );
-
-        if (!token) {
-            throw new Error(
-                "Authentication token not found. Please log in again."
-            );
+    // Close the modal with the Escape key (not while saving)
+    useEffect(() => {
+        if (!showAddForm) {
+            return undefined;
         }
 
-        const response = await fetch(
-            editingCrop
-                ? `http://localhost:5000/api/crops/${editingCrop.crop_id}`
-                : "http://localhost:5000/api/crops",
-            {
-                method: editingCrop ? "PUT" : "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("buildAndBloomToken")}`,
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    min_temperature: Number(formData.min_temperature),
-                    max_temperature: Number(formData.max_temperature),
-                }),
+        const onKeyDown = (event) => {
+            if (event.key === "Escape" && !saving) {
+                closeForm();
             }
-        );
+        };
 
-        const result = await response.json();
+        window.addEventListener("keydown", onKeyDown);
 
-        if (!response.ok || !result.success) {
-            throw new Error(
-                result.message ||
-                "Failed to create crop."
-            );
-        }
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [showAddForm, saving]);
 
-        // Refresh crop table
-        const cropsResponse = await fetch(
-            "http://localhost:5000/api/crops"
-        );
-
-        const cropsResult =
-            await cropsResponse.json();
-
-        if (
-            cropsResponse.ok &&
-            cropsResult.success
-        ) {
-            setCrops(cropsResult.data);
-        }
-
-        // Reset form
-        setFormData({
-            crop_name: "",
-            category: "",
-            description: "",
-            growing_period: "",
-            harvest_period: "",
-            soil_type: "",
-            water_requirement: "",
-            sunlight_requirement: "",
-            min_temperature: "",
-            max_temperature: "",
-            season: "",
-            environment: ""
-        });
-
+    const closeForm = () => {
         setShowAddForm(false);
         setEditingCrop(null);
+        setFormError("");
+    };
 
-    } catch (error) {
-        console.error(
-            "Failed to create crop:",
-            error
-        );
-
-        setFormError(
-            error.message ||
-            "Failed to create crop."
-        );
-
-    } finally {
-        setSaving(false);
-    }
-};
-
-const handleDeleteCrop = async (crop) => {
-    if (!window.confirm(`Delete ${crop.crop_name}? This action cannot be undone.`)) {
-        return;
-    }
-
-    setDeleteError("");
-    setDeletingCropId(crop.crop_id);
-
-    try {
-        const token = localStorage.getItem("buildAndBloomToken");
-
-        if (!token) {
-            throw new Error(
-                "Authentication token not found. Please log in again."
-            );
-        }
-
-        const response = await fetch(
-            `http://localhost:5000/api/crops/${crop.crop_id}`,
-            {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-            throw new Error(result.message || "Failed to delete crop.");
-        }
-
-        setCrops((currentCrops) =>
-            currentCrops.filter(
-                (currentCrop) => currentCrop.crop_id !== crop.crop_id
-            )
-        );
-    } catch (error) {
-        console.error("Failed to delete crop:", error);
-        setDeleteError(error.message || "Failed to delete crop.");
-    } finally {
-        setDeletingCropId(null);
-    }
-};
-
-    return (
-        <div
-            style={{
-                minHeight: "100vh",
-                background: "#f8faf9",
-                padding: "30px",
-                fontFamily: "Arial, sans-serif",
-            }}
-        >
-            <div
-                style={{
-                    maxWidth: "1200px",
-                    margin: "0 auto",
-                }}
-            >
-                {/* Header */}
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "25px",
-                    }}
-                >
-                    <div>
-                        <h1
-                            style={{
-                                margin: 0,
-                                color: "#1f2937",
-                                fontSize: "30px",
-                            }}
-                        >
-                            Crop Management
-                        </h1>
-
-                        <p
-                            style={{
-                                marginTop: "8px",
-                                color: "#6b7280",
-                            }}
-                        >
-                            Manage crops and their agricultural requirements.
-                        </p>
-                    </div>
-<button
-    type="button"
-    onClick={() => {
+    const openAddForm = () => {
         setEditingCrop(null);
         setFormError("");
+        setFormData(EMPTY_FORM);
+        setShowAddForm(true);
+    };
 
+    const openEditForm = (crop) => {
+        setEditingCrop(crop);
+        setShowAddForm(true);
+        setFormError("");
         setFormData({
-            crop_name: "",
-            category: "",
-            description: "",
-            growing_period: "",
-            harvest_period: "",
-            soil_type: "",
-            water_requirement: "",
-            sunlight_requirement: "",
-            min_temperature: "",
-            max_temperature: "",
-            season: "",
-            environment: ""
+            crop_name: crop.crop_name || "",
+            category: crop.category || "",
+            description: crop.description || "",
+            growing_period: crop.growing_period || "",
+            harvest_period: crop.harvest_period || "",
+            soil_type: crop.soil_type || "",
+            water_requirement: crop.water_requirement || "",
+            sunlight_requirement: crop.sunlight_requirement || "",
+            min_temperature: crop.min_temperature ?? "",
+            max_temperature: crop.max_temperature ?? "",
+            season: crop.season || "",
+            environment: crop.environment || ""
+        });
+    };
+
+    const updateField = (field) => (e) =>
+        setFormData({
+            ...formData,
+            [field]: e.target.value,
         });
 
-        setShowAddForm(true);
-    }}
-    style={{
-        background: "#166534",
-        color: "white",
-        border: "none",
-        padding: "12px 18px",
-        borderRadius: "8px",
-        cursor: "pointer",
-        fontWeight: "600",
-    }}
->
-    + Add Crop
-</button>
+
+    const handleSaveCrop = async () => {
+        setFormError("");
+        setSaving(true);
+
+        try {
+            const token = localStorage.getItem(
+                "buildAndBloomToken"
+            );
+
+            if (!token) {
+                throw new Error(
+                    "Authentication token not found. Please log in again."
+                );
+            }
+
+            const response = await fetch(
+                editingCrop
+                    ? `http://localhost:5000/api/crops/${editingCrop.crop_id}`
+                    : "http://localhost:5000/api/crops",
+                {
+                    method: editingCrop ? "PUT" : "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("buildAndBloomToken")}`,
+                    },
+                    body: JSON.stringify({
+                        ...formData,
+                        min_temperature: Number(formData.min_temperature),
+                        max_temperature: Number(formData.max_temperature),
+                    }),
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message ||
+                    "Failed to create crop."
+                );
+            }
+
+            // Refresh crop table
+            const cropsResponse = await fetch(
+                "http://localhost:5000/api/crops"
+            );
+
+            const cropsResult =
+                await cropsResponse.json();
+
+            if (
+                cropsResponse.ok &&
+                cropsResult.success
+            ) {
+                setCrops(cropsResult.data);
+            }
+
+            // Reset form
+            setFormData(EMPTY_FORM);
+
+            setShowAddForm(false);
+            setEditingCrop(null);
+
+        } catch (error) {
+            console.error(
+                "Failed to create crop:",
+                error
+            );
+
+            setFormError(
+                error.message ||
+                "Failed to create crop."
+            );
+
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleDeleteCrop = async (crop) => {
+        if (!window.confirm(`Delete ${crop.crop_name}? This action cannot be undone.`)) {
+            return;
+        }
+
+        setDeleteError("");
+        setDeletingCropId(crop.crop_id);
+
+        try {
+            const token = localStorage.getItem("buildAndBloomToken");
+
+            if (!token) {
+                throw new Error(
+                    "Authentication token not found. Please log in again."
+                );
+            }
+
+            const response = await fetch(
+                `http://localhost:5000/api/crops/${crop.crop_id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Failed to delete crop.");
+            }
+
+            setCrops((currentCrops) =>
+                currentCrops.filter(
+                    (currentCrop) => currentCrop.crop_id !== crop.crop_id
+                )
+            );
+        } catch (error) {
+            console.error("Failed to delete crop:", error);
+            setDeleteError(error.message || "Failed to delete crop.");
+        } finally {
+            setDeletingCropId(null);
+        }
+    };
+
+    // Summary numbers + filters (display only)
+    const categories = [
+        ...new Set(
+            crops
+                .map((crop) => crop.category?.trim())
+                .filter(Boolean)
+        ),
+    ].sort((a, b) => a.localeCompare(b));
+
+    const seasonCount = new Set(
+        crops
+            .map((crop) => crop.season?.trim())
+            .filter(Boolean)
+    ).size;
+
+    const searchTerm = search.trim().toLowerCase();
+
+    const filteredCrops = crops.filter((crop) => {
+        const matchesSearch =
+            !searchTerm ||
+            crop.crop_name?.toLowerCase().includes(searchTerm);
+
+        const matchesCategory =
+            !categoryFilter ||
+            crop.category?.trim() === categoryFilter;
+
+        return matchesSearch && matchesCategory;
+    });
+
+    return (
+        <div className={styles.adminPage}>
+
+            {/* Header */}
+            <div className={styles.pageHeader}>
+                <div className={styles.pageHeading}>
+                    <h1 className={styles.pageTitle}>
+                        Crop Management
+                    </h1>
+
+                    <p className={styles.pageSubtitle}>
+                        Manage crops and their agricultural requirements.
+                    </p>
                 </div>
 
-
-                {/* Add / Edit Crop Modal */}
-{showAddForm && (
-    <div
-        style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0, 0, 0, 0.45)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-            zIndex: 1000,
-            boxSizing: "border-box",
-        }}
-    >
-        <div
-            style={{
-                width: "100%",
-                maxWidth: "850px",
-                maxHeight: "90vh",
-                background: "white",
-                borderRadius: "14px",
-                boxShadow: "0 20px 50px rgba(0, 0, 0, 0.2)",
-                display: "flex",
-                flexDirection: "column",
-                overflow: "hidden",
-            }}
-        >
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "20px 25px",
-                borderBottom: "1px solid #e5e7eb",
-                flexShrink: 0,
-            }}
-        >
-            <div>
-                <h2
-                    style={{
-                        margin: 0,
-                        fontSize: "20px",
-                        color: "#1f2937",
-                    }}
+                <button
+                    type="button"
+                    className={styles.primaryButton}
+                    onClick={openAddForm}
                 >
-                    {editingCrop ? "Edit Crop" : "Add New Crop"}
-                </h2>
-
-                <p
-                    style={{
-                        marginTop: "6px",
-                        marginBottom: 0,
-                        color: "#6b7280",
-                        fontSize: "14px",
-                    }}
-                >
-                    {editingCrop
-                        ? "Update the crop information and agricultural requirements."
-                        : "Add the crop information and its agricultural requirements."}
-                </p>
+                    <PlusIcon />
+                    Add Crop
+                </button>
             </div>
 
-            <button
-                type="button"
-                onClick={() => {
-                    setShowAddForm(false);
-                    setEditingCrop(null);
-                    setFormError("");
-                }}
-                style={{
-                    width: "36px",
-                    height: "36px",
-                    border: "none",
-                    borderRadius: "8px",
-                    background: "#f3f4f6",
-                    color: "#374151",
-                    fontSize: "20px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                ×
-            </button>
-        </div>
 
-        <div
-            style={{
-                padding: "25px",
-                overflowY: "auto",
-            }}
-        >
-        {formError && (
-            <div
-                style={{
-                    background: "#fee2e2",
-                    color: "#991b1b",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    marginBottom: "20px",
-                    fontSize: "14px",
-                }}
-            >
-                {formError}
-            </div>
-        )}
-
-        <div
-            style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: "18px",
-            }}
-        >
-            {/* Crop Name */}
-            <div>
-                <label style={labelStyle}>
-                    Crop Name *
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.crop_name}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            crop_name: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. Tomato"
-                />
-            </div>
-
-            {/* Category */}
-            <div>
-                <label style={labelStyle}>
-                    Category *
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            category: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. Vegetable"
-                />
-            </div>
-
-            {/* Growing Period */}
-            <div>
-                <label style={labelStyle}>
-                    Growing Period
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.growing_period}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            growing_period: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. 90 days"
-                />
-            </div>
-
-            {/* Harvest Period */}
-            <div>
-                <label style={labelStyle}>
-                    Harvest Period
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.harvest_period}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            harvest_period: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. After 90 days"
-                />
-            </div>
-
-            {/* Soil */}
-            <div>
-                <label style={labelStyle}>
-                    Soil Type *
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.soil_type}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            soil_type: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. Loam, Sandy"
-                />
-            </div>
-
-            {/* Water */}
-            <div>
-                <label style={labelStyle}>
-                    Water Requirement *
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.water_requirement}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            water_requirement: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. Moderate"
-                />
-            </div>
-
-            {/* Sunlight */}
-            <div>
-                <label style={labelStyle}>
-                    Sunlight Requirement *
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.sunlight_requirement}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            sunlight_requirement: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. Full Sun"
-                />
-            </div>
-
-            {/* Season */}
-            <div>
-                <label style={labelStyle}>
-                    Season *
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.season}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            season: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. Wet and Dry Season"
-                />
-            </div>
-
-            {/* Minimum Temperature */}
-            <div>
-                <label style={labelStyle}>
-                    Minimum Temperature (°C) *
-                </label>
-
-                <input
-                    type="number"
-                    value={formData.min_temperature}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            min_temperature: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. 20"
-                />
-            </div>
-
-            {/* Maximum Temperature */}
-            <div>
-                <label style={labelStyle}>
-                    Maximum Temperature (°C) *
-                </label>
-
-                <input
-                    type="number"
-                    value={formData.max_temperature}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            max_temperature: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. 35"
-                />
-            </div>
-
-            {/* Environment */}
-            <div>
-                <label style={labelStyle}>
-                    Growing Environment *
-                </label>
-
-                <input
-                    type="text"
-                    value={formData.environment}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            environment: e.target.value,
-                        })
-                    }
-                    style={inputStyle}
-                    placeholder="e.g. Open Field"
-                />
-            </div>
-
-            {/* Description */}
-            <div style={{ gridColumn: "1 / -1" }}>
-                <label style={labelStyle}>
-                    Description
-                </label>
-
-                <textarea
-                    value={formData.description}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            description: e.target.value,
-                        })
-                    }
-                    style={{
-                        ...inputStyle,
-                        minHeight: "90px",
-                        resize: "vertical",
-                    }}
-                    placeholder="Enter a short description of the crop."
-                />
-            </div>
-        </div>
-
-        </div>
-
-        {/* Modal Footer */}
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "10px",
-                padding: "18px 25px",
-                borderTop: "1px solid #e5e7eb",
-                background: "#fafafa",
-                flexShrink: 0,
-            }}
-        >
-            <button
-                type="button"
-                onClick={() => {
-                    setShowAddForm(false);
-                    setEditingCrop(null);
-                    setFormError("");
-                }}
-                disabled={saving}
-                style={{
-                    background: "#f3f4f6",
-                    color: "#374151",
-                    border: "none",
-                    padding: "11px 18px",
-                    borderRadius: "8px",
-                    cursor: saving ? "not-allowed" : "pointer",
-                    fontWeight: "600",
-                }}
-            >
-                Cancel
-            </button>
-
-            <button
-                type="button"
-                onClick={handleSaveCrop}
-                disabled={saving}
-                style={{
-                    background: saving ? "#9ca3af" : "#166534",
-                    color: "white",
-                    border: "none",
-                    padding: "11px 20px",
-                    borderRadius: "8px",
-                    cursor: saving ? "not-allowed" : "pointer",
-                    fontWeight: "600",
-                }}
-            >
-                {saving
-                    ? "Saving..."
-                    : editingCrop
-                    ? "Update Crop"
-                    : "Save Crop"}
-            </button>
-        </div>
-
-        </div>
-    </div>
-)}
-
-
-
-                {/* Summary */}
+            {/* Add / Edit Crop Modal */}
+            {showAddForm && (
                 <div
-                    style={{
-                        background: "white",
-                        borderRadius: "12px",
-                        padding: "20px",
-                        marginBottom: "25px",
-                        border: "1px solid #e5e7eb",
+                    className={styles.modalOverlay}
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget && !saving) {
+                            closeForm();
+                        }
                     }}
                 >
                     <div
-                        style={{
-                            color: "#6b7280",
-                            fontSize: "14px",
-                        }}
+                        className={`${styles.modal} ${styles.modalWide}`}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="crop-modal-title"
                     >
-                        Total Crops
-                    </div>
+                        <div className={styles.modalHeader}>
+                            <div>
+                                <h2 id="crop-modal-title">
+                                    {editingCrop ? "Edit Crop" : "Add New Crop"}
+                                </h2>
 
-                    <div
-                        style={{
-                            fontSize: "28px",
-                            fontWeight: "700",
-                            color: "#166534",
-                            marginTop: "5px",
-                        }}
-                    >
-                        {loading ? "..." : crops.length}
-                    </div>
-                </div>
+                                <p>
+                                    {editingCrop
+                                        ? "Update the crop information and agricultural requirements."
+                                        : "Add the crop information and its agricultural requirements."}
+                                </p>
+                            </div>
 
-                {/* Error */}
-                {error && (
-                    <div
-                        style={{
-                            background: "#fee2e2",
-                            color: "#991b1b",
-                            padding: "15px",
-                            borderRadius: "8px",
-                            marginBottom: "20px",
-                        }}
-                    >
-                        {error}
-                    </div>
-                )}
-
-                {deleteError && (
-                    <div
-                        role="alert"
-                        style={{
-                            background: "#fee2e2",
-                            color: "#991b1b",
-                            padding: "15px",
-                            borderRadius: "8px",
-                            marginBottom: "20px",
-                        }}
-                    >
-                        {deleteError}
-                    </div>
-                )}
-
-                {/* Loading */}
-                {loading && (
-                    <div
-                        style={{
-                            background: "white",
-                            padding: "30px",
-                            borderRadius: "12px",
-                            textAlign: "center",
-                            color: "#6b7280",
-                        }}
-                    >
-                        Loading crop data...
-                    </div>
-                )}
-
-                {/* Crop Table */}
-                {!loading && !error && (
-                    <div
-                        style={{
-                            background: "white",
-                            borderRadius: "12px",
-                            border: "1px solid #e5e7eb",
-                            overflow: "hidden",
-                        }}
-                    >
-                        <div
-                            style={{
-                                padding: "20px",
-                                borderBottom: "1px solid #e5e7eb",
-                            }}
-                        >
-                            <h2
-                                style={{
-                                    margin: 0,
-                                    fontSize: "18px",
-                                    color: "#1f2937",
-                                }}
+                            <button
+                                type="button"
+                                className={styles.closeButton}
+                                onClick={closeForm}
+                                disabled={saving}
+                                aria-label="Close"
                             >
-                                Crop Database
-                            </h2>
+                                <CloseIcon />
+                            </button>
                         </div>
 
-                        <div style={{ overflowX: "auto" }}>
-                            <table
-                                style={{
-                                    width: "100%",
-                                    borderCollapse: "collapse",
-                                }}
+                        <div className={styles.modalBody}>
+
+                            {formError && (
+                                <div className={styles.errorBox} role="alert">
+                                    {formError}
+                                </div>
+                            )}
+
+                            {/* BASIC INFORMATION */}
+                            <span className={styles.formSectionLabel}>
+                                Basic information
+                            </span>
+
+                            <div className={styles.formGrid}>
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-name">
+                                        Crop Name <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-name"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.crop_name}
+                                        onChange={updateField("crop_name")}
+                                        placeholder="e.g. Tomato"
+                                    />
+                                </div>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-category">
+                                        Category <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-category"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.category}
+                                        onChange={updateField("category")}
+                                        placeholder="e.g. Vegetable"
+                                    />
+                                </div>
+
+                                <div className={`${styles.formField} ${styles.fullWidth}`}>
+                                    <label htmlFor="crop-description">
+                                        Description
+                                    </label>
+
+                                    <textarea
+                                        id="crop-description"
+                                        className={styles.formTextarea}
+                                        value={formData.description}
+                                        onChange={updateField("description")}
+                                        placeholder="Enter a short description of the crop."
+                                        rows={3}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* TIMING */}
+                            <span className={styles.formSectionLabel}>
+                                Timing
+                            </span>
+
+                            <div className={styles.formGrid}>
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-growing">
+                                        Growing Period
+                                    </label>
+
+                                    <input
+                                        id="crop-growing"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.growing_period}
+                                        onChange={updateField("growing_period")}
+                                        placeholder="e.g. 90 days"
+                                    />
+                                </div>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-harvest">
+                                        Harvest Period
+                                    </label>
+
+                                    <input
+                                        id="crop-harvest"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.harvest_period}
+                                        onChange={updateField("harvest_period")}
+                                        placeholder="e.g. After 90 days"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* REQUIREMENTS */}
+                            <span className={styles.formSectionLabel}>
+                                Requirements
+                            </span>
+
+                            <div className={styles.formGrid}>
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-soil">
+                                        Soil Type <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-soil"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.soil_type}
+                                        onChange={updateField("soil_type")}
+                                        placeholder="e.g. Loam, Sandy"
+                                    />
+                                </div>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-water">
+                                        Water Requirement <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-water"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.water_requirement}
+                                        onChange={updateField("water_requirement")}
+                                        placeholder="e.g. Moderate"
+                                    />
+                                </div>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-sunlight">
+                                        Sunlight Requirement <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-sunlight"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.sunlight_requirement}
+                                        onChange={updateField("sunlight_requirement")}
+                                        placeholder="e.g. Full Sun"
+                                    />
+                                </div>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-season">
+                                        Season <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-season"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.season}
+                                        onChange={updateField("season")}
+                                        placeholder="e.g. Wet and Dry Season"
+                                    />
+                                </div>
+
+                                <div className={`${styles.formField} ${styles.fullWidth}`}>
+                                    <label htmlFor="crop-environment">
+                                        Growing Environment <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-environment"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.environment}
+                                        onChange={updateField("environment")}
+                                        placeholder="e.g. Open Field"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* TEMPERATURE RANGE */}
+                            <span className={styles.formSectionLabel}>
+                                Temperature range
+                            </span>
+
+                            <div className={styles.formGrid}>
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-min-temp">
+                                        Minimum Temperature (°C) <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-min-temp"
+                                        className={styles.formInput}
+                                        type="number"
+                                        value={formData.min_temperature}
+                                        onChange={updateField("min_temperature")}
+                                        placeholder="e.g. 20"
+                                    />
+                                </div>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-max-temp">
+                                        Maximum Temperature (°C) <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-max-temp"
+                                        className={styles.formInput}
+                                        type="number"
+                                        value={formData.max_temperature}
+                                        onChange={updateField("max_temperature")}
+                                        placeholder="e.g. 35"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className={styles.modalFooter}>
+                            <button
+                                type="button"
+                                className={styles.secondaryButton}
+                                onClick={closeForm}
+                                disabled={saving}
                             >
-                                <thead>
-                                    <tr
-                                        style={{
-                                            background: "#f9fafb",
-                                        }}
-                                    >
-                                        <th style={thStyle}>ID</th>
-                                        <th style={thStyle}>Crop Name</th>
-                                        <th style={thStyle}>Category</th>
-                                        <th style={thStyle}>
-                                            Growing Period
-                                        </th>
-                                        <th style={thStyle}>
-                                            Harvest Period
-                                        </th>
-                                        <th style={thStyle}>Soil</th>
-                                        <th style={thStyle}>Water</th>
-                                        <th style={thStyle}>Sunlight</th>
-                                        <th style={thStyle}>Season</th>
-                                        <th style={thStyle}>Actions</th>
-                                    </tr>
-                                </thead>
+                                Cancel
+                            </button>
 
-                                <tbody>
-                                    {crops.map((crop) => (
-                                        <tr key={crop.crop_id}>
-                                            <td style={tdStyle}>
-                                                {crop.crop_id}
-                                            </td>
+                            <button
+                                type="button"
+                                className={styles.primaryButton}
+                                onClick={handleSaveCrop}
+                                disabled={saving}
+                            >
+                                {saving
+                                    ? "Saving..."
+                                    : editingCrop
+                                    ? "Update Crop"
+                                    : "Save Crop"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-                                            <td
-                                                style={{
-                                                    ...tdStyle,
-                                                    fontWeight: "600",
-                                                    color: "#166534",
-                                                }}
-                                            >
+
+            {/* Summary */}
+            <div className={styles.statGrid}>
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneLeaf}`}>
+                        <SproutIcon />
+                    </span>
+
+                    <div className={styles.statText}>
+                        <span>Total Crops</span>
+                        <strong>{loading ? "..." : crops.length}</strong>
+                    </div>
+                </div>
+
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneWater}`}>
+                        <TagIcon />
+                    </span>
+
+                    <div className={styles.statText}>
+                        <span>Categories</span>
+                        <strong>{loading ? "..." : categories.length}</strong>
+                    </div>
+                </div>
+
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneSun}`}>
+                        <SunIcon />
+                    </span>
+
+                    <div className={styles.statText}>
+                        <span>Seasons covered</span>
+                        <strong>{loading ? "..." : seasonCount}</strong>
+                    </div>
+                </div>
+            </div>
+
+            {/* Error */}
+            {error && (
+                <div className={styles.errorBox}>
+                    {error}
+                </div>
+            )}
+
+            {deleteError && (
+                <div className={styles.errorBox} role="alert">
+                    {deleteError}
+                </div>
+            )}
+
+            {/* Search + category filter */}
+            {!loading && !error && (
+                <div className={styles.toolbar}>
+                    <div className={styles.searchBox}>
+                        <span className={styles.searchBoxIcon}>
+                            <SearchIcon />
+                        </span>
+
+                        <label
+                            htmlFor="crop-search"
+                            className={styles.visuallyHidden}
+                        >
+                            Search crop by name
+                        </label>
+
+                        <input
+                            id="crop-search"
+                            className={styles.searchInput}
+                            type="search"
+                            placeholder="Search crop by name..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+
+                    <label
+                        htmlFor="crop-category-filter"
+                        className={styles.visuallyHidden}
+                    >
+                        Filter by category
+                    </label>
+
+                    <select
+                        id="crop-category-filter"
+                        className={styles.filterSelect}
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                    >
+                        <option value="">All categories</option>
+
+                        {categories.map((category) => (
+                            <option key={category} value={category}>
+                                {category}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
+            {/* Loading */}
+            {loading && (
+                <div className={styles.stateBox}>
+                    Loading crop data...
+                </div>
+            )}
+
+            {/* Crop Table */}
+            {!loading && !error && (
+                <section className={styles.tableCard}>
+                    <div className={styles.tableCardHeader}>
+                        <h2>Crop Database</h2>
+                    </div>
+
+                    <div className={styles.tableScroll}>
+                        <table className={styles.dataTable}>
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Crop Name</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Growing Period</th>
+                                    <th scope="col">Harvest Period</th>
+                                    <th scope="col">Soil</th>
+                                    <th scope="col">Water</th>
+                                    <th scope="col">Sunlight</th>
+                                    <th scope="col">Season</th>
+                                    <th scope="col" className={styles.alignRight}>
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {filteredCrops.map((crop) => (
+                                    <tr key={crop.crop_id}>
+                                        <td>{crop.crop_id}</td>
+
+                                        <td>
+                                            <span className={styles.cellStrong}>
                                                 {crop.crop_name}
-                                            </td>
+                                            </span>
+                                        </td>
 
-                                            <td style={tdStyle}>
-                                                {crop.category || "—"}
-                                            </td>
-
-                                            <td style={tdStyle}>
-                                                {crop.growing_period || "—"}
-                                            </td>
-
-                                            <td style={tdStyle}>
-                                                {crop.harvest_period || "—"}
-                                            </td>
-
-                                            <td style={tdStyle}>
-                                                {crop.soil_type || "—"}
-                                            </td>
-
-                                            <td style={tdStyle}>
-                                                {crop.water_requirement || "—"}
-                                            </td>
-
-                                            <td style={tdStyle}>
-                                                {crop.sunlight_requirement ||
-                                                    "—"}
-                                            </td>
-
-                                            <td style={tdStyle}>
-                                                {crop.season || "—"}
-                                            </td>
-
-
-                                            <td style={tdStyle}>
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        gap: "8px",
-                                                    }}
+                                        <td>
+                                            {crop.category ? (
+                                                <span
+                                                    className={`${styles.badge} ${categoryBadgeClass(crop.category)}`}
                                                 >
+                                                    {crop.category}
+                                                </span>
+                                            ) : (
+                                                "—"
+                                            )}
+                                        </td>
+
+                                        <td>{crop.growing_period || "—"}</td>
+
+                                        <td>{crop.harvest_period || "—"}</td>
+
+                                        <td>{crop.soil_type || "—"}</td>
+
+                                        <td>{crop.water_requirement || "—"}</td>
+
+                                        <td>{crop.sunlight_requirement || "—"}</td>
+
+                                        <td>{crop.season || "—"}</td>
+
+                                        <td className={styles.alignRight}>
+                                            <div className={styles.rowActions}>
                                                 <button
                                                     type="button"
-                                                   onClick={() => {
-                                                    setEditingCrop(crop);
-                                                    setShowAddForm(true);
-                                                    setFormError("");
-                                                    setFormData({
-                                                        crop_name: crop.crop_name || "",
-                                                        category: crop.category || "",
-                                                        description: crop.description || "",
-                                                        growing_period: crop.growing_period || "",
-                                                        harvest_period: crop.harvest_period || "",
-                                                        soil_type: crop.soil_type || "",
-                                                        water_requirement: crop.water_requirement || "",
-                                                        sunlight_requirement: crop.sunlight_requirement || "",
-                                                        min_temperature: crop.min_temperature ?? "",
-                                                        max_temperature: crop.max_temperature ?? "",
-                                                        season: crop.season || "",
-                                                        environment: crop.environment || ""
-                                                    });
-                                                }}
-                                                    style={{
-                                                        background: "#2563eb",
-                                                        color: "white",
-                                                        border: "none",
-                                                        padding: "8px 12px",
-                                                        borderRadius: "6px",
-                                                        cursor: "pointer",
-                                                        fontWeight: "600",
-                                                    }}
+                                                    className={styles.editButton}
+                                                    onClick={() => openEditForm(crop)}
                                                 >
+                                                    <EditIcon />
                                                     Edit
                                                 </button>
+
                                                 <button
                                                     type="button"
+                                                    className={styles.deleteButton}
                                                     onClick={() => handleDeleteCrop(crop)}
                                                     disabled={deletingCropId === crop.crop_id}
-                                                    style={{
-                                                        background: "#dc2626",
-                                                        color: "white",
-                                                        border: "none",
-                                                        padding: "8px 12px",
-                                                        borderRadius: "6px",
-                                                        cursor: deletingCropId === crop.crop_id ? "not-allowed" : "pointer",
-                                                        fontWeight: "600",
-                                                        opacity: deletingCropId === crop.crop_id ? 0.7 : 1,
-                                                    }}
                                                 >
+                                                    <TrashIcon />
                                                     {deletingCropId === crop.crop_id ? "Deleting..." : "Delete"}
                                                 </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                )}
-            </div>
+
+                    {filteredCrops.length === 0 && (
+                        <div className={styles.emptyRow}>
+                            {crops.length === 0
+                                ? "No crops in the database yet."
+                                : "No crops match your search or category."}
+                        </div>
+                    )}
+                </section>
+            )}
         </div>
     );
 }
-
-const thStyle = {
-    padding: "14px 16px",
-    textAlign: "left",
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#6b7280",
-    borderBottom: "1px solid #e5e7eb",
-    whiteSpace: "nowrap",
-};
-
-const tdStyle = {
-    padding: "14px 16px",
-    fontSize: "14px",
-    color: "#374151",
-    borderBottom: "1px solid #f1f5f9",
-    whiteSpace: "nowrap",
-};
-
-const labelStyle = {
-    display: "block",
-    marginBottom: "6px",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#374151",
-};
-
-const inputStyle = {
-    width: "100%",
-    padding: "10px 12px",
-    border: "1px solid #d1d5db",
-    borderRadius: "7px",
-    fontSize: "14px",
-    boxSizing: "border-box",
-    outline: "none",
-};

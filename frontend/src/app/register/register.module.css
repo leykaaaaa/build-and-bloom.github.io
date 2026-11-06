@@ -88,6 +88,24 @@
     margin-top: 6px;
 }
 
+.fieldInputWrapper {
+    position: relative;
+}
+
+.fieldInputWrapper input,
+.fieldInputWrapper select {
+    padding-left: 44px;
+}
+
+.fieldInputIcon {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    color: var(--green-700);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
 .registerCard .registerFooter {
     grid-area: footer;
     margin: 6px 48px 0;

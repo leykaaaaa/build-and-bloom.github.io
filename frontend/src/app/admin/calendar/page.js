@@ -2,7 +2,102 @@
 
 import { useEffect, useState } from "react";
 
+import styles from "../adminPages.module.css";
+
 const API_URL = "http://localhost:5000";
+
+const EMPTY_FORM = {
+    crop_id: "",
+    planting_month: "",
+    season: "",
+    growing_period: "",
+    harvest_period: "",
+    notes: ""
+};
+
+
+// =========================================================
+// SMALL INLINE ICONS (no extra package needed)
+// =========================================================
+
+function Icon({ size = 20, strokeWidth = 2, children }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    );
+}
+
+const PlusIcon = () => (
+    <Icon strokeWidth={2.4}>
+        <path d="M5 12h14" />
+        <path d="M12 5v14" />
+    </Icon>
+);
+
+const SearchIcon = () => (
+    <Icon>
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
+    </Icon>
+);
+
+const CalendarIcon = () => (
+    <Icon size={24}>
+        <rect width="18" height="18" x="3" y="4" rx="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+    </Icon>
+);
+
+const SproutIcon = () => (
+    <Icon size={24}>
+        <path d="M7 20h10" />
+        <path d="M10 20c5.5-2.5.8-6.4 3-10" />
+        <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
+        <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
+    </Icon>
+);
+
+const CloudSunIcon = () => (
+    <Icon size={24}>
+        <path d="M12 2v2M4.9 4.9l1.4 1.4M20 12h2M19.1 4.9l-1.4 1.4M15.9 11.5a4 4 0 0 0-7.8-.5" />
+        <path d="M17.5 19H9a5 5 0 1 1 4.9-6.1" />
+        <path d="M17.5 19a3.5 3.5 0 0 0 0-7h-.4" />
+    </Icon>
+);
+
+const EditIcon = () => (
+    <Icon size={15} strokeWidth={2.4}>
+        <path d="M12 20h9" />
+        <path d="M16.4 3.6a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+    </Icon>
+);
+
+const TrashIcon = () => (
+    <Icon size={15} strokeWidth={2.4}>
+        <path d="M3 6h18" />
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    </Icon>
+);
+
+const CloseIcon = () => (
+    <Icon strokeWidth={2.4}>
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+    </Icon>
+);
+
 
 async function fetchWithAdminAuth(url, options = {}) {
     const token = localStorage.getItem("buildAndBloomToken");
@@ -31,24 +126,33 @@ async function fetchWithAdminAuth(url, options = {}) {
     return response;
 }
 
+// Category badge colour: vegetables = green, fruit = lime, anything else = neutral
+function categoryBadgeClass(category) {
+    const value = String(category || "").trim().toLowerCase();
+
+    if (value.includes("veg")) {
+        return styles.badgeVeg;
+    }
+
+    if (value.includes("fruit")) {
+        return styles.badgeFruit;
+    }
+
+    return styles.badgeNeutral;
+}
+
 export default function PlantingCalendarManagement() {
     const [calendar, setCalendar] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [search, setSearch] = useState("");
+    const [seasonFilter, setSeasonFilter] = useState("");
     const [showAddForm, setShowAddForm] = useState(false);
     const [crops, setCrops] = useState([]);
     const [saving, setSaving] = useState(false);
     const [formError, setFormError] = useState("");
 
-    const [formData, setFormData] = useState({
-        crop_id: "",
-        planting_month: "",
-        season: "",
-        growing_period: "",
-        harvest_period: "",
-        notes: ""
-    });
+    const [formData, setFormData] = useState(EMPTY_FORM);
     const [editingSchedule, setEditingSchedule] = useState(null);
 
     useEffect(() => {
@@ -109,6 +213,53 @@ export default function PlantingCalendarManagement() {
         fetchCalendar();
         fetchCrops();
     }, []);
+
+    // Close the modal with the Escape key
+    useEffect(() => {
+        if (!showAddForm) {
+            return undefined;
+        }
+
+        const onKeyDown = (event) => {
+            if (event.key === "Escape") {
+                closeForm();
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [showAddForm]);
+
+    const closeForm = () => {
+        setShowAddForm(false);
+        setEditingSchedule(null);
+        setFormError("");
+    };
+
+    const openAddForm = () => {
+        setEditingSchedule(null);
+        setFormData(EMPTY_FORM);
+        setFormError("");
+        setShowAddForm(true);
+    };
+
+    const openEditForm = (entry) => {
+        setEditingSchedule({
+            ...entry,
+            has_legacy_locations: entry.location_names.length > 0,
+        });
+        setFormData({
+            crop_id: entry.crop_id || "",
+            planting_month: entry.planting_month || "",
+            season: entry.season || "",
+            growing_period: entry.growing_period || "",
+            harvest_period: entry.harvest_period || "",
+            notes: entry.notes || "",
+        });
+        setFormError("");
+        setShowAddForm(true);
+    };
 
     const handleAddSchedule = async (e) => {
         e.preventDefault();
@@ -178,14 +329,7 @@ export default function PlantingCalendarManagement() {
             setCalendar(calendarResult.data);
 
             // Reset form
-            setFormData({
-                crop_id: "",
-                planting_month: "",
-                season: "",
-                growing_period: "",
-                harvest_period: "",
-                notes: ""
-            });
+            setFormData(EMPTY_FORM);
 
             setShowAddForm(false);
             setEditingSchedule(null);
@@ -209,6 +353,85 @@ export default function PlantingCalendarManagement() {
 
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleDeleteSchedule = async (entry) => {
+        const confirmed =
+            window.confirm(
+                `Delete the planting schedule for ${entry.crop_name}?${entry.calendar_ids.length > 1 ? ` This removes ${entry.calendar_ids.length} duplicate entries from ${entry.location_names.join(", ")}.` : ""}`
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response =
+                await fetchWithAdminAuth(
+                    `${API_URL}/api/planting-calendar/bulk`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization:
+                                `Bearer ${localStorage.getItem(
+                                    "buildAndBloomToken"
+                                )}`,
+                        },
+                        body: JSON.stringify({
+                            calendar_ids: entry.calendar_ids,
+                        }),
+                    }
+                );
+
+            const result =
+                await response.json();
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+                throw new Error(
+                    result.message ||
+                        "Failed to delete planting schedule."
+                );
+            }
+
+            const calendarResponse =
+                await fetch(
+                    "http://localhost:5000/api/planting-calendar"
+                );
+
+            const calendarResult =
+                await calendarResponse.json();
+
+            if (
+                !calendarResponse.ok ||
+                !calendarResult.success
+            ) {
+                throw new Error(
+                    "Schedule was deleted, but the calendar could not be refreshed."
+                );
+            }
+
+            setCalendar(
+                calendarResult.data
+            );
+
+            alert(
+                "Planting schedule deleted successfully."
+            );
+        } catch (error) {
+            console.error(
+                "Failed to delete planting schedule:",
+                error
+            );
+
+            alert(
+                error.message ||
+                    "Failed to delete planting schedule."
+            );
         }
     };
 
@@ -254,10 +477,18 @@ export default function PlantingCalendarManagement() {
         location_names: [...group.location_names].sort((a, b) => a.localeCompare(b)),
     }));
 
+    const seasonOptions = [
+        ...new Set(
+            groupedCalendar
+                .map((entry) => entry.season?.trim())
+                .filter(Boolean)
+        ),
+    ].sort((a, b) => a.localeCompare(b));
+
     const filteredCalendar = groupedCalendar.filter((entry) => {
         const searchTerm = search.toLowerCase();
 
-        return (
+        const matchesSearch = (
             entry.crop_name?.toLowerCase().includes(searchTerm) ||
             entry.category?.toLowerCase().includes(searchTerm) ||
             entry.location_names.some((location) =>
@@ -268,476 +499,298 @@ export default function PlantingCalendarManagement() {
                 .includes(searchTerm) ||
             entry.season?.toLowerCase().includes(searchTerm)
         );
+
+        const matchesSeason =
+            !seasonFilter ||
+            entry.season?.trim() === seasonFilter;
+
+        return matchesSearch && matchesSeason;
     });
 
+    const scheduleScope = (entry) =>
+        entry.has_general_entry
+            ? "General"
+            : entry.location_names.length > 1
+                ? `General (${entry.location_names.length} legacy locations)`
+                : entry.location_names.length === 1
+                    ? `Legacy: ${entry.location_names[0]}`
+                    : "General";
+
     return (
-        <div
-            style={{
-                minHeight: "100vh",
-                background: "#f8faf9",
-                padding: "30px",
-                fontFamily: "Arial, sans-serif",
-            }}
-        >
-            <div
-                style={{
-                    maxWidth: "1300px",
-                    margin: "0 auto",
-                }}
-            >
-                {/* Header */}
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "25px",
-                    }}
-                >
-                    <div>
-                        <h1
-                            style={{
-                                margin: 0,
-                                color: "#1f2937",
-                                fontSize: "30px",
-                            }}
-                        >
-                            Planting Calendar
-                        </h1>
+        <div className={styles.adminPage}>
 
-                        <p
-                            style={{
-                                marginTop: "8px",
-                                color: "#6b7280",
-                            }}
-                        >
-                            Manage general planting schedules by crop and season.
-                        </p>
-                    </div>
+            {/* Header */}
+            <div className={styles.pageHeader}>
+                <div className={styles.pageHeading}>
+                    <h1 className={styles.pageTitle}>
+                        Planting Calendar
+                    </h1>
 
-                    <button
-    onClick={() => {
-        setEditingSchedule(null);
-
-        setFormData({
-            crop_id: "",
-            planting_month: "",
-            season: "",
-            growing_period: "",
-            harvest_period: "",
-            notes: ""
-        });
-
-        setFormError("");
-        setShowAddForm(true);
-    }}
-    style={{
-        background: "#166534",
-        color: "white",
-        border: "none",
-        padding: "12px 18px",
-        borderRadius: "8px",
-        cursor: "pointer",
-        fontWeight: "600",
-    }}
->
-    + Add Schedule
-</button>
-                </div>
-
-                {showAddForm && (
-    <div
-        style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0, 0, 0, 0.45)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-            zIndex: 1000,
-        }}
-    >
-        <div
-            style={{
-                width: "100%",
-                maxWidth: "850px",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                background: "white",
-                borderRadius: "14px",
-                boxShadow: "0 20px 50px rgba(0, 0, 0, 0.2)",
-            }}
-        >
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "22px 25px",
-                borderBottom: "1px solid #e5e7eb",
-            }}
-        >
-            <div>
-                <h2
-                    style={{
-                        margin: 0,
-                        fontSize: "20px",
-                        color: "#1f2937",
-                    }}
-                >
-                    {editingSchedule
-                        ? "Edit Planting Schedule"
-                        : "Add Planting Schedule"}
-                </h2>
-
-                <p
-                    style={{
-                        marginTop: "6px",
-                        marginBottom: 0,
-                        color: "#6b7280",
-                        fontSize: "14px",
-                    }}
-                >
-                    {editingSchedule
-                        ? "Update this crop and season schedule."
-                        : "Add a general planting schedule for a crop."}
-                </p>
-                {editingSchedule?.has_legacy_locations && (
-                    <p
-                        style={{
-                            marginTop: "6px",
-                            marginBottom: 0,
-                            color: "#9a6700",
-                            fontSize: "13px",
-                        }}
-                    >
-                        This grouped schedule includes older location-specific entries. Saving changes their schedule details while keeping their locations.
+                    <p className={styles.pageSubtitle}>
+                        Manage general planting schedules by crop and season.
                     </p>
-                )}
-            </div>
-
-            <button
-                type="button"
-                onClick={() => {
-                    setShowAddForm(false);
-                    setEditingSchedule(null);
-                    setFormError("");
-                }}
-                style={{
-                    width: "36px",
-                    height: "36px",
-                    border: "none",
-                    borderRadius: "8px",
-                    background: "#f3f4f6",
-                    color: "#374151",
-                    fontSize: "22px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                ×
-            </button>
-        </div>
-
-        <div
-            style={{
-                padding: "25px",
-            }}
-        >
-        {formError && (
-            <div
-                style={{
-                    background: "#fee2e2",
-                    color: "#991b1b",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    marginBottom: "20px",
-                    fontSize: "14px",
-                }}
-            >
-                {formError}
-            </div>
-        )}
-
-        <form onSubmit={handleAddSchedule}>
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns:
-                        "repeat(auto-fit, minmax(250px, 1fr))",
-                    gap: "18px",
-                }}
-            >
-                {/* Crop */}
-                <div>
-                    <label style={labelStyle}>
-                        Crop *
-                    </label>
-
-                    <select
-                        value={formData.crop_id}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                crop_id: e.target.value,
-                            })
-                        }
-                        required
-                        style={inputStyle}
-                    >
-                        <option value="">
-                            Select Crop
-                        </option>
-
-                        {crops.map((crop) => (
-                            <option
-                                key={crop.crop_id}
-                                value={crop.crop_id}
-                            >
-                                {crop.crop_name}
-                            </option>
-                        ))}
-                    </select>
                 </div>
 
-                {/* Planting Month */}
-                <div>
-                    <label style={labelStyle}>
-                        Planting Month
-                    </label>
-
-                    <input
-                        type="text"
-                        placeholder="e.g. June"
-                        value={formData.planting_month}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                planting_month:
-                                    e.target.value,
-                            })
-                        }
-                        style={inputStyle}
-                    />
-                </div>
-
-                {/* Season */}
-                <div>
-                    <label style={labelStyle}>
-                        Season
-                    </label>
-
-                    <input
-                        type="text"
-                        placeholder="e.g. Wet Season"
-                        value={formData.season}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                season: e.target.value,
-                            })
-                        }
-                        style={inputStyle}
-                    />
-                </div>
-
-                {/* Growing Period */}
-                <div>
-                    <label style={labelStyle}>
-                        Growing Period
-                    </label>
-
-                    <input
-                        type="text"
-                        placeholder="e.g. 3-4 months"
-                        value={formData.growing_period}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                growing_period:
-                                    e.target.value,
-                            })
-                        }
-                        style={inputStyle}
-                    />
-                </div>
-
-                {/* Harvest Period */}
-                <div>
-                    <label style={labelStyle}>
-                        Harvest Period
-                    </label>
-
-                    <input
-                        type="text"
-                        placeholder="e.g. September-October"
-                        value={formData.harvest_period}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                harvest_period:
-                                    e.target.value,
-                            })
-                        }
-                        style={inputStyle}
-                    />
-                </div>
-
-                {/* Notes */}
-                <div
-                    style={{
-                        gridColumn: "1 / -1",
-                    }}
-                >
-                    <label style={labelStyle}>
-                        Notes
-                    </label>
-
-                    <textarea
-                        placeholder="Optional notes about this planting schedule..."
-                        value={formData.notes}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                notes: e.target.value,
-                            })
-                        }
-                        rows={4}
-                        style={{
-                            ...inputStyle,
-                            resize: "vertical",
-                        }}
-                    />
-                </div>
-            </div>
-
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: "10px",
-                    marginTop: "22px",
-                    paddingTop: "20px",
-                    borderTop: "1px solid #e5e7eb",
-                }}
-            >
                 <button
                     type="button"
-                    onClick={() => {
-                        setShowAddForm(false);
-                        setEditingSchedule(null);
-                        setFormError("");
-                    }}
-                    style={{
-                        background: "#f3f4f6",
-                        color: "#374151",
-                        border: "none",
-                        padding: "11px 18px",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        fontWeight: "600",
-                    }}
+                    className={styles.primaryButton}
+                    onClick={openAddForm}
                 >
-                    Cancel
-                </button>
-
-                <button
-                    type="submit"
-                    disabled={saving}
-                    style={{
-                        background: saving
-                            ? "#9ca3af"
-                            : "#166534",
-                        color: "white",
-                        border: "none",
-                        padding: "11px 18px",
-                        borderRadius: "8px",
-                        cursor: saving
-                            ? "not-allowed"
-                            : "pointer",
-                        fontWeight: "600",
-                    }}
-                >
-                    {saving
-                        ? "Saving..."
-                        : editingSchedule
-                        ? "Update Schedule"
-                        : "Save Schedule"}
+                    <PlusIcon />
+                    Add Schedule
                 </button>
             </div>
-        </form>
-        </div>
-        </div>
-    </div>
-)}
 
-                {/* Summary */}
+            {/* Add / Edit modal */}
+            {showAddForm && (
                 <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                            "repeat(auto-fit, minmax(220px, 1fr))",
-                        gap: "20px",
-                        marginBottom: "25px",
+                    className={styles.modalOverlay}
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) {
+                            closeForm();
+                        }
                     }}
                 >
                     <div
-                        style={{
-                            background: "white",
-                            borderRadius: "12px",
-                            padding: "20px",
-                            border: "1px solid #e5e7eb",
-                        }}
+                        className={styles.modal}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="schedule-modal-title"
                     >
-                        <div
-                            style={{
-                                color: "#6b7280",
-                                fontSize: "14px",
-                            }}
-                        >
-                            Schedule Records
+                        <div className={styles.modalHeader}>
+                            <div>
+                                <h2 id="schedule-modal-title">
+                                    {editingSchedule
+                                        ? "Edit Planting Schedule"
+                                        : "Add Planting Schedule"}
+                                </h2>
+
+                                <p>
+                                    {editingSchedule
+                                        ? "Update this crop and season schedule."
+                                        : "Add a general planting schedule for a crop."}
+                                </p>
+
+                                {editingSchedule?.has_legacy_locations && (
+                                    <p className={styles.legacyNote}>
+                                        This grouped schedule includes older location-specific entries. Saving changes their schedule details while keeping their locations.
+                                    </p>
+                                )}
+                            </div>
+
+                            <button
+                                type="button"
+                                className={styles.closeButton}
+                                onClick={closeForm}
+                                aria-label="Close"
+                            >
+                                <CloseIcon />
+                            </button>
                         </div>
 
-                        <div
-                            style={{
-                                fontSize: "28px",
-                                fontWeight: "700",
-                                color: "#166534",
-                                marginTop: "5px",
-                            }}
-                        >
-                            {loading ? "..." : groupedCalendar.length}
-                        </div>
+                        <form onSubmit={handleAddSchedule}>
+                            <div className={styles.modalBody}>
+
+                                {formError && (
+                                    <div className={styles.errorBox} role="alert">
+                                        {formError}
+                                    </div>
+                                )}
+
+                                <div className={styles.formGrid}>
+
+                                    {/* Crop */}
+                                    <div className={styles.formField}>
+                                        <label htmlFor="schedule-crop">
+                                            Crop <span className={styles.required}>*</span>
+                                        </label>
+
+                                        <select
+                                            id="schedule-crop"
+                                            className={styles.formInput}
+                                            value={formData.crop_id}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    crop_id: e.target.value,
+                                                })
+                                            }
+                                            required
+                                        >
+                                            <option value="">
+                                                Select Crop
+                                            </option>
+
+                                            {crops.map((crop) => (
+                                                <option
+                                                    key={crop.crop_id}
+                                                    value={crop.crop_id}
+                                                >
+                                                    {crop.crop_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* Planting Month */}
+                                    <div className={styles.formField}>
+                                        <label htmlFor="schedule-month">
+                                            Planting Month
+                                        </label>
+
+                                        <input
+                                            id="schedule-month"
+                                            className={styles.formInput}
+                                            type="text"
+                                            placeholder="e.g. June"
+                                            value={formData.planting_month}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    planting_month:
+                                                        e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Season */}
+                                    <div className={styles.formField}>
+                                        <label htmlFor="schedule-season">
+                                            Season
+                                        </label>
+
+                                        <input
+                                            id="schedule-season"
+                                            className={styles.formInput}
+                                            type="text"
+                                            placeholder="e.g. Wet Season"
+                                            value={formData.season}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    season: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Growing Period */}
+                                    <div className={styles.formField}>
+                                        <label htmlFor="schedule-growing">
+                                            Growing Period
+                                        </label>
+
+                                        <input
+                                            id="schedule-growing"
+                                            className={styles.formInput}
+                                            type="text"
+                                            placeholder="e.g. 3-4 months"
+                                            value={formData.growing_period}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    growing_period:
+                                                        e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Harvest Period */}
+                                    <div className={`${styles.formField} ${styles.fullWidth}`}>
+                                        <label htmlFor="schedule-harvest">
+                                            Harvest Period
+                                        </label>
+
+                                        <input
+                                            id="schedule-harvest"
+                                            className={styles.formInput}
+                                            type="text"
+                                            placeholder="e.g. September-October"
+                                            value={formData.harvest_period}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    harvest_period:
+                                                        e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Notes */}
+                                    <div className={`${styles.formField} ${styles.fullWidth}`}>
+                                        <label htmlFor="schedule-notes">
+                                            Notes
+                                        </label>
+
+                                        <textarea
+                                            id="schedule-notes"
+                                            className={styles.formTextarea}
+                                            placeholder="Optional notes about this planting schedule..."
+                                            value={formData.notes}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    notes: e.target.value,
+                                                })
+                                            }
+                                            rows={4}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={styles.modalFooter}>
+                                <button
+                                    type="button"
+                                    className={styles.secondaryButton}
+                                    onClick={closeForm}
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    className={styles.primaryButton}
+                                    disabled={saving}
+                                >
+                                    {saving
+                                        ? "Saving..."
+                                        : editingSchedule
+                                        ? "Update Schedule"
+                                        : "Save Schedule"}
+                                </button>
+                            </div>
+                        </form>
                     </div>
+                </div>
+            )}
 
-                    <div
-                        style={{
-                            background: "white",
-                            borderRadius: "12px",
-                            padding: "20px",
-                            border: "1px solid #e5e7eb",
-                        }}
-                    >
-                        <div
-                            style={{
-                                color: "#6b7280",
-                                fontSize: "14px",
-                            }}
-                        >
-                            Crops in Calendar
-                        </div>
+            {/* Summary */}
+            <div className={styles.statGrid}>
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneMint}`}>
+                        <CalendarIcon />
+                    </span>
 
-                        <div
-                            style={{
-                                fontSize: "28px",
-                                fontWeight: "700",
-                                color: "#166534",
-                                marginTop: "5px",
-                            }}
-                        >
+                    <div className={styles.statText}>
+                        <span>Schedule Records</span>
+                        <strong>
+                            {loading ? "..." : groupedCalendar.length}
+                        </strong>
+                    </div>
+                </div>
+
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneLeaf}`}>
+                        <SproutIcon />
+                    </span>
+
+                    <div className={styles.statText}>
+                        <span>Crops in Calendar</span>
+                        <strong>
                             {loading
                                 ? "..."
                                 : new Set(
@@ -745,457 +798,197 @@ export default function PlantingCalendarManagement() {
                                           (entry) => entry.crop_id
                                       )
                                   ).size}
-                        </div>
-                    </div>
-
-                    <div
-                        style={{
-                            background: "white",
-                            borderRadius: "12px",
-                            padding: "20px",
-                            border: "1px solid #e5e7eb",
-                        }}
-                    >
-                        <div
-                            style={{
-                                color: "#6b7280",
-                                fontSize: "14px",
-                            }}
-                        >
-                            Seasons Covered
-                        </div>
-
-                        <div
-                            style={{
-                                fontSize: "28px",
-                                fontWeight: "700",
-                                color: "#166534",
-                                marginTop: "5px",
-                            }}
-                        >
-                            {loading
-                                ? "..."
-                                : new Set(
-                                      groupedCalendar
-                                          .map((entry) => entry.season?.trim())
-                                          .filter(Boolean)
-                                  ).size}
-                        </div>
+                        </strong>
                     </div>
                 </div>
 
-                {/* Error */}
-                {error && (
-                    <div
-                        style={{
-                            background: "#fee2e2",
-                            color: "#991b1b",
-                            padding: "15px",
-                            borderRadius: "8px",
-                            marginBottom: "20px",
-                        }}
-                    >
-                        {error}
-                    </div>
-                )}
+                <div className={styles.statBox}>
+                    <span className={`${styles.statIconBox} ${styles.toneWater}`}>
+                        <CloudSunIcon />
+                    </span>
 
-                {/* Search */}
-                {!loading && !error && (
-                    <div
-                        style={{
-                            background: "white",
-                            padding: "18px",
-                            borderRadius: "12px",
-                            border: "1px solid #e5e7eb",
-                            marginBottom: "20px",
-                        }}
-                    >
+                    <div className={styles.statText}>
+                        <span>Seasons Covered</span>
+                        <strong>
+                            {loading ? "..." : seasonOptions.length}
+                        </strong>
+                    </div>
+                </div>
+            </div>
+
+            {/* Error */}
+            {error && (
+                <div className={styles.errorBox} role="alert">
+                    {error}
+                </div>
+            )}
+
+            {/* Search + season filter */}
+            {!loading && !error && (
+                <div className={styles.toolbar}>
+                    <div className={styles.searchBox}>
+                        <span className={styles.searchBoxIcon}>
+                            <SearchIcon />
+                        </span>
+
+                        <label
+                            htmlFor="calendar-search"
+                            className={styles.visuallyHidden}
+                        >
+                            Search crop, month, or season
+                        </label>
+
                         <input
-                            type="text"
+                            id="calendar-search"
+                            className={styles.searchInput}
+                            type="search"
                             placeholder="Search crop, month, or season..."
                             value={search}
                             onChange={(e) =>
                                 setSearch(e.target.value)
                             }
-                            style={{
-                                width: "100%",
-                                padding: "12px 14px",
-                                border: "1px solid #d1d5db",
-                                borderRadius: "8px",
-                                fontSize: "14px",
-                                outline: "none",
-                                boxSizing: "border-box",
-                            }}
                         />
                     </div>
-                )}
 
-                {/* Loading */}
-                {loading && (
-                    <div
-                        style={{
-                            background: "white",
-                            padding: "30px",
-                            borderRadius: "12px",
-                            textAlign: "center",
-                            color: "#6b7280",
-                        }}
+                    <label
+                        htmlFor="calendar-season"
+                        className={styles.visuallyHidden}
                     >
-                        Loading planting calendar...
+                        Filter by season
+                    </label>
+
+                    <select
+                        id="calendar-season"
+                        className={styles.filterSelect}
+                        value={seasonFilter}
+                        onChange={(e) =>
+                            setSeasonFilter(e.target.value)
+                        }
+                    >
+                        <option value="">All seasons</option>
+
+                        {seasonOptions.map((season) => (
+                            <option key={season} value={season}>
+                                {season}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
+            {/* Loading */}
+            {loading && (
+                <div className={styles.stateBox}>
+                    Loading planting calendar...
+                </div>
+            )}
+
+            {/* Calendar Table */}
+            {!loading && !error && (
+                <section className={styles.tableCard}>
+                    <div className={styles.tableCardHeader}>
+                        <h2>
+                            Crop and Season Schedules
+                        </h2>
                     </div>
-                )}
 
-                {/* Calendar Table */}
-                {!loading && !error && (
-                    <div
-                        style={{
-                            background: "white",
-                            borderRadius: "12px",
-                            border: "1px solid #e5e7eb",
-                            overflow: "hidden",
-                        }}
-                    >
-                        <div
-                            style={{
-                                padding: "20px",
-                                borderBottom: "1px solid #e5e7eb",
-                            }}
-                        >
-                            <h2
-                                style={{
-                                    margin: 0,
-                                    fontSize: "18px",
-                                    color: "#1f2937",
-                                }}
-                            >
-                                Crop and Season Schedules
-                            </h2>
-                        </div>
+                    <div className={styles.tableScroll}>
+                        <table className={styles.dataTable}>
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Crop</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Scope</th>
+                                    <th scope="col">Planting Month</th>
+                                    <th scope="col">Season</th>
+                                    <th scope="col">Growing Period</th>
+                                    <th scope="col">Harvest Period</th>
+                                    <th scope="col" className={styles.alignRight}>
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
 
-                        <div style={{ overflowX: "auto" }}>
-                            <table
-                                style={{
-                                    width: "100%",
-                                    borderCollapse: "collapse",
-                                }}
-                            >
-                                <thead>
-                                    <tr
-                                        style={{
-                                            background: "#f9fafb",
-                                        }}
-                                    >
-                                        <th style={thStyle}>
-                                            ID
-                                        </th>
+                            <tbody>
+                                {filteredCalendar.map((entry) => (
+                                    <tr key={entry.calendar_id}>
+                                        <td>{entry.calendar_id}</td>
 
-                                        <th style={thStyle}>
-                                            Crop
-                                        </th>
+                                        <td>
+                                            <span className={styles.cellStrong}>
+                                                {entry.crop_name}
+                                            </span>
+                                        </td>
 
-                                        <th style={thStyle}>
-                                            Category
-                                        </th>
-
-                                        <th style={thStyle}>
-                                            Schedule Scope
-                                        </th>
-
-                                        <th style={thStyle}>
-                                            Planting Month
-                                        </th>
-
-                                        <th style={thStyle}>
-                                            Season
-                                        </th>
-
-                                        <th style={thStyle}>
-                                            Growing Period
-                                        </th>
-
-                                        <th style={thStyle}>
-                                            Harvest Period
-                                        </th>
-
-                                        <th style={thStyle}>
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {filteredCalendar.map(
-                                        (entry) => (
-                                            <tr
-                                                key={
-                                                    entry.calendar_id
-                                                }
-                                            >
-                                                <td style={tdStyle}>
-                                                    {
-                                                        entry.calendar_id
-                                                    }
-                                                </td>
-
-                                                <td
-                                                    style={{
-                                                        ...tdStyle,
-                                                        fontWeight:
-                                                            "600",
-                                                        color:
-                                                            "#166534",
-                                                    }}
+                                        <td>
+                                            {entry.category ? (
+                                                <span
+                                                    className={`${styles.badge} ${categoryBadgeClass(entry.category)}`}
                                                 >
-                                                    {
-                                                        entry.crop_name
-                                                    }
-                                                </td>
+                                                    {entry.category}
+                                                </span>
+                                            ) : (
+                                                "—"
+                                            )}
+                                        </td>
 
-                                                <td style={tdStyle}>
-                                                    {
-                                                        entry.category ||
-                                                        "—"
-                                                    }
-                                                </td>
+                                        <td>
+                                            <span className={`${styles.badge} ${styles.badgeNeutral}`}>
+                                                {scheduleScope(entry)}
+                                            </span>
+                                        </td>
 
-                                                <td style={tdStyle}>
-                                                    {entry.has_general_entry
-                                                        ? "General"
-                                                        : entry.location_names.length > 1
-                                                            ? `General (${entry.location_names.length} legacy locations)`
-                                                            : entry.location_names.length === 1
-                                                                ? `Legacy: ${entry.location_names[0]}`
-                                                                : "General"}
-                                                </td>
+                                        <td>{entry.planting_month || "—"}</td>
 
-                                                <td style={tdStyle}>
-                                                    {
-                                                        entry.planting_month ||
-                                                        "—"
-                                                    }
-                                                </td>
+                                        <td>
+                                            {entry.season ? (
+                                                <span className={`${styles.badge} ${styles.badgeSeason}`}>
+                                                    {entry.season}
+                                                </span>
+                                            ) : (
+                                                "—"
+                                            )}
+                                        </td>
 
-                                                <td style={tdStyle}>
-                                                    {
-                                                        entry.season ||
-                                                        "—"
-                                                    }
-                                                </td>
+                                        <td>{entry.growing_period || "—"}</td>
 
-                                                <td style={tdStyle}>
-                                                    {
-                                                        entry.growing_period ||
-                                                        "—"
-                                                    }
-                                                </td>
+                                        <td>{entry.harvest_period || "—"}</td>
 
-                                                <td style={tdStyle}>
-                                                    {
-                                                        entry.harvest_period ||
-                                                        "—"
-                                                    }
-                                                </td>
+                                        <td className={styles.alignRight}>
+                                            <div className={styles.rowActions}>
+                                                <button
+                                                    type="button"
+                                                    className={styles.editButton}
+                                                    onClick={() => openEditForm(entry)}
+                                                >
+                                                    <EditIcon />
+                                                    Edit
+                                                </button>
 
-                                                <td style={tdStyle}>
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                            gap: "8px",
-                                                        }}
-                                                    >
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                setEditingSchedule({
-                                                                    ...entry,
-                                                                    has_legacy_locations: entry.location_names.length > 0,
-                                                                });
-                                                                setFormData({
-                                                                    crop_id:
-                                                                        entry.crop_id || "",
-                                                                    planting_month:
-                                                                        entry.planting_month || "",
-                                                                    season:
-                                                                        entry.season || "",
-                                                                    growing_period:
-                                                                        entry.growing_period || "",
-                                                                    harvest_period:
-                                                                        entry.harvest_period || "",
-                                                                    notes:
-                                                                        entry.notes || "",
-                                                                });
-                                                                setFormError("");
-                                                                setShowAddForm(true);
-                                                            }}
-                                                            style={{
-                                                                background: "#166534",
-                                                                color: "white",
-                                                                border: "none",
-                                                                padding: "7px 12px",
-                                                                borderRadius: "6px",
-                                                                cursor: "pointer",
-                                                                fontWeight: "600",
-                                                                fontSize: "13px",
-                                                            }}
-                                                        >
-                                                            Edit
-                                                        </button>
-
-                                                        <button
-                                                            type="button"
-                                                            onClick={async () => {
-                                                                const confirmed =
-                                                                    window.confirm(
-                                                                        `Delete the planting schedule for ${entry.crop_name}?${entry.calendar_ids.length > 1 ? ` This removes ${entry.calendar_ids.length} duplicate entries from ${entry.location_names.join(", ")}.` : ""}`
-                                                                    );
-
-                                                                if (!confirmed) {
-                                                                    return;
-                                                                }
-
-                                                                try {
-                                                                    const response =
-                                                                        await fetchWithAdminAuth(
-                                                                            `${API_URL}/api/planting-calendar/bulk`,
-                                                                            {
-                                                                                method: "DELETE",
-                                                                                headers: {
-                                                                                    "Content-Type": "application/json",
-                                                                                    Authorization:
-                                                                                        `Bearer ${localStorage.getItem(
-                                                                                            "buildAndBloomToken"
-                                                                                        )}`,
-                                                                                },
-                                                                                body: JSON.stringify({
-                                                                                    calendar_ids: entry.calendar_ids,
-                                                                                }),
-                                                                            }
-                                                                        );
-
-                                                                    const result =
-                                                                        await response.json();
-
-                                                                    if (
-                                                                        !response.ok ||
-                                                                        !result.success
-                                                                    ) {
-                                                                        throw new Error(
-                                                                            result.message ||
-                                                                                "Failed to delete planting schedule."
-                                                                        );
-                                                                    }
-
-                                                                    const calendarResponse =
-                                                                        await fetch(
-                                                                            "http://localhost:5000/api/planting-calendar"
-                                                                        );
-
-                                                                    const calendarResult =
-                                                                        await calendarResponse.json();
-
-                                                                    if (
-                                                                        !calendarResponse.ok ||
-                                                                        !calendarResult.success
-                                                                    ) {
-                                                                        throw new Error(
-                                                                            "Schedule was deleted, but the calendar could not be refreshed."
-                                                                        );
-                                                                    }
-
-                                                                    setCalendar(
-                                                                        calendarResult.data
-                                                                    );
-
-                                                                    alert(
-                                                                        "Planting schedule deleted successfully."
-                                                                    );
-                                                                } catch (error) {
-                                                                    console.error(
-                                                                        "Failed to delete planting schedule:",
-                                                                        error
-                                                                    );
-
-                                                                    alert(
-                                                                        error.message ||
-                                                                            "Failed to delete planting schedule."
-                                                                    );
-                                                                }
-                                                            }}
-                                                            style={{
-                                                                background: "#dc2626",
-                                                                color: "white",
-                                                                border: "none",
-                                                                padding: "7px 12px",
-                                                                borderRadius: "6px",
-                                                                cursor: "pointer",
-                                                                fontWeight: "600",
-                                                                fontSize: "13px",
-                                                            }}
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {filteredCalendar.length === 0 && (
-                            <div
-                                style={{
-                                    padding: "30px",
-                                    textAlign: "center",
-                                    color: "#6b7280",
-                                }}
-                            >
-                                No planting calendar records
-                                found.
-                            </div>
-                        )}
+                                                <button
+                                                    type="button"
+                                                    className={styles.deleteButton}
+                                                    onClick={() => handleDeleteSchedule(entry)}
+                                                >
+                                                    <TrashIcon />
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                )}
-            </div>
+
+                    {filteredCalendar.length === 0 && (
+                        <div className={styles.emptyRow}>
+                            No planting calendar records found.
+                        </div>
+                    )}
+                </section>
+            )}
         </div>
     );
 }
-
-const thStyle = {
-    padding: "14px 16px",
-    textAlign: "left",
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#6b7280",
-    borderBottom: "1px solid #e5e7eb",
-    whiteSpace: "nowrap",
-};
-
-const tdStyle = {
-    padding: "14px 16px",
-    fontSize: "14px",
-    color: "#374151",
-    borderBottom: "1px solid #f1f5f9",
-    whiteSpace: "nowrap",
-};
-
-const labelStyle = {
-    display: "block",
-    marginBottom: "7px",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#374151",
-};
-
-const inputStyle = {
-    width: "100%",
-    padding: "11px 12px",
-    border: "1px solid #d1d5db",
-    borderRadius: "8px",
-    fontSize: "14px",
-    outline: "none",
-    boxSizing: "border-box",
-    background: "white",
-    color: "#374151",
-};

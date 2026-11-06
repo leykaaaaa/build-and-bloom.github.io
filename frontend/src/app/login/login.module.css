@@ -1,0 +1,16 @@
+.inputWrapper {
+    position: relative;
+}
+
+.inputWrapper input {
+    padding-left: 44px;
+}
+
+.inputIcon {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    color: var(--green-700);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
