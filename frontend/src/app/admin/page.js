@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getAuthHeaders } from "../../services/authService";
 import styles from "./admin.module.css";
 
 export default function AdminPage() {
@@ -70,14 +71,27 @@ export default function AdminPage() {
         const fetchUserCount = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/auth/users"
+                    "http://localhost:5000/api/auth/users",
+                    {
+                        headers: getAuthHeaders(),
+                    }
                 );
 
                 const result = await response.json();
 
-                if (result.success) {
-                    setTotalUsers(result.count);
+                if (!response.ok || !result.success) {
+                    if (response.status === 401) {
+                        localStorage.removeItem("buildAndBloomToken");
+                        localStorage.removeItem("buildAndBloomUser");
+                        window.location.href = "/login?reason=session-expired";
+                    }
+
+                    throw new Error(
+                        result.message || "Failed to fetch registered user count."
+                    );
                 }
+
+                setTotalUsers(result.count);
             } catch (error) {
                 console.error(
                     "Failed to fetch user count:",
@@ -106,14 +120,18 @@ export default function AdminPage() {
                         A quick overview of your platform and the data that powers it.
                     </p>
                 </div>
-                <span className={styles.headerIcon} aria-hidden="true"></span>
+                <span className={styles.headerIcon} aria-hidden="true">
+                    <i className="fa-solid fa-shield-halved" />
+                </span>
             </header>
 
             {/* Dashboard Cards */}
             <section className={styles.statsGrid} aria-label="System statistics">
 
                 <article className={styles.statCard}>
-                    <div className={`${styles.statIcon} ${styles.cropIcon}`} aria-hidden="true"></div>
+                    <div className={`${styles.statIcon} ${styles.cropIcon}`} aria-hidden="true">
+                        <i className="fa-solid fa-seedling" />
+                    </div>
                     <div className={styles.statContent}>
                         <span className={styles.cardLabel}>Total Crops</span>
                         <strong className={styles.cardNumber}>
@@ -127,7 +145,9 @@ export default function AdminPage() {
                 </article>
 
                 <article className={styles.statCard}>
-                    <div className={`${styles.statIcon} ${styles.locationIcon}`} aria-hidden="true"> </div>
+                    <div className={`${styles.statIcon} ${styles.locationIcon}`} aria-hidden="true">
+                        <i className="fa-solid fa-location-dot" />
+                    </div>
                     <div className={styles.statContent}>
                         <span className={styles.cardLabel}>Total Locations</span>
                         <strong className={styles.cardNumber}>48</strong>
@@ -137,7 +157,9 @@ export default function AdminPage() {
                 </article>
 
                 <article className={styles.statCard}>
-                    <div className={`${styles.statIcon} ${styles.userIcon}`} aria-hidden="true"></div>
+                      <div className={`${styles.statIcon} ${styles.userIcon}`} aria-hidden="true">
+                        <i className="fa-solid fa-user" />
+                      </div>
                     <div className={styles.statContent}>
                         <span className={styles.cardLabel}>Registered Users</span>
                         <strong className={styles.cardNumber}>
@@ -151,7 +173,9 @@ export default function AdminPage() {
                 </article>
 
                 <article className={styles.statCard}>
-                    <div className={`${styles.statIcon} ${styles.calendarIcon}`} aria-hidden="true"> </div>
+                      <div className={`${styles.statIcon} ${styles.locationIcon}`} aria-hidden="true">
+                        <i className="fa-solid fa-calendar" />
+                        </div>
                     <div className={styles.statContent}>
                         <span className={styles.cardLabel}>Planting Calendar</span>
                         <strong className={styles.cardNumber}>
@@ -165,7 +189,9 @@ export default function AdminPage() {
                 </article>
 
                 <article className={styles.statCard}>
-                    <div className={`${styles.statIcon} ${styles.weatherIcon}`} aria-hidden="true"></div>
+                      <div className={`${styles.statIcon} ${styles.weatherIcon}`} aria-hidden="true">
+                        <i className="fa-solid fa-cloud-sun" />
+                        </div>
                     <div className={styles.statContent}>
                         <span className={styles.cardLabel}>Weather API</span>
                         <strong className={`${styles.cardNumber} ${styles.statusValue}`}>Active</strong>
@@ -188,7 +214,9 @@ export default function AdminPage() {
                 <div className={styles.overviewGrid}>
 
                     <article className={styles.overviewCard}>
-                        <div className={styles.overviewIcon} aria-hidden="true"></div>
+                        <div className={styles.overviewIcon} aria-hidden="true">
+                            <i className="fa-solid fa-bolt" />
+                        </div>
                         <div className={styles.overviewContent}>
                             <h3>
                             Crop Recommendation Engine
@@ -207,7 +235,9 @@ export default function AdminPage() {
                     </article>
 
                     <article className={styles.overviewCard}>
-                        <div className={styles.overviewIcon} aria-hidden="true"> </div>
+                        <div className={styles.overviewIcon} aria-hidden="true">
+                            <i className="fa-solid fa-database" />
+                        </div>
                         <div className={styles.overviewContent}>
                             <h3>
                             Dataset Management

@@ -5,8 +5,76 @@ import { useEffect, useState } from "react";
 import {
     getPlantingCalendar
 } from "../../services/plantingCalendarService";
+import Link from "next/link";
 import CropImage from "../../components/CropImage";
 
+import styles from "./calendar.module.css";
+
+function Icon({ size = 16, strokeWidth = 2.2, children }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    );
+}
+
+const CalendarIcon = () => (
+    <Icon size={14}>
+        <rect width="18" height="18" x="3" y="4" rx="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+    </Icon>
+);
+
+const ClockIcon = () => (
+    <Icon size={14}>
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+    </Icon>
+);
+
+const CheckIcon = () => (
+    <Icon size={14} strokeWidth={2.6}>
+        <path d="m5 12 5 5 9-10" />
+    </Icon>
+);
+
+const BulbIcon = () => (
+    <Icon size={18} strokeWidth={2}>
+        <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+        <path d="M9 18h6M10 22h4" />
+    </Icon>
+);
+
+const InfoIcon = () => (
+    <Icon size={18} strokeWidth={2}>
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4M12 8h.01" />
+    </Icon>
+);
+
+const AlertIcon = () => (
+    <Icon size={20} strokeWidth={2}>
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+        <path d="M12 9v4M12 17h.01" />
+    </Icon>
+);
+
+const ArrowRightIcon = () => (
+    <Icon size={16} strokeWidth={2.4}>
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+    </Icon>
+);
 
 export default function CalendarPage() {
     const [calendar, setCalendar] =
@@ -157,62 +225,77 @@ export default function CalendarPage() {
 
     return (
 
-        <section className="calendar-page">
+        <section className={styles.calendarPage}>
 
-            <div className="calendar-container">
+            <div className={styles.calendarContainer}>
 
 
                 {/* HEADER */}
 
-                <div className="calendar-header">
-                    <div className="calendar-header-copy">
-                        <span className="section-badge">
-                            Build & Bloom
+                <div className={styles.calendarHeader}>
+
+                    <div className={styles.headerCopy}>
+
+                        <span className={styles.sectionBadge}>
+                            Planting Schedule
                         </span>
 
                         <h1>
-                            Planting Calendar
+                            Planting by season
                         </h1>
 
                         <p>
-                            Find the right time to plant. Browse general crop schedules
-                            organized by season for Pangasinan.
+                            Find the right time to plant. Browse general crop
+                            schedules organized by season for Pangasinan: when
+                            to plant, how long it grows and when to harvest.
                         </p>
+
                     </div>
 
-                    <div className="calendar-header-stats" aria-label="Calendar overview">
-                        <div className="calendar-header-stat">
+                    <div className={styles.headerStats} aria-label="Calendar overview">
+
+                        <span className={styles.pill}>
                             <strong>{loading ? "—" : cropCount}</strong>
-                            <span>Crops</span>
-                        </div>
-                        <div className="calendar-header-stat">
+                            Crops
+                        </span>
+
+                        <span className={styles.pill}>
                             <strong>{loading ? "—" : seasonCount}</strong>
-                            <span>Seasons</span>
-                        </div>
+                            {seasonCount === 1 ? "planting season" : "planting seasons"}
+                        </span>
+
                     </div>
+
                 </div>
 
 
-                <div className="calendar-overview">
-                    <span className="calendar-overview-mark" aria-hidden="true">i</span>
+                {/* GENERAL GUIDE */}
+
+                <div className={styles.guideNote}>
+
+                    <span className={styles.guideIcon} aria-hidden="true">
+                        <InfoIcon />
+                    </span>
+
                     <div>
                         <strong>General planting guide</strong>
                         <span>
-                            Treat these schedules as a starting point. Actual timing may vary
-                            with weather and local growing conditions.
+                            Treat these schedules as a starting point. Actual
+                            timing may vary with weather and local growing
+                            conditions.
                         </span>
                     </div>
+
                 </div>
+
 
                 {/* ERROR */}
 
                 {error && (
 
-                    <div className="calendar-error">
+                    <div className={styles.errorBox} role="alert">
 
-                        <span>
-                            ️
-                        </span>
+                        <AlertIcon />
 
                         <div>
 
@@ -235,10 +318,10 @@ export default function CalendarPage() {
 
                 {loading && (
 
-                    <div className="calendar-loading">
+                    <div className={styles.stateBox} role="status">
 
-                        <span>
-                            
+                        <span className={styles.stateIcon} aria-hidden="true">
+                            <CalendarIcon />
                         </span>
 
                         <p>
@@ -256,10 +339,10 @@ export default function CalendarPage() {
                     !error &&
                     calendar.length === 0 && (
 
-                    <div className="calendar-empty">
+                    <div className={styles.stateBox}>
 
-                        <span>
-                            
+                        <span className={styles.stateIcon} aria-hidden="true">
+                            <CalendarIcon />
                         </span>
 
                         <h2>
@@ -281,104 +364,129 @@ export default function CalendarPage() {
                     !error &&
                     scheduleGroups.length > 0 && (
 
-                    <section className="calendar-results" aria-label="Planting schedules by season">
-
-                        <div className="calendar-results-header">
-
-                            <div>
-
-                                <span className="section-badge">
-                                    Planting Schedule
-                                </span>
-
-                                <h2>
-                                    Planting by season
-                                </h2>
-
-                            </div>
-
-                            <span className="calendar-count">
-                                {scheduleGroups.length} planting seasons
-                            </span>
-
-                        </div>
-
+                    <div className={styles.results} aria-label="Planting schedules by season">
 
                         {scheduleGroups.map((group) => (
-                            <section className="calendar-season" key={group.name} aria-label={`${group.name} planting schedules`}>
-                                <div className="calendar-season-header">
+
+                            <section
+                                className={styles.season}
+                                key={group.name}
+                                aria-label={`${group.name} planting schedules`}
+                            >
+
+                                <div className={styles.seasonHeader}>
+
                                     <div>
-                                        <span className="calendar-season-kicker">PLANTING SEASON</span>
+                                        <span className={styles.seasonKicker}>
+                                            PLANTING SEASON
+                                        </span>
                                         <h3>{group.name}</h3>
                                     </div>
-                                    <span className="calendar-season-count">
+
+                                    <span className={styles.seasonCount}>
                                         {group.crops.length} {group.crops.length === 1 ? "crop" : "crops"}
                                     </span>
+
                                 </div>
 
-                                <div className="calendar-grid">
+
+                                <div className={styles.cropGrid}>
+
                                     {group.crops.map((crop) => (
+
                                         <article
-                                            className="calendar-card"
+                                            className={styles.cropCard}
                                             key={`${group.name}-${crop.crop_id}`}
                                         >
 
-                                            <div className="calendar-card-top">
+                                            <div className={styles.cropTop}>
+
                                                 <CropImage
                                                     cropName={crop.crop_name}
-                                                    className="calendar-crop-image"
-                                                    sizes="54px"
+                                                    className={styles.cropImage}
+                                                    sizes="64px"
                                                 />
-                                                <div>
-                                                    <span className="crop-category">
+
+                                                <div className={styles.cropTitle}>
+                                                    <span className={styles.cropCategory}>
                                                         {crop.category}
                                                     </span>
                                                     <h4>{crop.crop_name}</h4>
                                                 </div>
+
                                             </div>
 
-                                            <div className="calendar-schedule-list">
+
+                                            <div className={styles.scheduleList}>
+
                                                 {crop.schedules.map((schedule, index) => (
-                                                    <div className="calendar-schedule" key={`${schedule.planting_month}-${index}`}>
-                                                        <div className="calendar-details">
-                                                            <div className="calendar-detail">
-                                                                <div>
-                                                                    <small>Planting Period</small>
-                                                                    <strong>{schedule.planting_month || "Not specified"}</strong>
-                                                                </div>
+
+                                                    <div
+                                                        className={styles.schedule}
+                                                        key={`${schedule.planting_month}-${index}`}
+                                                    >
+
+                                                        <div className={styles.details}>
+
+                                                            <div className={styles.detail}>
+                                                                <small><CalendarIcon /> Planting Period</small>
+                                                                <strong>{schedule.planting_month || "Not specified"}</strong>
                                                             </div>
 
-                                                            <div className="calendar-detail">
-                                                                <div>
-                                                                    <small>Growing Period</small>
-                                                                    <strong>{schedule.growing_period || "Not specified"}</strong>
-                                                                </div>
+                                                            <div className={styles.detail}>
+                                                                <small><ClockIcon /> Growing Period</small>
+                                                                <strong>{schedule.growing_period || "Not specified"}</strong>
                                                             </div>
 
-                                                            <div className="calendar-detail">
-                                                                <div>
-                                                                    <small>Harvest Period</small>
-                                                                    <strong>{schedule.harvest_period || "Not specified"}</strong>
-                                                                </div>
+                                                            <div className={styles.detail}>
+                                                                <small><CheckIcon /> Harvest Period</small>
+                                                                <strong>{schedule.harvest_period || "Not specified"}</strong>
                                                             </div>
+
                                                         </div>
 
+
                                                         {schedule.notes.length > 0 && (
-                                                            <div className="calendar-notes">
-                                                                <strong>Notes</strong>
-                                                                <p>{schedule.notes.join(" ")}</p>
+
+                                                            <div className={styles.notes}>
+
+                                                                <BulbIcon />
+
+                                                                <div>
+                                                                    <strong>Notes</strong>
+                                                                    <p>{schedule.notes.join(" ")}</p>
+                                                                </div>
+
                                                             </div>
+
                                                         )}
+
                                                     </div>
+
                                                 ))}
+
                                             </div>
+
+
+                                            <Link
+                                                href={`/plants/plan?crop=${crop.crop_id}`}
+                                                className={styles.planLink}
+                                            >
+                                                Plan this crop
+                                                <ArrowRightIcon />
+                                            </Link>
+
                                         </article>
+
                                     ))}
+
                                 </div>
+
                             </section>
+
                         ))}
 
-                    </section>
+                    </div>
 
                 )}
 

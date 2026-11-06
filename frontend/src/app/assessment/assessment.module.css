@@ -1,0 +1,977 @@
+/* =========================================
+   ASSESSMENT + RESULTS - matches the "Assessment" and "Results" boards
+   Works together with the updated assessment/page.js.
+   Uses the CSS variables from globals.css (:root).
+========================================= */
+
+.assessmentPage {
+    min-height: 100vh;
+    padding: 56px clamp(24px, 4.5vw, 64px) 80px;
+    background: var(--green-50);
+    box-sizing: border-box;
+}
+
+.assessmentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.eyebrow {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+/* PAGE HEADER */
+
+.pageHeader {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.pageHeading {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.pageHeading h1,
+.pageHeading h2 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.pageHeading p {
+    max-width: 640px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+/* BUTTONS */
+
+.primaryButton,
+.secondaryButton,
+.softButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 56px;
+    box-sizing: border-box;
+    padding: 0 28px;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.primaryButton {
+    border: 0;
+    background: var(--green-700);
+    color: #ffffff;
+    box-shadow: var(--shadow-btn);
+}
+
+.primaryButton:hover:not(:disabled) {
+    background: var(--green-800);
+    transform: translateY(-1px);
+}
+
+.primaryButton:disabled {
+    background: #9db3a5;
+    box-shadow: none;
+    cursor: wait;
+}
+
+.secondaryButton {
+    border: 1.5px solid #b9d3c0;
+    background: #ffffff;
+    color: #1f5c33;
+}
+
+.secondaryButton:hover {
+    border-color: var(--green-700);
+    background: var(--green-100);
+}
+
+.softButton {
+    border: 0;
+    background: var(--green-100);
+    color: #1f5c33;
+}
+
+.softButton:hover {
+    background: var(--mint);
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.softButton:focus-visible,
+.fieldSelect:focus-visible,
+.filterChip:focus-visible,
+.detailsToggle:focus-visible {
+    outline: 3px solid rgba(47, 107, 71, 0.4);
+    outline-offset: 3px;
+}
+
+/* SPECIFIC CROP BANNER */
+
+.cropBanner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border: 1px solid #dde8bc;
+    border-radius: 20px;
+    background: #f1f8e3;
+}
+
+.cropBannerIcon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--lime);
+    color: var(--lime-ink);
+}
+
+.cropBanner strong {
+    display: block;
+    color: #3a5209;
+    font-size: 1.0625rem;
+}
+
+.cropBanner p {
+    margin: 4px 0 0;
+    color: #4a5c51;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* FORM + SIDE PANEL */
+
+.assessmentGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+}
+
+.formCard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
+}
+
+.fieldGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 22px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.field label {
+    color: var(--green-800);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.selectWrap {
+    position: relative;
+}
+
+.fieldIcon {
+    position: absolute;
+    top: 0;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    height: 58px;
+    color: #6f8377;
+    pointer-events: none;
+}
+
+.fieldSelect {
+    width: 100%;
+    height: 58px;
+    box-sizing: border-box;
+    padding: 0 14px 0 48px;
+    border: 1.5px solid var(--border-input);
+    border-radius: var(--radius-input);
+    background: #f8fbf9;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.fieldSelect:focus {
+    border-color: var(--green-700);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(47, 107, 71, 0.12);
+    outline: none;
+}
+
+.fieldSelect:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.formError {
+    margin: 0;
+    color: var(--danger);
+    font-size: 0.8125rem;
+}
+
+.formActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-top: 8px;
+    border-top: 1px solid #e3ece5;
+}
+
+/* error stays red on purpose: it is a warning state */
+.assessmentError {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 17px 18px;
+    border: 1px solid #f0d5d5;
+    border-radius: 14px;
+    background: #fff5f5;
+    color: #a64b4b;
+}
+
+.assessmentError svg {
+    flex: none;
+    margin-top: 2px;
+}
+
+.assessmentError strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.88rem;
+}
+
+.assessmentError p {
+    margin: 0;
+    color: #806565;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+/* SIDE PANEL: How it works + weather note */
+
+.sidePanel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.howItWorks {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px;
+    border-radius: var(--radius-card);
+    background: linear-gradient(160deg, var(--green-700), var(--green-800));
+    color: #ffffff;
+}
+
+.howItWorks h2 {
+    margin: 0;
+    font-size: 1.375rem;
+}
+
+.howStep {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.howNumber {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    font-weight: 800;
+}
+
+.howStep strong {
+    display: block;
+    font-size: 1rem;
+}
+
+.howStep span {
+    display: block;
+    margin-top: 2px;
+    color: #cfe6d6;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.noteCard {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #eef7f0;
+}
+
+.noteIcon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: #d3efe6;
+    color: #1d6b5a;
+}
+
+.noteCard strong {
+    display: block;
+    color: var(--green-800);
+    font-size: 1rem;
+}
+
+.noteCard p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.55;
+}
+
+/* =========================================
+   RESULTS
+========================================= */
+
+.resultsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    scroll-margin-top: 24px;
+}
+
+.countPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--mint);
+    color: #1f5c33;
+    font-size: 0.875rem;
+    font-weight: 800;
+}
+
+.countPill strong {
+    font-size: 1.25rem;
+}
+
+/* TOP RECOMMENDATION HERO */
+
+.topPick {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 40px 48px;
+    border-radius: 28px;
+    background: linear-gradient(120deg, var(--green-700) 0%, var(--green-600) 60%, #7fb08f 100%);
+    color: #ffffff;
+}
+
+.matchRing {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 156px;
+    height: 156px;
+    border-radius: 50%;
+}
+
+.matchInner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 122px;
+    height: 122px;
+    border-radius: 50%;
+    background: var(--green-800);
+}
+
+.matchInner strong {
+    font-size: 2.25rem;
+}
+
+.matchInner span {
+    color: #cfe6d6;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+}
+
+.topPickBody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.topPickBody .eyebrow {
+    color: var(--green-200);
+}
+
+.topPickBody h3 {
+    margin: 0;
+    font-size: clamp(1.9rem, 4vw, 2.5rem);
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
+}
+
+.topPickBody > span:not(.eyebrow) {
+    color: #e4f1e8;
+    font-size: 0.95rem;
+}
+
+.topChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.topChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 0.8125rem;
+    font-weight: 700;
+}
+
+/* INFO CARDS (location risk + weather) */
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.infoGrid > :only-child {
+    grid-column: 1 / -1;
+}
+
+.infoCard {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: #ffffff;
+}
+
+.infoIcon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+}
+
+.toneLeaf {
+    background: #ddede1;
+    color: var(--green-700);
+}
+
+.toneWater {
+    background: #d3efe6;
+    color: #1d6b5a;
+}
+
+.infoBody {
+    min-width: 0;
+}
+
+.infoBody h3 {
+    margin: 0 0 8px;
+    color: var(--green-800);
+    font-size: 1.0625rem;
+}
+
+.infoBody p {
+    margin: 0 0 6px;
+    color: var(--text-soft);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.infoBody ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    color: var(--text-soft);
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.infoLabel {
+    display: block;
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
+.infoValue {
+    display: block;
+    color: var(--green-800);
+    font-size: 1.75rem;
+    line-height: 1.2;
+}
+
+/* FILTER CHIPS (shown only when there is more than one level) */
+
+.filterRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filterChip {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 20px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--text-soft);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.filterChip:hover {
+    background: var(--green-100);
+}
+
+.filterChipActive,
+.filterChipActive:hover {
+    border-color: var(--green-700);
+    background: var(--green-700);
+    color: #ffffff;
+}
+
+/* RANKED LIST */
+
+.rankList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rankCard {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: #ffffff;
+}
+
+.rankRow {
+    display: grid;
+    grid-template-columns: 44px 84px minmax(0, 1.2fr) minmax(0, 1.4fr) auto auto;
+    align-items: center;
+    gap: 24px;
+    padding: 20px 24px;
+}
+
+.rankNumber {
+    color: #9db3a5;
+    font-size: 1.375rem;
+    font-weight: 800;
+}
+
+.rankImage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 68px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #ddede1;
+    color: var(--green-700);
+}
+
+.rankImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rankName {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.rankName strong {
+    color: var(--green-800);
+    font-size: 1.125rem;
+    overflow-wrap: anywhere;
+}
+
+.rankName span {
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
+.scoreWrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.scoreTrack {
+    flex: 1;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--green-100);
+}
+
+.scoreFill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green-700), var(--green-600));
+}
+
+.scoreValue {
+    width: 52px;
+    color: var(--green-800);
+    font-size: 1.0625rem;
+    font-weight: 800;
+}
+
+.levelBadge {
+    justify-self: start;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.levelHigh {
+    background: #d9f0dc;
+    color: #1f5c33;
+}
+
+.levelModerate {
+    background: var(--lime);
+    color: var(--lime-ink);
+}
+
+/* low is a warning-type status, so it stays soft red */
+.levelLow {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.rankActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.rankActions .softButton,
+.rankActions .primaryButton {
+    height: 46px;
+    padding: 0 18px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    box-shadow: none;
+}
+
+/* "Why this match?" panel (native <details>) */
+
+.detailsPanel {
+    border-top: 1px solid #e3ece5;
+}
+
+.detailsToggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 24px;
+    background: #f8fbf9;
+    color: var(--green-800);
+    font-size: 0.875rem;
+    font-weight: 800;
+    cursor: pointer;
+    list-style: none;
+}
+
+.detailsToggle::-webkit-details-marker {
+    display: none;
+}
+
+.detailsToggle::after {
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--green-700);
+    border-bottom: 2px solid var(--green-700);
+    content: "";
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.detailsPanel[open] .detailsToggle::after {
+    transform: rotate(-135deg);
+}
+
+.detailsBody {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px 24px 24px;
+}
+
+.factorGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+}
+
+.factorItem {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #f3f9f4;
+}
+
+.factorItem span {
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+
+.factorItem strong {
+    color: var(--green-800);
+    font-size: 1.0625rem;
+}
+
+.explanation strong,
+.cautionBox strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--green-800);
+    font-size: 0.875rem;
+}
+
+.explanation p {
+    margin: 0 0 6px;
+    color: var(--text-soft);
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
+.cautionBox {
+    padding: 14px 16px;
+    border: 1px solid #dde8bc;
+    border-radius: 14px;
+    background: #f1f8e3;
+}
+
+.cautionBox strong {
+    color: #3a5209;
+}
+
+.cautionBox p {
+    margin: 0;
+    color: #4a5c51;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+/* NO RESULTS */
+
+.noResults {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 40px 24px;
+    border: 1.5px dashed #b9d3c0;
+    border-radius: var(--radius-card);
+    background: #ffffff;
+    text-align: center;
+}
+
+.noResultsIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    margin-bottom: 16px;
+    border-radius: 19px;
+    background: var(--green-100);
+    color: var(--green-700);
+}
+
+.noResults h3 {
+    margin: 0 0 8px;
+    color: var(--green-800);
+    font-size: 1.25rem;
+}
+
+.noResults p {
+    max-width: 520px;
+    margin: 0 0 20px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+    .assessmentGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .rankRow {
+        grid-template-columns: 44px 84px minmax(0, 1fr);
+        gap: 16px 20px;
+    }
+
+    .scoreWrap,
+    .levelBadge,
+    .rankActions {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 800px) {
+    .infoGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .topPick {
+        padding: 32px 28px;
+        gap: 28px;
+    }
+}
+
+@media (max-width: 650px) {
+    .assessmentPage {
+        padding: 40px 5% 60px;
+    }
+
+    .fieldGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .formCard,
+    .howItWorks {
+        padding: 24px;
+    }
+
+    .formActions {
+        flex-direction: column;
+    }
+
+    .formActions .primaryButton,
+    .formActions .secondaryButton {
+        width: 100%;
+    }
+
+    .rankRow {
+        padding: 18px;
+    }
+
+    .rankActions .softButton,
+    .rankActions .primaryButton {
+        flex: 1 1 100%;
+    }
+
+    .detailsToggle,
+    .detailsBody {
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .primaryButton,
+    .secondaryButton,
+    .softButton,
+    .fieldSelect,
+    .detailsToggle::after {
+        transition: none;
+    }
+
+    .primaryButton:hover:not(:disabled) {
+        transform: none;
+    }
+}

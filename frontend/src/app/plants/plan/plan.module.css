@@ -1,424 +1,461 @@
 /* =========================================
-   PLAN THIS PLANT PAGE (green theme)
-   Same class names as before.
+   PLAN THIS PLANT PAGE - matches the "Plan This Plant" board in the UI Mockups
+   Works together with the updated plants/plan/page.js.
    Uses the CSS variables from globals.css (:root).
 ========================================= */
 
 .planPage {
-  min-height: 100vh;
-  padding: 70px 7% 80px;
-  background: linear-gradient(180deg, #eaf4ec 0%, var(--green-50) 380px);
-  box-sizing: border-box;
+    min-height: 100vh;
+    padding: 56px clamp(24px, 4.5vw, 64px) 80px;
+    background: var(--green-50);
+    box-sizing: border-box;
 }
 
 .planContainer {
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 8px;
+    color: var(--green-700);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.backLink:hover {
+    text-decoration: underline;
 }
 
 /* HEADER */
 
 .planHeader {
-  margin: 25px 0 32px;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .sectionBadge {
-  display: inline-block;
-  margin-bottom: 12px;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: #ffffff;
-  color: var(--accent);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
 }
 
 .planHeader h1 {
-  margin: 8px 0 12px;
-  color: var(--green-800);
-  font-size: clamp(2.5rem, 4vw, 3.35rem);
-  font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.05em;
+    margin: 0;
+    color: var(--green-800);
+    font-size: clamp(2.2rem, 4vw, 2.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
 }
 
 .planHeader p {
-  max-width: 620px;
-  margin: 0 auto;
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.7;
+    max-width: 650px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
 }
 
-/* SELECTED CROP */
-
-.selectedCropCard {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 24px;
-  padding: 24px 28px;
-  background: linear-gradient(120deg, var(--green-700) 0%, var(--green-600) 60%, #7fb08f 100%);
-  border: 0;
-  border-radius: 24px;
-  box-shadow: 0 20px 44px rgba(31, 77, 54, 0.18);
-  box-sizing: border-box;
+.catalogueState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 240px;
+    color: var(--muted);
+    text-align: center;
 }
 
-.selectedCropIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 76px;
-  height: 76px;
-  flex-shrink: 0;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--green-700);
-  font-size: 2rem;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+.catalogueState p {
+    margin: 0;
 }
 
-.selectedCropCard > div:last-child {
-  min-width: 0;
+/* error stays red on purpose: it is a warning state */
+.assessmentError {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid #f0d5d5;
+    border-radius: 16px;
+    background: #fff5f5;
+    color: #a64b4b;
 }
 
-.selectedCropCard span {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--green-200);
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+.assessmentError svg {
+    flex: none;
+    margin-top: 2px;
 }
 
-.selectedCropCard h2 {
-  margin: 0 0 4px;
-  color: #ffffff;
-  font-size: 1.7rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+.assessmentError strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
 }
 
-.selectedCropCard p {
-  margin: 0;
-  color: #e4f1e8;
-  font-size: 0.88rem;
-  line-height: 1.5;
+.assessmentError p {
+    margin: 0;
+    color: #806565;
+    line-height: 1.6;
+}
+
+.errorBackButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    color: var(--green-700);
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.errorBackButton:hover {
+    text-decoration: underline;
+}
+
+/* LAYOUT: [ form ] [ selected crop ] */
+
+.planGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
 }
 
 /* FORM */
 
 .planForm {
-  padding: 36px;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  box-shadow: var(--shadow-md);
-  box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
 }
 
-/* FORM FIELDS */
+.fieldGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 22px;
+}
+
+.fullWidth {
+    grid-column: 1 / -1;
+}
 
 .formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
 }
 
 .formGroup label {
-  color: var(--green-800);
-  font-size: 0.88rem;
-  font-weight: 700;
+    color: var(--green-800);
+    font-size: 0.875rem;
+    font-weight: 700;
 }
 
-.formGroup input,
-.formGroup select,
+.inputWrap {
+    position: relative;
+}
+
+.fieldIcon {
+    position: absolute;
+    top: 0;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    height: 58px;
+    color: #6f8377;
+    pointer-events: none;
+}
+
+.inputWrap input,
+.inputWrap select,
 .formGroup textarea {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 13px 16px;
-  border: 1.5px solid var(--border-input);
-  border-radius: var(--radius-input);
-  background: #f8fbf9;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1.5px solid var(--border-input);
+    border-radius: var(--radius-input);
+    background: #f8fbf9;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.formGroup input,
-.formGroup select {
-  min-height: 54px;
-}
-
-.formGroup select {
-  cursor: pointer;
+.inputWrap input,
+.inputWrap select {
+    height: 58px;
+    padding: 0 14px 0 48px;
 }
 
 .formGroup textarea {
-  min-height: 120px;
-  resize: vertical;
-  line-height: 1.5;
+    min-height: 120px;
+    padding: 14px 16px;
+    resize: vertical;
 }
 
-.formGroup input::placeholder,
-.formGroup textarea::placeholder {
-  color: #8a9a90;
-}
-
-.formGroup input:hover,
-.formGroup select:hover,
-.formGroup textarea:hover {
-  border-color: #b9d3c0;
-}
-
-.formGroup input:focus,
-.formGroup select:focus,
+.inputWrap input:focus,
+.inputWrap select:focus,
 .formGroup textarea:focus {
-  border-color: var(--green-700);
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(47, 107, 71, 0.12);
+    border-color: var(--green-700);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(47, 107, 71, 0.12);
+    outline: none;
 }
-
-.formGroup input:disabled,
-.formGroup select:disabled,
-.formGroup textarea:disabled {
-  background: #eef3ef;
-  cursor: not-allowed;
-}
-
-/* ERROR MESSAGE — stays red on purpose: it is a warning state */
-
-.assessmentError {
-  display: flex;
-  align-items: flex-start;
-  gap: 13px;
-  margin-bottom: 22px;
-  padding: 17px 18px;
-  background: #fff5f5;
-  border: 1px solid #f0d5d5;
-  border-radius: 14px;
-}
-
-.assessmentError > span {
-  flex-shrink: 0;
-  font-size: 1.2rem;
-}
-
-.assessmentError strong {
-  display: block;
-  margin-bottom: 3px;
-  color: #a64b4b;
-  font-size: 0.88rem;
-}
-
-.assessmentError p {
-  margin: 0;
-  color: #806565;
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-
-/* LOADING STATE */
-
-.catalogueState {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 250px;
-  color: var(--muted);
-  text-align: center;
-}
-
-.catalogueState p {
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-/* ERROR PAGE BUTTON */
-
-.errorBackButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 12px;
-  padding: 12px 20px;
-  border: 0;
-  border-radius: 12px;
-  background: var(--green-700);
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 800;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-
-.errorBackButton:hover {
-  background: var(--green-800);
-}
-
-/* FORM ACTIONS */
 
 .planFormActions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 8px;
-  padding-top: 22px;
-  border-top: 1px solid #e3ece5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-top: 24px;
+    border-top: 1px solid #e3ece5;
 }
 
-.planCancelButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 52px;
-  padding: 0 24px;
-  border: 0;
-  border-radius: 14px;
-  background: var(--green-100);
-  color: #1f5c33;
-  font-size: 0.9rem;
-  font-weight: 800;
-  text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease;
+.planSubmitButton,
+.planCancelButton,
+.modalButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 56px;
+    padding: 0 28px;
+    box-sizing: border-box;
+    border-radius: var(--radius-input);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.planCancelButton:hover {
-  background: var(--mint);
-  color: var(--green-800);
+.planSubmitButton,
+.modalButton {
+    border: none;
+    background: var(--green-700);
+    color: #ffffff;
+    box-shadow: var(--shadow-btn);
 }
 
-.planSubmitButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 52px;
-  padding: 0 30px;
-  margin-top: 0;
-  border: none;
-  border-radius: 14px;
-  background: var(--green-700);
-  color: #fff;
-  font-family: inherit;
-  font-size: 0.92rem;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: var(--shadow-btn);
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.planSubmitButton:hover:not(:disabled) {
-  background: var(--green-800);
-  transform: translateY(-1px);
+.planSubmitButton:hover:not(:disabled),
+.modalButton:hover {
+    background: var(--green-800);
+    transform: translateY(-2px);
 }
 
 .planSubmitButton:disabled {
-  opacity: 0.65;
-  cursor: wait;
+    opacity: 0.7;
+    cursor: not-allowed;
 }
+
+.planCancelButton {
+    border: 1.5px solid #b9d3c0;
+    background: #ffffff;
+    color: #1f5c33;
+}
+
+.planCancelButton:hover {
+    background: var(--green-50);
+}
+
+/* SELECTED CROP CARD */
+
+.selectedCropCard {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
+}
+
+.cropPhoto {
+    position: relative;
+    height: 170px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ddede1, #bfe0c9);
+}
+
+.cropPhotoImage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cropBody {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 28px;
+}
+
+.cropKicker {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.cropBody h2 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: 1.5rem;
+    overflow-wrap: anywhere;
+}
+
+.cropBody p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.cropFacts {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.cropFact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e3ece5;
+    font-size: 0.875rem;
+}
+
+.cropFact:last-child {
+    border-bottom: none;
+}
+
+.cropFact span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+}
+
+.cropFact span svg {
+    flex: none;
+    color: var(--green-700);
+}
+
+.cropFact strong {
+    color: var(--green-800);
+    text-align: right;
+}
+
+/* SUCCESS POPUP */
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(25, 38, 31, 0.5);
+}
+
+.modal {
+    width: 100%;
+    max-width: 440px;
+    padding: 40px 32px 32px;
+    box-sizing: border-box;
+    border-radius: 28px;
+    background: #ffffff;
+    text-align: center;
+    box-shadow: 0 30px 70px rgba(25, 38, 31, 0.3);
+}
+
+.modalIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: var(--mint);
+    color: var(--green-700);
+}
+
+.modal h2 {
+    margin: 0 0 10px;
+    color: var(--green-800);
+    font-size: 1.5rem;
+}
+
+.modal p {
+    margin: 0 0 26px;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+/* FOCUS */
 
 .planSubmitButton:focus-visible,
 .planCancelButton:focus-visible,
+.modalButton:focus-visible,
+.backLink:focus-visible,
 .errorBackButton:focus-visible {
-  outline: 3px solid rgba(47, 107, 71, 0.4);
-  outline-offset: 3px;
+    outline: 3px solid rgba(47, 107, 71, 0.4);
+    outline-offset: 3px;
 }
 
 /* RESPONSIVE */
 
-@media (max-width: 700px) {
-  .planPage {
-    padding: 55px 5%;
-  }
-
-  .planHeader {
-    margin-top: 15px;
-  }
-
-  .planHeader h1 {
-    font-size: 2.25rem;
-  }
-
-  .planHeader p {
-    font-size: 0.9rem;
-  }
-
-  .planForm {
-    padding: 25px 21px;
-    border-radius: 22px;
-  }
-
-  .selectedCropCard {
-    padding: 20px;
-    gap: 14px;
-  }
-
-  .selectedCropIcon {
-    width: 60px;
-    height: 60px;
-    border-radius: 16px;
-    font-size: 1.8rem;
-  }
-
-  .selectedCropCard h2 {
-    font-size: 1.3rem;
-  }
+@media (max-width: 950px) {
+    .planGrid {
+        grid-template-columns: 1fr;
+    }
 }
 
-@media (max-width: 520px) {
-  .planPage {
-    padding: 45px 4%;
-  }
+@media (max-width: 650px) {
+    .planPage {
+        padding: 40px 5% 60px;
+    }
 
-  .planHeader h1 {
-    font-size: 2rem;
-  }
+    .planForm {
+        padding: 22px;
+    }
 
-  .selectedCropCard {
-    align-items: flex-start;
-  }
+    .fieldGrid {
+        grid-template-columns: 1fr;
+    }
 
-  .planForm {
-    padding: 22px 18px;
-  }
-
-  .planFormActions {
-    flex-direction: column-reverse;
-    align-items: stretch;
-  }
-
-  .planCancelButton,
-  .planSubmitButton {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .assessmentError {
-    padding: 15px;
-  }
+    .planFormActions > * {
+        flex: 1 1 100%;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .planSubmitButton,
-  .planCancelButton,
-  .errorBackButton {
-    transition: none;
-  }
+    .planSubmitButton,
+    .planCancelButton,
+    .modalButton {
+        transition: none;
+    }
 
-  .planSubmitButton:hover:not(:disabled) {
-    transform: none;
-  }
+    .planSubmitButton:hover:not(:disabled),
+    .modalButton:hover {
+        transform: none;
+    }
 }

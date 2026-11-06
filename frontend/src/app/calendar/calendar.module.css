@@ -1,0 +1,449 @@
+/* =========================================
+   PLANTING CALENDAR - matches the "Planting Calendar" board in the UI Mockups
+   Uses the CSS variables from globals.css (:root).
+========================================= */
+
+.calendarPage {
+    min-height: 100vh;
+    padding: 56px clamp(24px, 4.5vw, 64px) 80px;
+    background: var(--green-50);
+    box-sizing: border-box;
+}
+
+.calendarContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+
+.calendarHeader {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.headerCopy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+}
+
+.sectionBadge {
+    display: inline-block;
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.headerCopy h1 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: clamp(2.2rem, 4vw, 2.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.headerCopy p {
+    max-width: 640px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.headerStats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 12px 20px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--green-800);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.pill strong {
+    font-size: 1.05rem;
+}
+
+/* GENERAL GUIDE NOTE */
+
+.guideNote {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 22px;
+    border: 1px solid #dde8bc;
+    border-radius: 18px;
+    background: #f1f8e3;
+}
+
+.guideIcon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--lime-ink);
+}
+
+.guideNote strong {
+    display: block;
+    margin-bottom: 2px;
+    color: #3a5209;
+    font-size: 0.95rem;
+}
+
+.guideNote span {
+    color: var(--text-soft);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+/* STATES */
+
+.stateBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 220px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
+    color: var(--muted);
+    text-align: center;
+}
+
+.stateBox h2 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: 1.25rem;
+}
+
+.stateBox p {
+    margin: 0;
+}
+
+.stateIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--mint);
+    color: var(--green-700);
+}
+
+/* error stays red on purpose: it is a warning state */
+.errorBox {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid #f0d5d5;
+    border-radius: 16px;
+    background: #fff5f5;
+    color: #a64b4b;
+}
+
+.errorBox svg {
+    flex: none;
+    margin-top: 2px;
+}
+
+.errorBox strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+}
+
+.errorBox p {
+    margin: 0;
+    color: #806565;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* RESULTS */
+
+.results {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.season {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 30px;
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    background: linear-gradient(180deg, #f5faf6, #ffffff);
+}
+
+.seasonHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e3ece5;
+}
+
+.seasonKicker {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.seasonHeader h3 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: 1.875rem;
+    letter-spacing: -0.02em;
+}
+
+.seasonCount {
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--green-800);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.cropGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.cropCard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: #ffffff;
+}
+
+.cropTop {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e3ece5;
+}
+
+.cropImage {
+    position: relative;
+    flex: none;
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--mint);
+}
+
+.cropTitle {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.cropCategory {
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.cropTitle h4 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+}
+
+.scheduleList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.schedule + .schedule {
+    padding-top: 20px;
+    border-top: 1px dashed #cfe0d3;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #f3f9f4;
+}
+
+.detail small {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.detail small svg {
+    flex: none;
+    color: var(--green-700);
+}
+
+.detail strong {
+    color: var(--green-800);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.notes {
+    display: flex;
+    gap: 12px;
+    padding: 14px 18px;
+    border: 1px solid #dde8bc;
+    border-radius: 16px;
+    background: #f1f8e3;
+}
+
+.notes svg {
+    flex: none;
+    margin-top: 1px;
+    color: var(--lime-ink);
+}
+
+.notes strong {
+    display: block;
+    margin-bottom: 3px;
+    color: #3a5209;
+    font-size: 0.8125rem;
+}
+
+.notes p {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.planLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    border-radius: 12px;
+    background: #e6f0e8;
+    color: #1f5c33;
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.planLink:hover {
+    background: var(--mint);
+}
+
+.planLink:focus-visible {
+    outline: 3px solid var(--green-500);
+    outline-offset: 2px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+    .cropGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .calendarPage {
+        padding: 40px 5% 60px;
+    }
+
+    .season {
+        padding: 20px;
+        border-radius: 24px;
+    }
+
+    .cropCard {
+        padding: 20px;
+    }
+
+    .details {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .planLink {
+        transition: none;
+    }
+}

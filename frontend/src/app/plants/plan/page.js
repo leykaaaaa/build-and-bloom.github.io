@@ -9,7 +9,189 @@ import {
 
 import { getCropById } from "../../../services/cropService";
 import { createPlantingPlan } from "../../../services/plantingPlanService";
+import CropImage from "../../../components/CropImage";
 import styles from "./plan.module.css";
+
+
+// =========================================================
+// SMALL INLINE ICONS (no extra package needed)
+// =========================================================
+
+function Icon({ size = 20, strokeWidth = 2, children }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    );
+}
+
+const ArrowLeftIcon = () => (
+    <Icon size={16} strokeWidth={2.4}>
+        <path d="M19 12H5" />
+        <path d="m12 19-7-7 7-7" />
+    </Icon>
+);
+
+const ArrowRightIcon = () => (
+    <Icon size={18} strokeWidth={2.4}>
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+    </Icon>
+);
+
+const TagIcon = () => (
+    <Icon>
+        <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+        <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+    </Icon>
+);
+
+const MapPinIcon = ({ size = 20 }) => (
+    <Icon size={size}>
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+        <circle cx="12" cy="10" r="3" />
+    </Icon>
+);
+
+const CalendarIcon = () => (
+    <Icon>
+        <rect width="18" height="18" x="3" y="4" rx="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+    </Icon>
+);
+
+const HashIcon = () => (
+    <Icon>
+        <path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18" />
+    </Icon>
+);
+
+const GridIcon = () => (
+    <Icon>
+        <rect width="18" height="18" x="3" y="3" rx="2" />
+        <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+    </Icon>
+);
+
+const LayersIcon = () => (
+    <Icon size={18}>
+        <path d="m12 2 10 5-10 5L2 7z" />
+        <path d="m2 12 10 5 10-5" />
+        <path d="m2 17 10 5 10-5" />
+    </Icon>
+);
+
+const DropIcon = () => (
+    <Icon size={18}>
+        <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
+    </Icon>
+);
+
+const SunIcon = () => (
+    <Icon size={18}>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </Icon>
+);
+
+const ThermometerIcon = () => (
+    <Icon size={18}>
+        <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+    </Icon>
+);
+
+const AlertIcon = () => (
+    <Icon size={20}>
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+        <path d="M12 9v4M12 17h.01" />
+    </Icon>
+);
+
+const CheckCircleIcon = () => (
+    <Icon size={34}>
+        <circle cx="12" cy="12" r="10" />
+        <path d="m9 12 2 2 4-4" />
+    </Icon>
+);
+
+
+const LOCATIONS = [
+    [6, "Agno"],
+    [7, "Aguilar"],
+    [8, "Alaminos"],
+    [9, "Alcala"],
+    [10, "Anda"],
+    [11, "Asingan"],
+    [12, "Balungao"],
+    [13, "Bani"],
+    [14, "Basista"],
+    [15, "Bautista"],
+    [16, "Bayambang"],
+    [17, "Binalonan"],
+    [18, "Binmaley"],
+    [19, "Bolinao"],
+    [20, "Bugallon"],
+    [21, "Burgos"],
+    [22, "Calasiao"],
+    [1, "Dagupan"],
+    [23, "Dasol"],
+    [24, "Infanta"],
+    [25, "Labrador"],
+    [26, "Laloac"],
+    [2, "Lingayen"],
+    [27, "Mabini"],
+    [28, "Malasiqui"],
+    [29, "Manaoag"],
+    [30, "Mangaldan"],
+    [31, "Mangatarem"],
+    [32, "Mapandan"],
+    [33, "Natividad"],
+    [34, "Pozorrubio"],
+    [35, "Rosales"],
+    [36, "San Fabian"],
+    [37, "San Jacinto"],
+    [38, "San Manuel"],
+    [39, "San Nicolas"],
+    [40, "San Quintin"],
+    [4, "Santa Barbara"],
+    [41, "Santa Maria"],
+    [42, "Sison"],
+    [43, "Sual"]
+];
+
+const GROWING_METHODS = [
+    "Open Field",
+    "Container",
+    "Raised Bed",
+    "Greenhouse",
+    "Backyard Garden"
+];
+
+const EMPTY_FORM = {
+
+    plan_name: "",
+
+    location_id: "",
+
+    planting_date: "",
+
+    quantity: "",
+
+    growing_method: "",
+
+    notes: ""
+
+};
 
 
 export default function PlanPlantPage() {
@@ -38,38 +220,24 @@ export default function PlanPlantPage() {
         useState("");
 
 
-    const [form, setForm] = useState({
-
-        plan_name: "",
-
-        location_id: "",
-
-        planting_date: "",
-
-        quantity: "",
-
-        growing_method: "",
-
-        notes: ""
-
-    });
+    const [form, setForm] = useState(EMPTY_FORM);
 
 
     useEffect(() => {
 
-    const storedUser =
-        localStorage.getItem(
-            "buildAndBloomUser"
-        );
+        const storedUser =
+            localStorage.getItem(
+                "buildAndBloomUser"
+            );
 
 
-    if (!storedUser) {
+        if (!storedUser) {
 
-        router.push("/login");
+            router.push("/login");
 
-    }
+        }
 
-}, [router]);
+    }, [router]);
 
     /*
         Load the selected crop.
@@ -314,21 +482,7 @@ export default function PlanPlantPage() {
                 Clear the form after success.
             */
 
-            setForm({
-
-                plan_name: "",
-
-                location_id: "",
-
-                planting_date: "",
-
-                quantity: "",
-
-                growing_method: "",
-
-                notes: ""
-
-            });
+            setForm(EMPTY_FORM);
 
         } catch (err) {
 
@@ -360,7 +514,7 @@ export default function PlanPlantPage() {
 
                 <div className={styles.planContainer}>
 
-                    <div className={styles.catalogueState}>
+                    <div className={styles.catalogueState} role="status">
 
                         <p>
                             Loading crop information...
@@ -390,11 +544,9 @@ export default function PlanPlantPage() {
 
                 <div className={styles.planContainer}>
 
-                    <div className={styles.assessmentError}>
+                    <div className={styles.assessmentError} role="alert">
 
-                        <span>
-                            ️
-                        </span>
+                        <AlertIcon />
 
                         <div>
 
@@ -410,7 +562,8 @@ export default function PlanPlantPage() {
                                 href="/crops"
                                 className={styles.errorBackButton}
                             >
-                                ← Back to Crops
+                                <ArrowLeftIcon />
+                                Back to Crops
                             </Link>
 
                         </div>
@@ -433,12 +586,23 @@ export default function PlanPlantPage() {
             <div className={styles.planContainer}>
 
 
+                {/* BACK LINK */}
+
+                <Link
+                    href={`/crops/${cropId}`}
+                    className={styles.backLink}
+                >
+                    <ArrowLeftIcon />
+                    Back to crop details
+                </Link>
+
+
                 {/* HEADER */}
 
                 <div className={styles.planHeader}>
 
                     <span className={styles.sectionBadge}>
-                         Build & Bloom
+                        Planting Plan
                     </span>
 
                     <h1>
@@ -446,53 +610,20 @@ export default function PlanPlantPage() {
                     </h1>
 
                     <p>
-                        Create a planting plan and keep track
-                        of your growing activities.
+                        Set your planting details and save the plan
+                        to My Plants.
                     </p>
 
                 </div>
-
-
-                {/* SELECTED CROP */}
-
-                {crop && (
-
-                    <div className={styles.selectedCropCard}>
-
-                        <div className={styles.selectedCropIcon}>
-                            
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Selected Crop
-                            </span>
-
-                            <h2>
-                                {crop.crop_name}
-                            </h2>
-
-                            <p>
-                                {crop.category}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                )}
 
 
                 {/* ERROR */}
 
                 {error && (
 
-                    <div className={styles.assessmentError}>
+                    <div className={styles.assessmentError} role="alert">
 
-                        <span>
-                            ️
-                        </span>
+                        <AlertIcon />
 
                         <div>
 
@@ -512,20 +643,24 @@ export default function PlanPlantPage() {
 
 
                 {/* SUCCESS POPUP */}
+
                 {success && (
+
                     <div
-                        className="register-modal-overlay"
+                        className={styles.modalOverlay}
                         role="presentation"
                     >
+
                         <div
-                            className="register-modal"
+                            className={styles.modal}
                             role="dialog"
                             aria-modal="true"
                             aria-labelledby="plan-success-title"
                             aria-describedby="plan-success-description"
                         >
-                            <div className="register-modal-icon">
-                                
+
+                            <div className={styles.modalIcon}>
+                                <CheckCircleIcon />
                             </div>
 
                             <h2 id="plan-success-title">
@@ -541,241 +676,323 @@ export default function PlanPlantPage() {
 
                             <Link
                                 href="/plants"
-                                className="register-modal-button"
+                                className={styles.modalButton}
                             >
                                 View My Plants
+                                <ArrowRightIcon />
                             </Link>
+
                         </div>
+
                     </div>
+
                 )}
 
 
-                {/* FORM */}
-
-                <form
-                    className={styles.planForm}
-                    onSubmit={handleSubmit}
-                >
+                <div className={styles.planGrid}>
 
 
-                    {/* PLAN NAME */}
+                    {/* FORM */}
 
-                    <div className={styles.formGroup}>
+                    <form
+                        className={styles.planForm}
+                        onSubmit={handleSubmit}
+                    >
 
-                        <label htmlFor="plan_name">
-                            Plan Name
-                        </label>
-
-                        <input
-                            id="plan_name"
-                            name="plan_name"
-                            type="text"
-                            value={form.plan_name}
-                            onChange={handleChange}
-                            placeholder="e.g. My Tomato Garden"
-                            required
-                        />
-
-                    </div>
+                        <div className={styles.fieldGrid}>
 
 
-                    {/* LOCATION */}
+                            {/* PLAN NAME */}
 
-                    <div className={styles.formGroup}>
+                            <div className={`${styles.formGroup} ${styles.fullWidth}`}>
 
-                        <label htmlFor="location_id">
-                            Growing Location
-                        </label>
+                                <label htmlFor="plan_name">
+                                    Plan Name
+                                </label>
 
-                        <select
-                            id="location_id"
-                            name="location_id"
-                            value={form.location_id}
-                            onChange={handleChange}
-                        >
+                                <div className={styles.inputWrap}>
 
-                            <option value="">
-                                Select a location
-                            </option>
+                                    <span className={styles.fieldIcon}>
+                                        <TagIcon />
+                                    </span>
 
-                            <option value="8"> Alaminos </option>
-                            <option value="6"> Agno </option>
-                            <option value="7"> Aguilar </option>
-                            <option value="9"> Alcala </option>
-                            <option value="10"> Anda </option>
-                            <option value="11"> Asingan </option>
-                            <option value="12"> Balungao </option>
-                            <option value="13"> Bani </option>
-                            <option value="14"> Basista </option>
-                            <option value="15"> Bautista </option>
-                            <option value="16"> Bayambang </option>
-                            <option value="17"> Binalonan </option>
-                            <option value="18"> Binmaley </option>
-                            <option value="19"> Bolinao </option>
-                            <option value="20"> Bugallon </option>
-                            <option value="21"> Burgos </option>
-                            <option value="22"> Calasiao </option>
-                            <option value="23"> Dasol</option>
-                            <option value="1"> Dagupan </option>
-                            <option value="24"> Infanta </option>
-                            <option value="25"> Labrador </option>
-                            <option value="26"> Laloac </option>
-                            <option value="2"> Lingayen </option>
-                            <option value="27"> Mabini </option>
-                            <option value="28"> Malasiqui </option>
-                            <option value="29"> Manaoag </option>
-                            <option value="30"> Mangaldan </option>
-                            <option value="31"> Mangatarem </option>
-                            <option value="32"> Mapandan </option>
-                            <option value="33"> Natividad </option>
-                            <option value="34"> Pozorrubio </option>
-                            <option value="35"> Rosales </option>
-                            <option value="36"> San Fabian </option>
-                            <option value="37"> San Jacinto </option>
-                            <option value="38"> San Manuel </option>
-                            <option value="39"> San Nicolas </option>
-                            <option value="40"> San Quintin </option>
-                            <option value="4"> Santa Barbara </option>
-                            <option value="41"> Santa Maria </option>
-                            <option value="42"> Sison </option>
-                            <option value="43"> Sual </option>  
+                                    <input
+                                        id="plan_name"
+                                        name="plan_name"
+                                        type="text"
+                                        value={form.plan_name}
+                                        onChange={handleChange}
+                                        placeholder="e.g. My Tomato Garden"
+                                        required
+                                    />
 
-                        </select>
+                                </div>
 
-                    </div>
+                            </div>
 
 
-                    {/* PLANTING DATE */}
+                            {/* LOCATION */}
 
-                    <div className={styles.formGroup}>
+                            <div className={styles.formGroup}>
 
-                        <label htmlFor="planting_date">
-                            Planting Date
-                        </label>
+                                <label htmlFor="location_id">
+                                    Growing Location
+                                </label>
 
-                        <input
-                            id="planting_date"
-                            name="planting_date"
-                            type="date"
-                            value={form.planting_date}
-                            onChange={handleChange}
-                        />
+                                <div className={styles.inputWrap}>
 
-                    </div>
+                                    <span className={styles.fieldIcon}>
+                                        <MapPinIcon />
+                                    </span>
 
+                                    <select
+                                        id="location_id"
+                                        name="location_id"
+                                        value={form.location_id}
+                                        onChange={handleChange}
+                                    >
 
-                    {/* QUANTITY */}
+                                        <option value="">
+                                            Select a location
+                                        </option>
 
-                    <div className={styles.formGroup}>
+                                        {LOCATIONS.map(([id, name]) => (
+                                            <option key={id} value={id}>
+                                                {name}
+                                            </option>
+                                        ))}
 
-                        <label htmlFor="quantity">
-                            Quantity
-                        </label>
+                                    </select>
 
-                        <input
-                            id="quantity"
-                            name="quantity"
-                            type="text"
-                            value={form.quantity}
-                            onChange={handleChange}
-                            placeholder="e.g. 20 plants"
-                        />
+                                </div>
 
-                    </div>
-
-
-                    {/* GROWING METHOD */}
-
-                    <div className={styles.formGroup}>
-
-                        <label htmlFor="growing_method">
-                            Growing Method
-                        </label>
-
-                        <select
-                            id="growing_method"
-                            name="growing_method"
-                            value={form.growing_method}
-                            onChange={handleChange}
-                        >
-
-                            <option value="">
-                                Select a growing method
-                            </option>
-
-                            <option value="Open Field">
-                                Open Field
-                            </option>
-
-                            <option value="Container">
-                                Container
-                            </option>
-
-                            <option value="Raised Bed">
-                                Raised Bed
-                            </option>
-
-                            <option value="Greenhouse">
-                                Greenhouse
-                            </option>
-
-                            <option value="Backyard Garden">
-                                Backyard Garden
-                            </option>
-
-                        </select>
-
-                    </div>
+                            </div>
 
 
-                    {/* NOTES */}
+                            {/* PLANTING DATE */}
 
-                    <div className={styles.formGroup}>
+                            <div className={styles.formGroup}>
 
-                        <label htmlFor="notes">
-                            Notes
-                        </label>
+                                <label htmlFor="planting_date">
+                                    Planting Date
+                                </label>
 
-                        <textarea
-                            id="notes"
-                            name="notes"
-                            value={form.notes}
-                            onChange={handleChange}
-                            placeholder="Add any notes about your planting plan..."
-                            rows="5"
-                        />
+                                <div className={styles.inputWrap}>
 
-                    </div>
+                                    <span className={styles.fieldIcon}>
+                                        <CalendarIcon />
+                                    </span>
 
+                                    <input
+                                        id="planting_date"
+                                        name="planting_date"
+                                        type="date"
+                                        value={form.planting_date}
+                                        onChange={handleChange}
+                                    />
 
-                    {/* ACTIONS */}
+                                </div>
 
-                    <div className={styles.planFormActions}>
-
-                        <Link
-                            href={`/crops/${cropId}`}
-                            className={styles.planCancelButton}
-                        >
-                            Back to Crop
-                        </Link>
+                            </div>
 
 
-                        <button
-                            type="submit"
-                            className={styles.planSubmitButton}
-                            disabled={saving}
-                        >
+                            {/* QUANTITY */}
 
-                            {saving
-                                ? "Creating Plan..."
-                                : "Create Planting Plan"
-                            }
+                            <div className={styles.formGroup}>
 
-                        </button>
+                                <label htmlFor="quantity">
+                                    Quantity
+                                </label>
 
-                    </div>
+                                <div className={styles.inputWrap}>
 
-                </form>
+                                    <span className={styles.fieldIcon}>
+                                        <HashIcon />
+                                    </span>
+
+                                    <input
+                                        id="quantity"
+                                        name="quantity"
+                                        type="text"
+                                        value={form.quantity}
+                                        onChange={handleChange}
+                                        placeholder="e.g. 20 plants"
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* GROWING METHOD */}
+
+                            <div className={styles.formGroup}>
+
+                                <label htmlFor="growing_method">
+                                    Growing Method
+                                </label>
+
+                                <div className={styles.inputWrap}>
+
+                                    <span className={styles.fieldIcon}>
+                                        <GridIcon />
+                                    </span>
+
+                                    <select
+                                        id="growing_method"
+                                        name="growing_method"
+                                        value={form.growing_method}
+                                        onChange={handleChange}
+                                    >
+
+                                        <option value="">
+                                            Select a growing method
+                                        </option>
+
+                                        {GROWING_METHODS.map((method) => (
+                                            <option key={method} value={method}>
+                                                {method}
+                                            </option>
+                                        ))}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* NOTES */}
+
+                        <div className={styles.formGroup}>
+
+                            <label htmlFor="notes">
+                                Notes
+                            </label>
+
+                            <textarea
+                                id="notes"
+                                name="notes"
+                                value={form.notes}
+                                onChange={handleChange}
+                                placeholder="Add any notes about your planting plan..."
+                                rows="5"
+                            />
+
+                        </div>
+
+
+                        {/* ACTIONS */}
+
+                        <div className={styles.planFormActions}>
+
+                            <button
+                                type="submit"
+                                className={styles.planSubmitButton}
+                                disabled={saving}
+                                aria-busy={saving}
+                            >
+
+                                {saving
+                                    ? "Creating Plan..."
+                                    : (
+                                        <>
+                                            Create Planting Plan
+                                            <ArrowRightIcon />
+                                        </>
+                                    )
+                                }
+
+                            </button>
+
+                            <Link
+                                href={`/crops/${cropId}`}
+                                className={styles.planCancelButton}
+                            >
+                                Cancel
+                            </Link>
+
+                        </div>
+
+                    </form>
+
+
+                    {/* SELECTED CROP */}
+
+                    {crop && (
+
+                        <aside className={styles.selectedCropCard}>
+
+                            <div className={styles.cropPhoto}>
+
+                                <CropImage
+                                    cropName={crop.crop_name}
+                                    className={styles.cropPhotoImage}
+                                    sizes="(max-width: 950px) 100vw, 420px"
+                                />
+
+                            </div>
+
+                            <div className={styles.cropBody}>
+
+                                <span className={styles.cropKicker}>
+                                    SELECTED CROP
+                                </span>
+
+                                <h2>
+                                    {crop.crop_name}
+                                </h2>
+
+                                {crop.category && (
+                                    <p>
+                                        {crop.category}
+                                    </p>
+                                )}
+
+                                <div className={styles.cropFacts}>
+
+                                    {crop.soil_type && (
+                                        <div className={styles.cropFact}>
+                                            <span><LayersIcon /> Soil</span>
+                                            <strong>{crop.soil_type}</strong>
+                                        </div>
+                                    )}
+
+                                    {crop.water_requirement && (
+                                        <div className={styles.cropFact}>
+                                            <span><DropIcon /> Water</span>
+                                            <strong>{crop.water_requirement}</strong>
+                                        </div>
+                                    )}
+
+                                    {crop.sunlight_requirement && (
+                                        <div className={styles.cropFact}>
+                                            <span><SunIcon /> Sunlight</span>
+                                            <strong>{crop.sunlight_requirement}</strong>
+                                        </div>
+                                    )}
+
+                                    {crop.min_temperature != null &&
+                                        crop.max_temperature != null && (
+                                        <div className={styles.cropFact}>
+                                            <span><ThermometerIcon /> Temperature</span>
+                                            <strong>
+                                                {crop.min_temperature}°C – {crop.max_temperature}°C
+                                            </strong>
+                                        </div>
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </aside>
+
+                    )}
+
+                </div>
 
             </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
     useRouter,
@@ -11,6 +11,188 @@ import { assessCrops } from "../../services/recommendationService";
 import { getCropById } from "../../services/cropService";
 import CropImage from "../../components/CropImage";
 
+import styles from "./assessment.module.css";
+
+
+// =========================================================
+// SMALL INLINE ICONS (no extra package needed)
+// =========================================================
+
+function Icon({ size = 20, strokeWidth = 2, children }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    );
+}
+
+const MapPinIcon = ({ size }) => (
+    <Icon size={size}>
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+        <circle cx="12" cy="10" r="3" />
+    </Icon>
+);
+
+const LayersIcon = ({ size }) => (
+    <Icon size={size}>
+        <path d="m12 2 10 5-10 5L2 7z" />
+        <path d="m2 12 10 5 10-5" />
+        <path d="m2 17 10 5 10-5" />
+    </Icon>
+);
+
+const DropIcon = ({ size }) => (
+    <Icon size={size}>
+        <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
+    </Icon>
+);
+
+const SunIcon = ({ size }) => (
+    <Icon size={size}>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </Icon>
+);
+
+const HomeIcon = ({ size }) => (
+    <Icon size={size}>
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <path d="M9 22V12h6v10" />
+    </Icon>
+);
+
+const CalendarIcon = ({ size }) => (
+    <Icon size={size}>
+        <rect width="18" height="18" x="3" y="4" rx="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+    </Icon>
+);
+
+const ArrowRightIcon = ({ size = 18 }) => (
+    <Icon size={size} strokeWidth={2.4}>
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+    </Icon>
+);
+
+const ResetIcon = ({ size = 18 }) => (
+    <Icon size={size} strokeWidth={2.4}>
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+        <path d="M3 3v5h5" />
+    </Icon>
+);
+
+const CloudSunIcon = ({ size = 24 }) => (
+    <Icon size={size}>
+        <path d="M12 2v2M4.9 4.9l1.4 1.4M20 12h2M19.1 4.9l-1.4 1.4M15.9 11.5a4 4 0 0 0-7.8-.5" />
+        <path d="M17.5 19H9a5 5 0 1 1 4.9-6.1" />
+        <path d="M17.5 19a3.5 3.5 0 0 0 0-7h-.4" />
+    </Icon>
+);
+
+const SproutIcon = ({ size = 24 }) => (
+    <Icon size={size}>
+        <path d="M7 20h10" />
+        <path d="M10 20c5.5-2.5.8-6.4 3-10" />
+        <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
+        <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
+    </Icon>
+);
+
+const ShieldIcon = ({ size = 24 }) => (
+    <Icon size={size}>
+        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+    </Icon>
+);
+
+const AlertIcon = ({ size = 20 }) => (
+    <Icon size={size}>
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
+    </Icon>
+);
+
+const SearchXIcon = ({ size = 28 }) => (
+    <Icon size={size}>
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
+        <path d="m8.5 8.5 5 5" />
+        <path d="m13.5 8.5-5 5" />
+    </Icon>
+);
+
+
+const MONTHS = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+];
+
+const INITIAL_FORM = {
+    location: "",
+    soil: "",
+    water: "",
+    sunlight: "",
+    environment: "",
+    planting_month: ""
+};
+
+const FACTOR_LABELS = [
+    ["Soil", "soil"],
+    ["Water", "water"],
+    ["Sunlight", "sunlight"],
+    ["Environment", "environment"],
+    ["Weather", "weather"],
+    ["Planting Season", "season"],
+    ["Location Suitability", "location_suitability"],
+    ["Flood Compatibility", "flood"],
+    ["Drainage Compatibility", "drainage"]
+];
+
+function formatFactor(value) {
+    return value == null ? "N/A" : `${value}%`;
+}
+
+function levelClass(level) {
+
+    const value = String(level || "").toLowerCase();
+
+    if (value.includes("high")) {
+        return styles.levelHigh;
+    }
+
+    if (value.includes("moder")) {
+        return styles.levelModerate;
+    }
+
+    return styles.levelLow;
+}
+
+function clampPercent(value) {
+    return Math.min(100, Math.max(0, Number(value) || 0));
+}
+
+
 export default function AssessmentPage() {
 
     const router = useRouter();
@@ -19,14 +201,9 @@ export default function AssessmentPage() {
 
     const selectedCrop = searchParams.get("crop");
 
-   const [form, setForm] = useState({
-    location: "",
-    soil: "",
-    water: "",
-    sunlight: "",
-    environment: "",
-    planting_month: ""
-});
+    const resultsRef = useRef(null);
+
+    const [form, setForm] = useState(INITIAL_FORM);
 
     const [specificCrop, setSpecificCrop] = useState(null);
     const [locations, setLocations] = useState([]);
@@ -46,7 +223,9 @@ export default function AssessmentPage() {
 
     const [submitted, setSubmitted] = useState(false);
 
-        /*
+    const [levelFilter, setLevelFilter] = useState("");
+
+    /*
         Protect the assessment page.
         Only logged-in users can access it.
     */
@@ -102,58 +281,57 @@ export default function AssessmentPage() {
     }, [router]);
 
 
-    
-/*
-    Load all Pangasinan locations from the database API.
-*/
+    /*
+        Load all Pangasinan locations from the database API.
+    */
 
-useEffect(() => {
+    useEffect(() => {
 
-    async function loadLocations() {
+        async function loadLocations() {
 
-        try {
+            try {
 
-            setLocationsLoading(true);
-            setLocationsError("");
+                setLocationsLoading(true);
+                setLocationsError("");
 
-            const response = await fetch(
-                "http://localhost:5000/api/locations"
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || !result.success) {
-                throw new Error(
-                    result.message || "Failed to load locations."
+                const response = await fetch(
+                    "http://localhost:5000/api/locations"
                 );
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(
+                        result.message || "Failed to load locations."
+                    );
+                }
+
+                setLocations(result.data || []);
+
+            } catch (error) {
+
+                console.error("Location loading error:", error);
+
+                setLocationsError(
+                    error.message || "Unable to load locations."
+                );
+
+            } finally {
+
+                setLocationsLoading(false);
+
             }
-
-            setLocations(result.data || []);
-
-        } catch (error) {
-
-            console.error("Location loading error:", error);
-
-            setLocationsError(
-                error.message || "Unable to load locations."
-            );
-
-        } finally {
-
-            setLocationsLoading(false);
 
         }
 
-    }
+        loadLocations();
 
-    loadLocations();
-
-}, []);
+    }, []);
 
 
     /*
         Load specific crop when the page is opened
-        through "Can I Grow This?"
+        through "Run Assessment" / "Can I Grow This?"
     */
 
     useEffect(() => {
@@ -184,6 +362,28 @@ useEffect(() => {
     }, [selectedCrop]);
 
 
+    /*
+        After the results arrive, bring them into view.
+    */
+
+    useEffect(() => {
+
+        if (!submitted || !resultsRef.current) {
+            return;
+        }
+
+        const reduceMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+        resultsRef.current.scrollIntoView({
+            behavior: reduceMotion ? "auto" : "smooth",
+            block: "start"
+        });
+
+    }, [submitted]);
+
+
     function handleChange(event) {
 
         const { name, value } = event.target;
@@ -192,6 +392,21 @@ useEffect(() => {
             ...previous,
             [name]: value
         }));
+
+    }
+
+
+    function handleReset() {
+
+        setForm(INITIAL_FORM);
+        setResults([]);
+        setCurrentWeather(null);
+        setLocationDetails(null);
+        setError("");
+        setSubmitted(false);
+        setLevelFilter("");
+
+        window.scrollTo({ top: 0 });
 
     }
 
@@ -208,31 +423,33 @@ useEffect(() => {
 
         setResults([]);
 
+        setLevelFilter("");
+
         setCurrentWeather(null);
 
         setLocationDetails(null);
 
         try {
 
-           const storedUser =
-    localStorage.getItem("buildAndBloomUser");
+            const storedUser =
+                localStorage.getItem("buildAndBloomUser");
 
-const loggedInUser =
-    storedUser
-        ? JSON.parse(storedUser)
-        : null;
+            const loggedInUser =
+                storedUser
+                    ? JSON.parse(storedUser)
+                    : null;
 
 
-const result = await assessCrops({
-    ...form,
+            const result = await assessCrops({
+                ...form,
 
-    crop_id: selectedCrop
-        ? Number(selectedCrop)
-        : null,
+                crop_id: selectedCrop
+                    ? Number(selectedCrop)
+                    : null,
 
-    user_id:
-        loggedInUser?.user_id || null
-});
+                user_id:
+                    loggedInUser?.user_id || null
+            });
 
 
             console.log(
@@ -283,54 +500,56 @@ const result = await assessCrops({
     }
 
 
+    // Results are shown best match first
+    const rankedResults = [...results].sort(
+        (a, b) => (Number(b.score) || 0) - (Number(a.score) || 0)
+    );
+
+    const topPick = rankedResults[0];
+
+    const levels = [
+        ...new Set(
+            rankedResults
+                .map((crop) => crop.compatibility_level)
+                .filter(Boolean)
+        )
+    ];
+
+    const visibleResults = levelFilter
+        ? rankedResults.filter(
+            (crop) => crop.compatibility_level === levelFilter
+        )
+        : rankedResults;
+
+
     return (
 
-        <section className="assessment-page">
+        <section className={styles.assessmentPage}>
 
-            <div className="assessment-container">
+            <div className={styles.assessmentContainer}>
 
 
                 {/* HEADER */}
 
-                <div className="assessment-header">
+                <div className={styles.pageHeader}>
 
-                    <span className="section-badge">
-                        Build & Bloom
-                    </span>
+                    <div className={styles.pageHeading}>
 
-                    <h1>
-                        Crop Assessment
-                    </h1>
+                        <span className={styles.eyebrow}>
+                            Crop Assessment
+                        </span>
 
-                    <p>
-                        Get crop recommendations tailored to your location,
-                        growing conditions, and planting schedule.
-                    </p>
+                        <h1>
+                            Assess Your Growing Conditions
+                        </h1>
 
-                </div>
+                        <p>
+                            Get crop recommendations tailored to your location,
+                            growing conditions, and planting schedule.
+                        </p>
 
-                <div className="assessment-steps" aria-label="Assessment steps">
-                    <div className="assessment-step">
-                        <span>01</span>
-                        <div>
-                            <strong>Choose location</strong>
-                            <small>Where you'll grow</small>
-                        </div>
                     </div>
-                    <div className="assessment-step">
-                        <span>02</span>
-                        <div>
-                            <strong>Set conditions</strong>
-                            <small>Soil, water, and sunlight</small>
-                        </div>
-                    </div>
-                    <div className="assessment-step">
-                        <span>03</span>
-                        <div>
-                            <strong>Pick a month</strong>
-                            <small>When you plan to plant</small>
-                        </div>
-                    </div>
+
                 </div>
 
 
@@ -338,9 +557,11 @@ const result = await assessCrops({
 
                 {specificCrop && (
 
-                    <div className="specific-crop-banner">
+                    <div className={styles.cropBanner}>
 
-                        <span aria-hidden="true"></span>
+                        <span className={styles.cropBannerIcon} aria-hidden="true">
+                            <SproutIcon />
+                        </span>
 
                         <div>
 
@@ -363,103 +584,88 @@ const result = await assessCrops({
                 )}
 
 
-                {/* ASSESSMENT FORM */}
+                {/* FORM + HOW IT WORKS */}
 
-                <div className="assessment-card">
+                <div className={styles.assessmentGrid}>
 
-                    <form onSubmit={handleSubmit}>
+                    <form
+                        className={styles.formCard}
+                        onSubmit={handleSubmit}
+                    >
 
-                        <div className="assessment-form-heading">
-                            <div>
-                                <span>YOUR GROWING PLAN</span>
-                                <h2>Assessment details</h2>
-                            </div>
-                            <p>Complete each section to get your crop matches.</p>
-                        </div>
+                        <div className={styles.fieldGrid}>
 
-                        {/* LOCATION */}
+                            {/* LOCATION */}
 
-                        <div className="form-section">
+                            <div className={styles.field}>
 
-                            <h2>
-                                 Your Growing Location
-                            </h2>
+                                <label htmlFor="assessment-location">
+                                    Location
+                                </label>
 
-                            <p className="form-description">
-                                Select the Pangasinan location where
-                                you plan to grow.
-                            </p>
+                                <div className={styles.selectWrap}>
 
+                                    <span className={styles.fieldIcon}>
+                                        <MapPinIcon size={20} />
+                                    </span>
 
-                            <label htmlFor="assessment-location">
-                                Location
-                            </label>
-
-                            
-                            <select
-                                id="assessment-location"
-                                name="location"
-                                value={form.location}
-                                onChange={handleChange}
-                                required
-                                disabled={locationsLoading || locations.length === 0}
-                            >
-
-                                <option value="">
-                                    {locationsLoading
-                                        ? "Loading locations..."
-                                        : "Select your location"}
-                                </option>
-
-                                {locations.map((location) => (
-
-                                    <option
-                                        key={location.location_id}
-                                        value={location.location_name}
+                                    <select
+                                        id="assessment-location"
+                                        className={styles.fieldSelect}
+                                        name="location"
+                                        value={form.location}
+                                        onChange={handleChange}
+                                        required
+                                        disabled={locationsLoading || locations.length === 0}
                                     >
-                                        {location.location_name} ({location.location_type})
-                                    </option>
 
-                                ))}
+                                        <option value="">
+                                            {locationsLoading
+                                                ? "Loading locations..."
+                                                : "Select your location"}
+                                        </option>
 
-                            </select>
+                                        {locations.map((location) => (
 
-                            {locationsError && (
-                                <p className="form-error">
-                                    {locationsError}
-                                </p>
-                            )}
+                                            <option
+                                                key={location.location_id}
+                                                value={location.location_name}
+                                            >
+                                                {location.location_name} ({location.location_type})
+                                            </option>
 
-                        </div>
+                                        ))}
 
+                                    </select>
 
-                        {/* GROWING CONDITIONS */}
+                                </div>
 
-                        <div className="form-section">
+                                {locationsError && (
+                                    <p className={styles.formError}>
+                                        {locationsError}
+                                    </p>
+                                )}
 
-                            <h2>
-                                 Growing Conditions
-                            </h2>
-
-                            <p className="form-description">
-                                Provide the conditions available
-                                in your growing area.
-                            </p>
-
-
-                            <div className="assessment-grid">
+                            </div>
 
 
-                                {/* SOIL */}
+                            {/* SOIL */}
 
-                                <div className="assessment-field">
+                            <div className={styles.field}>
 
-                                    <label htmlFor="assessment-soil">
-                                        Soil Type
-                                    </label>
+                                <label htmlFor="assessment-soil">
+                                    Soil Type
+                                </label>
+
+                                <div className={styles.selectWrap}>
+
+                                    <span className={styles.fieldIcon}>
+                                        <LayersIcon size={20} />
+                                    </span>
 
                                     <select
                                         id="assessment-soil"
+                                        className={styles.fieldSelect}
                                         name="soil"
                                         value={form.soil}
                                         onChange={handleChange}
@@ -490,54 +696,26 @@ const result = await assessCrops({
 
                                 </div>
 
-
-                                {/* WATER */}
-
-                                <div className="assessment-field">
-
-                                    <label htmlFor="assessment-water">
-                                        Water Availability
-                                    </label>
-
-                                    <select
-                                        id="assessment-water"
-                                        name="water"
-                                        value={form.water}
-                                        onChange={handleChange}
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Select water availability
-                                        </option>
-
-                                        <option value="Low">
-                                            Low
-                                        </option>
-
-                                        <option value="Moderate">
-                                            Moderate
-                                        </option>
-
-                                        <option value="High">
-                                            High
-                                        </option>
-
-                                    </select>
-
-                                </div>
+                            </div>
 
 
-                                {/* SUNLIGHT */}
+                            {/* SUNLIGHT */}
 
-                                <div className="assessment-field">
+                            <div className={styles.field}>
 
-                                    <label htmlFor="assessment-sunlight">
-                                        Sunlight
-                                    </label>
+                                <label htmlFor="assessment-sunlight">
+                                    Sunlight
+                                </label>
+
+                                <div className={styles.selectWrap}>
+
+                                    <span className={styles.fieldIcon}>
+                                        <SunIcon size={20} />
+                                    </span>
 
                                     <select
                                         id="assessment-sunlight"
+                                        className={styles.fieldSelect}
                                         name="sunlight"
                                         value={form.sunlight}
                                         onChange={handleChange}
@@ -564,17 +742,72 @@ const result = await assessCrops({
 
                                 </div>
 
+                            </div>
 
-                                {/* ENVIRONMENT */}
 
-                                <div className="assessment-field">
+                            {/* WATER */}
 
-                                    <label htmlFor="assessment-environment">
-                                        Growing Environment
-                                    </label>
+                            <div className={styles.field}>
+
+                                <label htmlFor="assessment-water">
+                                    Water Availability
+                                </label>
+
+                                <div className={styles.selectWrap}>
+
+                                    <span className={styles.fieldIcon}>
+                                        <DropIcon size={20} />
+                                    </span>
+
+                                    <select
+                                        id="assessment-water"
+                                        className={styles.fieldSelect}
+                                        name="water"
+                                        value={form.water}
+                                        onChange={handleChange}
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Select water availability
+                                        </option>
+
+                                        <option value="Low">
+                                            Low
+                                        </option>
+
+                                        <option value="Moderate">
+                                            Moderate
+                                        </option>
+
+                                        <option value="High">
+                                            High
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            {/* ENVIRONMENT */}
+
+                            <div className={styles.field}>
+
+                                <label htmlFor="assessment-environment">
+                                    Growing Environment
+                                </label>
+
+                                <div className={styles.selectWrap}>
+
+                                    <span className={styles.fieldIcon}>
+                                        <HomeIcon size={20} />
+                                    </span>
 
                                     <select
                                         id="assessment-environment"
+                                        className={styles.fieldSelect}
                                         name="environment"
                                         value={form.environment}
                                         onChange={handleChange}
@@ -603,64 +836,155 @@ const result = await assessCrops({
 
                             </div>
 
-                        </div>
-                        {/* PLANTING MONTH */}
 
-                        <div className="form-section">
+                            {/* PLANTING MONTH */}
 
-                            <h2>
-                                Planting Schedule
-                            </h2>
+                            <div className={styles.field}>
 
-                            <p className="form-description">
-                                Choose when you plan to start planting.
-                            </p>
-
-                            <div className="assessment-field assessment-month-field">
                                 <label htmlFor="assessment-planting-month">
                                     Intended Planting Month
                                 </label>
 
-                                <select
-                                    id="assessment-planting-month"
-                                    name="planting_month"
-                                    value={form.planting_month}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">
-                                        Select planting month
-                                    </option>
+                                <div className={styles.selectWrap}>
 
-                                    {[
-                                        "January",
-                                        "February",
-                                        "March",
-                                        "April",
-                                        "May",
-                                        "June",
-                                        "July",
-                                        "August",
-                                        "September",
-                                        "October",
-                                        "November",
-                                        "December"
-                                    ].map((month) => (
-                                        <option key={month} value={month}>
-                                            {month}
+                                    <span className={styles.fieldIcon}>
+                                        <CalendarIcon size={20} />
+                                    </span>
+
+                                    <select
+                                        id="assessment-planting-month"
+                                        className={styles.fieldSelect}
+                                        name="planting_month"
+                                        value={form.planting_month}
+                                        onChange={handleChange}
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Select planting month
                                         </option>
-                                    ))}
 
-                                </select>
+                                        {MONTHS.map((month) => (
+                                            <option key={month} value={month}>
+                                                {month}
+                                            </option>
+                                        ))}
+
+                                    </select>
+
+                                </div>
+
                             </div>
 
                         </div>
 
+
+                        {/* ERROR */}
+
+                        {error && (
+
+                            <div className={styles.assessmentError} role="alert">
+
+                                <AlertIcon />
+
+                                <div>
+
+                                    <strong>
+                                        Assessment failed
+                                    </strong>
+
+                                    <p>
+                                        {error}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        )}
+
+
+                        {/* SUBMIT */}
+
+                        <div className={styles.formActions}>
+
+                            <button
+                                type="submit"
+                                className={styles.primaryButton}
+                                disabled={loading}
+                                aria-busy={loading}
+                            >
+
+                                {loading
+                                    ? "Analyzing..."
+                                    : (
+                                        <>
+                                            Analyze Growing Conditions
+                                            <ArrowRightIcon />
+                                        </>
+                                    )
+                                }
+
+                            </button>
+
+                            <button
+                                type="button"
+                                className={styles.secondaryButton}
+                                onClick={handleReset}
+                                disabled={loading}
+                            >
+                                Reset
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    {/* SIDE PANEL */}
+
+                    <aside className={styles.sidePanel}>
+
+                        <div className={styles.howItWorks}>
+
+                            <h2>
+                                How it works
+                            </h2>
+
+                            <div className={styles.howStep}>
+                                <span className={styles.howNumber}>1</span>
+                                <div>
+                                    <strong>Choose location</strong>
+                                    <span>Where you&apos;ll grow</span>
+                                </div>
+                            </div>
+
+                            <div className={styles.howStep}>
+                                <span className={styles.howNumber}>2</span>
+                                <div>
+                                    <strong>Set conditions</strong>
+                                    <span>Soil, water, and sunlight</span>
+                                </div>
+                            </div>
+
+                            <div className={styles.howStep}>
+                                <span className={styles.howNumber}>3</span>
+                                <div>
+                                    <strong>Pick a month</strong>
+                                    <span>When you plan to plant</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
                         {/* WEATHER NOTE */}
 
-                        <div className="assessment-note">
+                        <div className={styles.noteCard}>
 
-                            <span aria-hidden="true">️</span>
+                            <span className={styles.noteIcon} aria-hidden="true">
+                                <CloudSunIcon />
+                            </span>
 
                             <div>
 
@@ -680,51 +1004,7 @@ const result = await assessCrops({
 
                         </div>
 
-
-                        {/* SUBMIT */}
-
-                        <button
-                            type="submit"
-                            className="assessment-submit"
-                            disabled={loading}
-                            aria-busy={loading}
-                        >
-
-                            {loading
-                                ? "Analyzing..."
-                                : "Analyze Growing Conditions"
-                            }
-
-                        </button>
-
-                    </form>
-
-
-                    {/* ERROR */}
-
-                    {error && (
-
-                        <div className="assessment-error">
-
-                            <span>
-                                ️
-                            </span>
-
-                            <div>
-
-                                <strong>
-                                    Assessment failed
-                                </strong>
-
-                                <p>
-                                    {error}
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    )}
+                    </aside>
 
                 </div>
 
@@ -733,115 +1013,217 @@ const result = await assessCrops({
 
                 {submitted && (
 
-                    <section className="assessment-results">
-
+                    <section
+                        className={styles.resultsSection}
+                        ref={resultsRef}
+                    >
 
                         {/* RESULT HEADER */}
 
-                        <div className="results-header">
+                        <div className={styles.pageHeader}>
 
-                            <div>
+                            <div className={styles.pageHeading}>
 
-                                <span className="section-badge">
-                                     Results
+                                <span className={styles.eyebrow}>
+                                    Assessment Results
                                 </span>
 
                                 <h2>
-                                    Crop Compatibility Results
+                                    Your Crop Matches
                                 </h2>
 
                                 <p>
-                                    Based on the growing conditions
-                                    and current weather conditions
-                                    available for your selected
-                                    location.
+                                    Ranked by how well each crop fits your
+                                    conditions, based on the growing
+                                    conditions and current weather available
+                                    for your selected location.
                                 </p>
 
                             </div>
 
+                            <div className={styles.countPill}>
 
-                            <div className="results-count">
-                                {results.length}
+                                <strong>
+                                    {results.length}
+                                </strong>
 
-                            <span>
                                 {results.length === 1
                                     ? "highly suitable crop found"
                                     : "highly suitable crops found"}
-                            </span>
 
                             </div>
 
                         </div>
 
 
-                        {/* CURRENT WEATHER SUMMARY */}
+                        {/* TOP RECOMMENDATION */}
 
-                        {/* LOCATION RISK SUMMARY */}
+                        {topPick && (
 
-                        {locationDetails && (
-                            <div className="location-risk-summary">
-                                <h3>Location Risk Assessment</h3>
+                            <div className={styles.topPick}>
 
-                                <p>
-                                    <strong>Location:</strong>{" "}
-                                    {locationDetails.location_name || form.location}
-                                </p>
+                                <div
+                                    className={styles.matchRing}
+                                    style={{
+                                        background: `conic-gradient(#ffffff 0 ${clampPercent(topPick.score)}%, rgba(255, 255, 255, 0.22) 0)`
+                                    }}
+                                >
 
-                                <p>
-                                    <strong>Overall Risk Level:</strong>{" "}
-                                    {locationDetails.risk_level || "Unknown"}
-                                </p>
+                                    <div className={styles.matchInner}>
 
-                                <p>
-                                    {locationDetails.risk_message ||
-                                        "Location risk information is unavailable."}
-                                </p>
+                                        <strong>
+                                            {topPick.score}%
+                                        </strong>
 
-                                {Array.isArray(locationDetails.warnings) &&
-                                    locationDetails.warnings.length > 0 && (
-                                        <div>
-                                            <strong>Location Warnings</strong>
+                                        <span>
+                                            MATCH
+                                        </span>
 
-                                            <ul>
-                                                {locationDetails.warnings.map(
-                                                    (warning, index) => (
-                                                        <li key={index}>{warning}</li>
-                                                    )
-                                                )}
-                                            </ul>
-                                        </div>
-                                    )}
-                            </div>
-                        )}
+                                    </div>
 
-                        {currentWeather && (
-
-                            <div className="assessment-weather-summary">
-
-                                <div className="assessment-weather-icon" aria-hidden="true">
-                                    ️
                                 </div>
 
-                                <div>
 
-                                    <span>
-                                        Current Weather
+                                <div className={styles.topPickBody}>
+
+                                    <span className={styles.eyebrow}>
+                                        Top Recommendation
                                     </span>
 
-                                    <strong>
-                                        {Math.round(
-                                            currentWeather.temperature
-                                        )}°C
-                                    </strong>
+                                    <h3>
+                                        {topPick.crop_name}
+                                    </h3>
 
-                                    <p>
-                                        {currentWeather.weather_description}
-                                        {" · "}
-                                        Humidity{" "}
-                                        {currentWeather.humidity}%
-                                    </p>
+                                    <span>
+                                        Based on your conditions:
+                                    </span>
+
+                                    <div className={styles.topChips}>
+
+                                        {form.location && (
+                                            <span className={styles.topChip}>
+                                                <MapPinIcon size={16} />
+                                                {form.location}
+                                            </span>
+                                        )}
+
+                                        {form.soil && (
+                                            <span className={styles.topChip}>
+                                                <LayersIcon size={16} />
+                                                {form.soil}
+                                            </span>
+                                        )}
+
+                                        {form.sunlight && (
+                                            <span className={styles.topChip}>
+                                                <SunIcon size={16} />
+                                                {form.sunlight}
+                                            </span>
+                                        )}
+
+                                        {form.water && (
+                                            <span className={styles.topChip}>
+                                                <DropIcon size={16} />
+                                                {form.water}
+                                            </span>
+                                        )}
+
+                                    </div>
 
                                 </div>
+
+                            </div>
+
+                        )}
+
+
+                        {/* LOCATION RISK + CURRENT WEATHER */}
+
+                        {(locationDetails || currentWeather) && (
+
+                            <div className={styles.infoGrid}>
+
+                                {locationDetails && (
+
+                                    <div className={styles.infoCard}>
+
+                                        <span className={`${styles.infoIcon} ${styles.toneLeaf}`}>
+                                            <ShieldIcon />
+                                        </span>
+
+                                        <div className={styles.infoBody}>
+
+                                            <h3>Location Risk Assessment</h3>
+
+                                            <p>
+                                                <strong>Location:</strong>{" "}
+                                                {locationDetails.location_name || form.location}
+                                            </p>
+
+                                            <p>
+                                                <strong>Overall Risk Level:</strong>{" "}
+                                                {locationDetails.risk_level || "Unknown"}
+                                            </p>
+
+                                            <p>
+                                                {locationDetails.risk_message ||
+                                                    "Location risk information is unavailable."}
+                                            </p>
+
+                                            {Array.isArray(locationDetails.warnings) &&
+                                                locationDetails.warnings.length > 0 && (
+                                                    <div>
+                                                        <strong>Location Warnings</strong>
+
+                                                        <ul>
+                                                            {locationDetails.warnings.map(
+                                                                (warning, index) => (
+                                                                    <li key={index}>{warning}</li>
+                                                                )
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {currentWeather && (
+
+                                    <div className={styles.infoCard}>
+
+                                        <span className={`${styles.infoIcon} ${styles.toneWater}`}>
+                                            <CloudSunIcon />
+                                        </span>
+
+                                        <div className={styles.infoBody}>
+
+                                            <span className={styles.infoLabel}>
+                                                Current Weather
+                                            </span>
+
+                                            <strong className={styles.infoValue}>
+                                                {Math.round(
+                                                    currentWeather.temperature
+                                                )}°C
+                                            </strong>
+
+                                            <p>
+                                                {currentWeather.weather_description}
+                                                {" · "}
+                                                Humidity{" "}
+                                                {currentWeather.humidity}%
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
 
                             </div>
 
@@ -852,11 +1234,12 @@ const result = await assessCrops({
 
                         {results.length === 0 ? (
 
-                            <div className="no-results">
+                            <div className={styles.noResults}>
 
-                                <div className="no-results-icon" aria-hidden="true">
-                                    
-                                </div>
+                                <span className={styles.noResultsIcon} aria-hidden="true">
+                                    <SearchXIcon />
+                                </span>
+
                                 <h3>
                                     No highly suitable crops found
                                 </h3>
@@ -870,199 +1253,241 @@ const result = await assessCrops({
 
                                 <Link
                                     href="/crops"
-                                    className="no-results-button"
+                                    className={styles.primaryButton}
                                 >
-                                    Explore Crop Catalogue 
+                                    Explore Crop Catalogue
+                                    <ArrowRightIcon />
                                 </Link>
 
                             </div>
 
                         ) : (
 
-                            <div className="recommendation-grid">
+                            <>
 
-                                {results.map((crop) => (
+                                {/* LEVEL FILTER (only when there is more than one level) */}
 
-                                    <article
-                                        className="recommendation-card"
-                                        key={crop.crop_id}
-                                    >
+                                {levels.length > 1 && (
 
+                                    <div className={styles.filterRow}>
 
-                                        {/* CROP HEADER */}
-
-                                        <div className="recommendation-top">
-
-                                            <CropImage
-                                                cropName={crop.crop_name}
-                                                className="recommendation-image"
-                                                sizes="52px"
-                                            />
-
-                                            <div>
-
-                                                <span className="crop-category">
-                                                    {crop.category}
-                                                </span>
-
-                                                <h3>
-                                                    {crop.crop_name}
-                                                </h3>
-
-                                            </div>
-
-                                        </div>
-
-
-                                        {/* SCORE */}
-
-                                        <div className="compatibility-score">
-
-                                            <strong>
-                                                {crop.score}%
-                                            </strong>
-
-                                            <span>
-                                                Compatibility
-                                            </span>
-
-                                        </div>
-
-
-                                        {/* LEVEL */}
-
-                                        <div
-                                            className={`compatibility-level ${
-                                                crop.compatibility_level
-                                                    .toLowerCase()
-                                                    .replaceAll(
-                                                        " ",
-                                                        "-"
-                                                    )
-                                            }`}
+                                        <button
+                                            type="button"
+                                            className={`${styles.filterChip} ${!levelFilter ? styles.filterChipActive : ""}`}
+                                            onClick={() => setLevelFilter("")}
                                         >
+                                            All crops
+                                        </button>
 
-                                            {crop.compatibility_level}
+                                        {levels.map((level) => (
 
-                                        </div>
+                                            <button
+                                                type="button"
+                                                key={level}
+                                                className={`${styles.filterChip} ${levelFilter === level ? styles.filterChipActive : ""}`}
+                                                onClick={() => setLevelFilter(level)}
+                                            >
+                                                {level}
+                                            </button>
 
-
-                                        {/* FACTORS */}
-
-                                        <div className="factor-list">
-
-                                        <div>
-                                            <span>Soil</span>
-                                            <strong>{crop.factors.soil}%</strong>
-                                        </div>
-
-                                        <div>
-                                            <span>Water</span>
-                                            <strong>{crop.factors.water}%</strong>
-                                        </div>
-
-                                        <div>
-                                            <span>Sunlight</span>
-                                            <strong>{crop.factors.sunlight}%</strong>
-                                        </div>
-
-                                        <div>
-                                            <span>Environment</span>
-                                            <strong>{crop.factors.environment}%</strong>
-                                        </div>
-
-                                        <div>
-                                            <span>Weather</span>
-                                            <strong>{crop.factors.weather}%</strong>
-                                        </div>
-
-                                        <div>
-                                            <span>Planting Season</span>
-                                            <strong>{crop.factors.season}%</strong>
-                                        </div>
-
-                                        <div className="location-factor">
-                                            <span>Location Suitability</span>
-                                            <strong>{crop.factors.location_suitability ?? "N/A"}{crop.factors.location_suitability != null ? "%" : ""}</strong>
-                                        </div>
-
-                                        <div>
-                                            <span>Flood Compatibility</span>
-                                            <strong>{crop.factors.flood ?? "N/A"}{crop.factors.flood != null ? "%" : ""}</strong>
-                                        </div>
-
-                                        <div>
-                                            <span>Drainage Compatibility</span>
-                                            <strong>{crop.factors.drainage ?? "N/A"}{crop.factors.drainage != null ? "%" : ""}</strong>
-                                        </div>
+                                        ))}
 
                                     </div>
 
-                                        {/* EXPLANATION */}
+                                )}
 
-                                                <div className="recommendation-explanation">
 
-                                    <strong>
-                                        Why?
-                                    </strong>
+                                {/* RANKED LIST */}
 
-                                    <p>
-                                        {crop.explanation}
-                                    </p>
+                                <div className={styles.rankList}>
 
-                                    {crop.planting_season && (
-                                        <p>
-                                            <strong>Selected planting month:</strong>{" "}
-                                            {form.planting_month} — {crop.planting_season}
-                                        </p>
-                                    )}
+                                    {visibleResults.map((crop) => {
+
+                                        const rank =
+                                            rankedResults.indexOf(crop) + 1;
+
+                                        const factors =
+                                            crop.factors || {};
+
+                                        return (
+
+                                            <article
+                                                className={styles.rankCard}
+                                                key={crop.crop_id}
+                                            >
+
+                                                <div className={styles.rankRow}>
+
+                                                    <span className={styles.rankNumber}>
+                                                        {rank}
+                                                    </span>
+
+                                                    <CropImage
+                                                        cropName={crop.crop_name}
+                                                        className={styles.rankImage}
+                                                        sizes="84px"
+                                                    />
+
+                                                    <div className={styles.rankName}>
+
+                                                        <strong>
+                                                            {crop.crop_name}
+                                                        </strong>
+
+                                                        <span>
+                                                            {crop.category}
+                                                        </span>
+
+                                                    </div>
+
+                                                    <div className={styles.scoreWrap}>
+
+                                                        <div className={styles.scoreTrack}>
+
+                                                            <div
+                                                                className={styles.scoreFill}
+                                                                style={{
+                                                                    width: `${clampPercent(crop.score)}%`
+                                                                }}
+                                                            />
+
+                                                        </div>
+
+                                                        <strong className={styles.scoreValue}>
+                                                            {crop.score}%
+                                                        </strong>
+
+                                                    </div>
+
+                                                    <span
+                                                        className={`${styles.levelBadge} ${levelClass(crop.compatibility_level)}`}
+                                                    >
+                                                        {crop.compatibility_level}
+                                                    </span>
+
+                                                    <div className={styles.rankActions}>
+
+                                                        <Link
+                                                            href={`/crops/${crop.crop_id}`}
+                                                            className={styles.softButton}
+                                                        >
+                                                            View Details
+                                                            <ArrowRightIcon size={16} />
+                                                        </Link>
+
+                                                        <Link
+                                                            href={`/plants/plan?crop=${crop.crop_id}`}
+                                                            className={styles.primaryButton}
+                                                        >
+                                                            Plan This Plant
+                                                        </Link>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                {/* WHY THIS MATCH */}
+
+                                                <details className={styles.detailsPanel}>
+
+                                                    <summary className={styles.detailsToggle}>
+                                                        Why this match?
+                                                    </summary>
+
+                                                    <div className={styles.detailsBody}>
+
+                                                        <div className={styles.factorGrid}>
+
+                                                            {FACTOR_LABELS.map(([label, key]) => (
+
+                                                                <div
+                                                                    className={styles.factorItem}
+                                                                    key={key}
+                                                                >
+
+                                                                    <span>
+                                                                        {label}
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {formatFactor(factors[key])}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                            ))}
+
+                                                        </div>
+
+
+                                                        <div className={styles.explanation}>
+
+                                                            <strong>
+                                                                Why?
+                                                            </strong>
+
+                                                            <p>
+                                                                {crop.explanation}
+                                                            </p>
+
+                                                            {crop.planting_season && (
+                                                                <p>
+                                                                    <strong>Selected planting month:</strong>{" "}
+                                                                    {form.planting_month} — {crop.planting_season}
+                                                                </p>
+                                                            )}
+
+                                                        </div>
+
+
+                                                        {/* CROP-SPECIFIC LOCATION RISK */}
+
+                                                        <div className={styles.cautionBox}>
+
+                                                            <strong>
+                                                                Crop-Specific Location Caution:{" "}
+                                                                {crop.crop_location_risk || "Unknown"}
+                                                            </strong>
+
+                                                            <p>
+                                                                {crop.crop_location_risk_message ||
+                                                                    "Crop-specific location risk information is unavailable."}
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </details>
+
+                                            </article>
+
+                                        );
+
+                                    })}
 
                                 </div>
 
-
-
-                                        {/* CROP-SPECIFIC LOCATION RISK */}
-
-                                        <div className="crop-location-risk">
-                                            <strong>
-                                                Crop-Specific Location Caution:{" "}
-                                                {crop.crop_location_risk || "Unknown"}
-                                            </strong>
-
-                                            <p>
-                                                {crop.crop_location_risk_message ||
-                                                    "Crop-specific location risk information is unavailable."}
-                                            </p>
-                                        </div>
-
-
-
-                                        {/* ACTIONS */}
-
-                                        <div className="recommendation-actions">
-
-                                            <Link
-                                                href={`/crops/${crop.crop_id}`}
-                                                className="view-recommendation"
-                                            >
-                                                View Crop
-                                            </Link>
-                                    <Link
-                                        href={`/plants/plan?crop=${crop.crop_id}`}
-                                        className="plan-recommendation"
-                                    >
-                                        Plan This Plant
-                                    </Link>
-
-                                        </div>
-
-                                    </article>
-
-                                ))}
-
-                            </div>
+                            </>
 
                         )}
+
+
+                        {/* NEW ASSESSMENT */}
+
+                        <div>
+
+                            <button
+                                type="button"
+                                className={styles.softButton}
+                                onClick={handleReset}
+                            >
+                                <ResetIcon />
+                                New Assessment
+                            </button>
+
+                        </div>
 
                     </section>
 

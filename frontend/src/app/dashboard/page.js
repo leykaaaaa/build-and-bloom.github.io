@@ -164,7 +164,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div className={styles.dashboardWelcomeIcon} aria-hidden="true">
-                        
+                        <i className="fa-brands fa-pagelines" />
                     </div>
 
                 </div>
@@ -203,7 +203,7 @@ export default function DashboardPage() {
                     <div className={styles.dashboardStatCard}>
 
                         <div className={styles.dashboardStatIcon} aria-hidden="true">
-                            
+                            <i className="fa-solid fa-seedling" />
                         </div>
 
                         <div>
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                     <div className={styles.dashboardStatCard}>
 
                         <div className={styles.dashboardStatIcon} aria-hidden="true">
-                            
+                            <i className="fa-solid fa-leaf" />                            
                         </div>
 
                         <div>
@@ -245,6 +245,7 @@ export default function DashboardPage() {
                     <div className={styles.dashboardStatCard}>
 
                         <div className={styles.dashboardStatIcon} aria-hidden="true">
+                            <i className="fa-solid fa-basket-shopping" />                            
                             
                         </div>
 
@@ -266,6 +267,7 @@ export default function DashboardPage() {
                     <div className={styles.dashboardStatCard}>
 
                         <div className={styles.dashboardStatIcon} aria-hidden="true">
+                            <i className="fa-solid fa-check" />
                             
                         </div>
 
@@ -350,7 +352,7 @@ export default function DashboardPage() {
                                     >
 
                                         <div className={styles.dashboardPlanIcon} aria-hidden="true">
-                                            
+                                            <i className="fa-solid fa-seedling" />
                                         </div>
 
                                         <div className={styles.dashboardPlanInfo}>

@@ -19,6 +19,33 @@ const EMPTY_FORM = {
     environment: ""
 };
 
+async function fetchWithAdminAuth(url, options = {}) {
+    const token = localStorage.getItem("buildAndBloomToken");
+
+    if (!token) {
+        localStorage.removeItem("buildAndBloomUser");
+        window.location.href = "/login?reason=session-expired";
+        throw new Error("Your session has expired. Please log in again.");
+    }
+
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            ...options.headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (response.status === 401) {
+        localStorage.removeItem("buildAndBloomToken");
+        localStorage.removeItem("buildAndBloomUser");
+        window.location.href = "/login?reason=session-expired";
+        throw new Error("Your session has expired. Please log in again.");
+    }
+
+    return response;
+}
+
 
 // =========================================================
 // SMALL INLINE ICONS (no extra package needed)
@@ -223,17 +250,7 @@ export default function CropManagement() {
         setSaving(true);
 
         try {
-            const token = localStorage.getItem(
-                "buildAndBloomToken"
-            );
-
-            if (!token) {
-                throw new Error(
-                    "Authentication token not found. Please log in again."
-                );
-            }
-
-            const response = await fetch(
+            const response = await fetchWithAdminAuth(
                 editingCrop
                     ? `http://localhost:5000/api/crops/${editingCrop.crop_id}`
                     : "http://localhost:5000/api/crops",
@@ -306,15 +323,7 @@ export default function CropManagement() {
         setDeletingCropId(crop.crop_id);
 
         try {
-            const token = localStorage.getItem("buildAndBloomToken");
-
-            if (!token) {
-                throw new Error(
-                    "Authentication token not found. Please log in again."
-                );
-            }
-
-            const response = await fetch(
+            const response = await fetchWithAdminAuth(
                 `http://localhost:5000/api/crops/${crop.crop_id}`,
                 {
                     method: "DELETE",
