@@ -680,16 +680,24 @@ export default function AssessmentPage() {
                                             Loam
                                         </option>
 
-                                        <option value="Clay">
-                                            Clay
-                                        </option>
-
                                         <option value="Sandy">
                                             Sandy
                                         </option>
 
-                                        <option value="Silty">
-                                            Silty
+                                        <option value="Silt">
+                                            Silt
+                                        </option>
+
+                                        <option value="Clay">
+                                            Clay
+                                        </option>
+
+                                        <option value="Peat">
+                                            Peat
+                                        </option>
+
+                                        <option value="Chalky">
+                                            Chalky
                                         </option>
 
                                     </select>
@@ -828,6 +836,22 @@ export default function AssessmentPage() {
 
                                         <option value="Container">
                                             Container
+                                        </option>
+
+                                        <option value="Backyard Garden">
+                                            Backyard Garden
+                                        </option>
+
+                                        <option value="Raised Garden Bed">
+                                            Raised Garden Bed
+                                        </option>
+
+                                        <option value="Shade House">
+                                            Shade House
+                                        </option>
+
+                                        <option value="Rooftop/ Balcony Garden">
+                                            Rooftop/ Balcony Garden
                                         </option>
 
                                     </select>

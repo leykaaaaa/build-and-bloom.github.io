@@ -47,9 +47,14 @@ function splitRequirements(value) {
         return [];
     }
 
-    return String(value)
-        .toLowerCase()
-        .split(/[,/|]+/)
+    const normalized = normalize(value)
+        .replace(/\s*\/\s*/g, "/")
+        .replace(/\s+/g, " ");
+
+    return [...new Set([
+        normalized,
+        ...normalized.split(/[,/|]+/)
+    ])]
         .map((item) => item.trim())
         .filter(Boolean);
 }
@@ -63,7 +68,9 @@ function matchesRequirement(
         return false;
     }
 
-    const user = normalize(userValue);
+    const user = normalize(userValue)
+        .replace(/\s*\/\s*/g, "/")
+        .replace(/\s+/g, " ");
 
     const requirements =
         splitRequirements(requirementValue);
