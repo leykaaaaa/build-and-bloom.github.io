@@ -138,9 +138,9 @@ const STEPS = [
 ];
 
 const DEVELOPERS = [
-    ["Angelica Tulagan", "System Developer"],
-    ["Francine Nicole De Guzman", "UX Designer"],
-    ["Mike Lomibao", "Quality Assurance Tester"],
+    ["Angelica Tulagan", "Project Manager"],
+    ["Francine Nicole De Guzman", "System Developer"],
+    ["Mike Lomibao", "System Developer"],
     ["Chris Lawrence Mamaril", "System Developer"],
     ["Maverick John Diag", "System Developer"],
     ["Regie Boy Gamboa", "System Developer"]
