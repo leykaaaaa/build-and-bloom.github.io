@@ -214,6 +214,7 @@ export default function RegisterPage() {
                 <div className={`auth-header ${styles.registerHeader}`}>
 
                     <div className="auth-icon">
+                        <i className="fa-solid fa-leaf" aria-hidden="true" />
                     </div>
 
                     <h1>

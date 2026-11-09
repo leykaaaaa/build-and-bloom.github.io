@@ -16,7 +16,9 @@ const getAllCrops = async (req, res) => {
                 cr.min_temperature,
                 cr.max_temperature,
                 cr.season,
-                cr.environment
+                cr.environment,
+                cr.flood_tolerance,
+                cr.drainage_requirement
             FROM crops c
             LEFT JOIN crop_requirements cr
                 ON c.crop_id = cr.crop_id
@@ -58,7 +60,9 @@ const getCropById = async (req, res) => {
                 cr.min_temperature,
                 cr.max_temperature,
                 cr.season,
-                cr.environment
+                cr.environment,
+                cr.flood_tolerance,
+                cr.drainage_requirement
             FROM crops c
             LEFT JOIN crop_requirements cr
                 ON c.crop_id = cr.crop_id
@@ -103,7 +107,9 @@ const createCrop = async (req, res) => {
             min_temperature,
             max_temperature,
             season,
-            environment
+            environment,
+            flood_tolerance,
+            drainage_requirement
         } = req.body;
 
         // Validate required fields
@@ -116,7 +122,9 @@ const createCrop = async (req, res) => {
             min_temperature === undefined ||
             max_temperature === undefined ||
             !season ||
-            !environment
+            !environment ||
+            !flood_tolerance ||
+            !drainage_requirement
         ) {
             return res.status(400).json({
                 success: false,
@@ -180,9 +188,11 @@ const createCrop = async (req, res) => {
                 min_temperature,
                 max_temperature,
                 season,
-                environment
+                environment,
+                flood_tolerance,
+                drainage_requirement
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `,
             [
                 cropId,
@@ -192,7 +202,9 @@ const createCrop = async (req, res) => {
                 min_temperature,
                 max_temperature,
                 season.trim(),
-                environment.trim()
+                environment.trim(),
+                flood_tolerance.trim(),
+                drainage_requirement.trim()
             ]
         );
 
@@ -240,7 +252,9 @@ const updateCrop = async (req, res) => {
             min_temperature,
             max_temperature,
             season,
-            environment
+            environment,
+            flood_tolerance,
+            drainage_requirement
         } = req.body;
 
         // Validate required fields
@@ -253,7 +267,9 @@ const updateCrop = async (req, res) => {
             min_temperature === undefined ||
             max_temperature === undefined ||
             !season ||
-            !environment
+            !environment ||
+            !flood_tolerance ||
+            !drainage_requirement
         ) {
             return res.status(400).json({
                 success: false,
@@ -335,7 +351,9 @@ const updateCrop = async (req, res) => {
                 min_temperature = ?,
                 max_temperature = ?,
                 season = ?,
-                environment = ?
+                environment = ?,
+                flood_tolerance = ?,
+                drainage_requirement = ?
             WHERE crop_id = ?
             `,
             [
@@ -346,6 +364,8 @@ const updateCrop = async (req, res) => {
                 max_temperature,
                 season.trim(),
                 environment.trim(),
+                flood_tolerance.trim(),
+                drainage_requirement.trim(),
                 id
             ]
         );

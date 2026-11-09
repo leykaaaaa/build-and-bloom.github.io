@@ -174,7 +174,9 @@ const GROWING_METHODS = [
     "Container",
     "Raised Bed",
     "Greenhouse",
-    "Backyard Garden"
+    "Backyard Garden",
+    "Shade House",
+    "Rooftop/ Balcony Garden"
 ];
 
 const EMPTY_FORM = {
@@ -202,6 +204,12 @@ export default function PlanPlantPage() {
 
     const cropId =
         searchParams.get("crop");
+
+    const locationName =
+        searchParams.get("location");
+
+    const environment =
+        searchParams.get("environment");
 
 
     const [crop, setCrop] =
@@ -290,6 +298,45 @@ export default function PlanPlantPage() {
         loadCrop();
 
     }, [cropId]);
+
+    useEffect(() => {
+        if (!locationName) {
+            return;
+        }
+
+        const selectedLocation = LOCATIONS.find(
+            ([, name]) =>
+                name.toLowerCase() === locationName.trim().toLowerCase()
+        );
+
+        if (selectedLocation) {
+            setForm((previous) => ({
+                ...previous,
+                location_id: String(selectedLocation[0])
+            }));
+        }
+    }, [locationName]);
+
+    useEffect(() => {
+        if (!environment) {
+            return;
+        }
+
+        const normalizedEnvironment =
+            environment.trim().toLowerCase();
+        const selectedMethod = normalizedEnvironment === "raised garden bed"
+            ? "Raised Bed"
+            : GROWING_METHODS.find(
+                (method) => method.toLowerCase() === normalizedEnvironment
+            );
+
+        if (selectedMethod) {
+            setForm((previous) => ({
+                ...previous,
+                growing_method: selectedMethod
+            }));
+        }
+    }, [environment]);
 
 
     /*
@@ -724,6 +771,33 @@ export default function PlanPlantPage() {
                                         onChange={handleChange}
                                         placeholder="e.g. My Tomato Garden"
                                         required
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            {/* SELECTED CROP */}
+
+                            <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+
+                                <label htmlFor="crop_name">
+                                    Crop
+                                </label>
+
+                                <div className={styles.inputWrap}>
+
+                                    <span className={styles.fieldIcon}>
+                                        <TagIcon />
+                                    </span>
+
+                                    <input
+                                        id="crop_name"
+                                        name="crop_name"
+                                        type="text"
+                                        value={crop?.crop_name || ""}
+                                        readOnly
                                     />
 
                                 </div>

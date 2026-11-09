@@ -2,77 +2,277 @@ import Link from "next/link";
 import Image from "next/image";
 import logoImage from "../../../IMAGES/crop images/logo.png";
 
+import styles from "./home.module.css";
+
+
+// =========================================================
+// SMALL INLINE ICONS (no extra package needed)
+// =========================================================
+
+function Icon({ size = 26, strokeWidth = 1.9, children }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    );
+}
+
+const BookIcon = () => (
+    <Icon>
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </Icon>
+);
+
+const ClipboardCheckIcon = () => (
+    <Icon>
+        <rect width="8" height="4" x="8" y="2" rx="1" />
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+        <path d="m9 14 2 2 4-4" />
+    </Icon>
+);
+
+const MapPinIcon = ({ size }) => (
+    <Icon size={size}>
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+        <circle cx="12" cy="10" r="3" />
+    </Icon>
+);
+
+const CloudSunIcon = ({ size }) => (
+    <Icon size={size}>
+        <path d="M12 2v2M4.9 4.9l1.4 1.4M20 12h2M19.1 4.9l-1.4 1.4M15.9 11.5a4 4 0 0 0-7.8-.5" />
+        <path d="M17.5 19H9a5 5 0 1 1 4.9-6.1" />
+        <path d="M17.5 19a3.5 3.5 0 0 0 0-7h-.4" />
+    </Icon>
+);
+
+const CalendarIcon = () => (
+    <Icon>
+        <rect width="18" height="18" x="3" y="4" rx="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+    </Icon>
+);
+
+const SproutIcon = ({ size }) => (
+    <Icon size={size}>
+        <path d="M7 20h10" />
+        <path d="M10 20c5.5-2.5.8-6.4 3-10" />
+        <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
+        <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
+    </Icon>
+);
+
+const SparklesIcon = () => (
+    <Icon size={16} strokeWidth={2.2}>
+        <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z" />
+    </Icon>
+);
+
+const TargetIcon = ({ size }) => (
+    <Icon size={size}>
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="6" />
+        <circle cx="12" cy="12" r="2" />
+    </Icon>
+);
+
+const ArrowRightIcon = () => (
+    <Icon size={20} strokeWidth={2.4}>
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+    </Icon>
+);
+
+
+const FEATURES = [
+    {
+        icon: <BookIcon />,
+        title: "Crop Catalogue",
+        text: "Browse available crops and learn about their growing requirements, growing period, and other important information."
+    },
+    {
+        icon: <ClipboardCheckIcon />,
+        title: "Crop Compatibility Assessment",
+        text: "Evaluate whether a crop matches your soil, water, sunlight, environment, temperature, and other conditions."
+    },
+    {
+        icon: <MapPinIcon />,
+        title: "Location-Based Recommendations",
+        text: "Get recommendations based on the selected growing location and its relevant conditions."
+    },
+    {
+        icon: <CloudSunIcon />,
+        title: "Weather & Forecast",
+        text: "Check current weather conditions and extended forecasts that can help inform your planting decisions."
+    },
+    {
+        icon: <CalendarIcon />,
+        title: "Planting Calendar",
+        text: "Explore planting periods, seasons, growing periods, harvest periods, and notes for available crops."
+    },
+    {
+        icon: <SproutIcon />,
+        title: "Planting Plans & Tracking",
+        text: "Create planting plans for selected crops, manage their status, and monitor your growing activities through My Plants."
+    }
+];
+
+const STEPS = [
+    ["Explore", "Browse crops and learn about their requirements."],
+    ["Assess", "Enter your location and growing conditions."],
+    ["Analyze", "The Compatibility Engine evaluates your conditions."],
+    ["Recommend", "Receive explained crop recommendations based on your conditions."],
+    ["Plan", "Create a planting plan for your selected crop."],
+    ["Monitor", "Track your plant and manage its growing status."]
+];
+
+const DEVELOPERS = [
+    ["Angelica Tulagan", "System Developer"],
+    ["Francine Nicole De Guzman", "UX Designer"],
+    ["Mike Lomibao", "Quality Assurance Tester"],
+    ["Chris Lawrence Mamaril", "System Developer"],
+    ["Maverick John Diag", "System Developer"],
+    ["Regie Boy Gamboa", "System Developer"]
+];
+
+const PURPOSES = [
+    {
+        title: "For Growers",
+        text: "Designed for farmers, home growers, plantitos, plantitas, and urban growers."
+    },
+    {
+        title: "For Better Decisions",
+        text: "Turn growing conditions into understandable planting recommendations."
+    },
+    {
+        title: "For Pangasinan",
+        text: "Built around local growing conditions and agricultural information in Pangasinan."
+    }
+];
+
+function pad(number) {
+    return String(number).padStart(2, "0");
+}
+
+
 export default function Home() {
     return (
-        <div>
+        <div className={styles.home}>
 
             {/* =========================================
                 HERO
             ========================================= */}
 
-            <section className="hero">
+            <section className={styles.hero}>
 
-                <div className="hero-content">
+                <div className={`${styles.container} ${styles.heroInner}`}>
 
-                    <div className="hero-badge">
-                        Smart Growing for Pangasinan
-                    </div>
+                    <div className={styles.heroContent}>
 
-                    <h1>
-                        What can you
-                        <span> grow here?</span>
-                    </h1>
+                        <span className={styles.heroBadge}>
+                            <SparklesIcon />
+                            Smart Growing for Pangasinan
+                        </span>
 
-                    <p>
-                        Build & Bloom helps you discover suitable
-                        crops, understand their growing requirements,
-                        and plan how to grow them based on your
-                        location, soil, weather, and growing conditions.
-                    </p>
-
-                    <div className="hero-buttons">
-
-                        <Link
-                            href="/assessment"
-                            className="primary-button"
-                        >
-                            Start Crop Assessment 
-                        </Link>
-
-                        <Link
-                            href="/crops"
-                            className="secondary-button"
-                        >
-                            Explore Crops
-                        </Link>
-
-                    </div>
-
-                </div>
-
-
-                <div className="hero-visual">
-
-                    <div className="plant-card">
-
-                        <div className="plant-circle">
-                            <Image
-                                src={logoImage}
-                                alt="Build & Bloom"
-                                width={140}
-                                height={140}
-                                className="plant-logo"
-                            />
-                        </div>
-
-                        <h3>
-                            Grow with confidence.
-                        </h3>
+                        <h1>
+                            What can you
+                            <span> grow here?</span>
+                        </h1>
 
                         <p>
-                            Know what fits your location
-                            before you plant.
+                            Build &amp; Bloom helps you discover suitable
+                            crops, understand their growing requirements,
+                            and plan how to grow them based on your
+                            location, soil, weather, and growing conditions.
                         </p>
+
+                        <div className={styles.heroButtons}>
+
+                            <Link
+                                href="/assessment"
+                                className={styles.primaryButton}
+                            >
+                                Start Crop Assessment
+                                <ArrowRightIcon />
+                            </Link>
+
+                            <Link
+                                href="/crops"
+                                className={styles.secondaryButton}
+                            >
+                                Explore Crops
+                            </Link>
+
+                        </div>
+
+                    </div>
+
+
+                    <div className={styles.heroVisual}>
+
+                        <div className={styles.plantCard}>
+
+                            <div className={styles.plantCircle}>
+                                <Image
+                                    src={logoImage}
+                                    alt="Build & Bloom"
+                                    width={140}
+                                    height={140}
+                                    className={styles.plantLogo}
+                                />
+                            </div>
+
+                            <h3>
+                                Grow with confidence.
+                            </h3>
+
+                            <p>
+                                Know what fits your location
+                                before you plant.
+                            </p>
+
+                        </div>
+
+                        <div className={`${styles.floatChip} ${styles.chipOne}`}>
+                            <span className={`${styles.chipIcon} ${styles.chipLeaf}`}>
+                                <TargetIcon size={22} />
+                            </span>
+                            <div>
+                                <strong>Compatibility</strong>
+                                <span>Explained match scores</span>
+                            </div>
+                        </div>
+
+                        <div className={`${styles.floatChip} ${styles.chipTwo}`}>
+                            <span className={`${styles.chipIcon} ${styles.chipMint}`}>
+                                <CloudSunIcon size={22} />
+                            </span>
+                            <div>
+                                <strong>Live weather</strong>
+                                <span>Insights for your area</span>
+                            </div>
+                        </div>
+
+                        <div className={`${styles.floatChip} ${styles.chipThree}`}>
+                            <span className={`${styles.chipIcon} ${styles.chipLeaf}`}>
+                                <SproutIcon size={22} />
+                            </span>
+                            <div>
+                                <strong>Planting plan</strong>
+                                <span>Track your growing status</span>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -86,32 +286,27 @@ export default function Home() {
             ========================================= */}
 
             <section
-                className="about-section"
+                className={styles.aboutSection}
                 id="about"
             >
 
-                <div className="about-container">
+                <div className={styles.container}>
 
-                    <div className="about-heading">
+                    <div className={styles.aboutGrid}>
 
-                        <span className="section-label">
-                            ABOUT BUILD & BLOOM
-                        </span>
+                        <div className={styles.aboutMain}>
 
-                        <h2>
-                            Smarter planting decisions,
-                            <span> made for your conditions.</span>
-                        </h2>
+                            <span className={styles.eyebrow}>
+                                ABOUT BUILD &amp; BLOOM
+                            </span>
 
-                    </div>
-
-
-                    <div className="about-content">
-
-                        <div className="about-main">
+                            <h2>
+                                Smarter planting decisions,
+                                <span> made for your conditions.</span>
+                            </h2>
 
                             <p>
-                                Build & Bloom is a Plant Management
+                                Build &amp; Bloom is a Plant Management
                                 Decision Support System designed to
                                 help growers make more informed
                                 planting decisions in Pangasinan.
@@ -138,75 +333,34 @@ export default function Home() {
                         </div>
 
 
-                        <div className="about-purpose">
+                        <div className={styles.purposeList}>
 
-                            <div className="about-purpose-item">
+                            {PURPOSES.map((item, index) => (
 
-                                <span className="about-purpose-number">
-                                    01
-                                </span>
+                                <div
+                                    className={styles.purposeItem}
+                                    key={item.title}
+                                >
 
-                                <div>
+                                    <span className={styles.purposeNumber}>
+                                        {pad(index + 1)}
+                                    </span>
 
-                                    <h3>
-                                        For Growers
-                                    </h3>
+                                    <div>
 
-                                    <p>
-                                        Designed for farmers,
-                                        home growers, plantitos,
-                                        plantitas, and urban growers.
-                                    </p>
+                                        <h3>
+                                            {item.title}
+                                        </h3>
 
-                                </div>
+                                        <p>
+                                            {item.text}
+                                        </p>
 
-                            </div>
-
-
-                            <div className="about-purpose-item">
-
-                                <span className="about-purpose-number">
-                                    02
-                                </span>
-
-                                <div>
-
-                                    <h3>
-                                        For Better Decisions
-                                    </h3>
-
-                                    <p>
-                                        Turn growing conditions
-                                        into understandable
-                                        planting recommendations.
-                                    </p>
+                                    </div>
 
                                 </div>
 
-                            </div>
-
-
-                            <div className="about-purpose-item">
-
-                                <span className="about-purpose-number">
-                                    03
-                                </span>
-
-                                <div>
-
-                                    <h3>
-                                        For Pangasinan
-                                    </h3>
-
-                                    <p>
-                                        Built around local growing
-                                        conditions and agricultural
-                                        information in Pangasinan.
-                                    </p>
-
-                                </div>
-
-                            </div>
+                            ))}
 
                         </div>
 
@@ -222,184 +376,63 @@ export default function Home() {
             ========================================= */}
 
             <section
-                className="features-section"
+                className={styles.featuresSection}
                 id="features"
             >
 
-                <div className="section-heading">
+                <div className={styles.container}>
 
-                    <span>
-                        WHAT BUILD & BLOOM OFFERS
-                    </span>
+                    <div className={styles.sectionHeading}>
 
-                    <h2>
-                        Everything you need to plan
-                        <br />
-                        your next crop.
-                    </h2>
-
-                    <p>
-                        Explore your options, understand your
-                        growing conditions, and turn your decision
-                        into an organized planting plan.
-                    </p>
-
-                </div>
-
-
-                <div className="feature-grid">
-
-
-                    {/* FEATURE 1 */}
-
-                    <div className="feature-card">
-
-                        <div className="feature-icon">
-                            <i className="fa-solid fa-book-open" aria-hidden="true" />
-                        </div>
-
-                        <span className="feature-number">
-                            01
+                        <span className={styles.eyebrow}>
+                            WHAT BUILD &amp; BLOOM OFFERS
                         </span>
 
-                        <h3>
-                            Crop Catalogue
-                        </h3>
+                        <h2>
+                            Everything you need to plan your next crop.
+                        </h2>
 
                         <p>
-                            Browse available crops and learn about
-                            their growing requirements, growing
-                            period, and other important information.
+                            Explore your options, understand your
+                            growing conditions, and turn your decision
+                            into an organized planting plan.
                         </p>
 
                     </div>
 
 
-                    {/* FEATURE 2 */}
+                    <div className={styles.featureGrid}>
 
-                    <div className="feature-card">
+                        {FEATURES.map((feature, index) => (
 
-                        <div className="feature-icon">
-                          <i className="fa-solid fa-clipboard-check" aria-hidden="true" />
-                            
-                        </div>
+                            <div
+                                className={`${styles.featureCard} ${index % 2 === 1 ? styles.featureAlt : ""}`}
+                                key={feature.title}
+                            >
 
-                        <span className="feature-number">
-                            02
-                        </span>
+                                <div className={styles.featureTop}>
 
-                        <h3>
-                            Crop Compatibility Assessment
-                        </h3>
+                                    <span className={styles.featureIcon}>
+                                        {feature.icon}
+                                    </span>
 
-                        <p>
-                            Evaluate whether a crop matches your
-                            soil, water, sunlight, environment,
-                            temperature, and other conditions.
-                        </p>
+                                    <span className={styles.featureNumber}>
+                                        {pad(index + 1)}
+                                    </span>
 
-                    </div>
+                                </div>
 
+                                <h3>
+                                    {feature.title}
+                                </h3>
 
-                    {/* FEATURE 3 */}
+                                <p>
+                                    {feature.text}
+                                </p>
 
-                    <div className="feature-card">
+                            </div>
 
-                        <div className="feature-icon">
-                            <i className="fa-solid fa-location-dot" aria-hidden="true" />
-                            
-                        </div>
-
-                        <span className="feature-number">
-                            03
-                        </span>
-
-                        <h3>
-                            Location-Based Recommendations
-                        </h3>
-
-                        <p>
-                            Get recommendations based on the
-                            selected growing location and its
-                            relevant conditions.
-                        </p>
-
-                    </div>
-
-
-                    {/* FEATURE 4 */}
-
-                    <div className="feature-card">
-
-                        <div className="feature-icon">
-                            <i className="fa-solid fa-cloud-sun" aria-hidden="true" />
-                        </div>
-
-                        <span className="feature-number">
-                            04
-                        </span>
-
-                        <h3>
-                            Weather & Forecast
-                        </h3>
-
-                        <p>
-                            Check current weather conditions and
-                            extended forecasts that can help inform
-                            your planting decisions.
-                        </p>
-
-                    </div>
-
-
-                    {/* FEATURE 5 */}
-
-                    <div className="feature-card">
-
-                        <div className="feature-icon">
-                            <i className="fa-solid fa-calendar-days" aria-hidden="true" />
-                            
-                        </div>
-
-                        <span className="feature-number">
-                            05
-                        </span>
-
-                        <h3>
-                            Planting Calendar
-                        </h3>
-
-                        <p>
-                            Explore planting periods, seasons,
-                            growing periods, harvest periods,
-                            and notes for available crops.
-                        </p>
-
-                    </div>
-
-
-                    {/* FEATURE 6 */}
-
-                    <div className="feature-card">
-
-                        <div className="feature-icon">
-                            <i className="fa-solid fa-seedling" aria-hidden="true" />
-                            
-                        </div>
-
-                        <span className="feature-number">
-                            06
-                        </span>
-
-                        <h3>
-                            Planting Plans & Tracking
-                        </h3>
-
-                        <p>
-                            Create planting plans for selected crops,
-                            manage their status, and monitor your
-                            growing activities through My Plants.
-                        </p>
+                        ))}
 
                     </div>
 
@@ -412,127 +445,44 @@ export default function Home() {
                 HOW IT WORKS
             ========================================= */}
 
-            <section className="how-section">
+            <section className={styles.howSection}>
 
-                <div className="section-heading">
+                <div className={styles.container}>
 
-                    <span>
-                        HOW IT WORKS
-                    </span>
+                    <div className={`${styles.sectionHeading} ${styles.leftAligned}`}>
 
-                    <h2>
-                        From question to planting plan.
-                    </h2>
+                        <span className={styles.eyebrow}>
+                            HOW IT WORKS
+                        </span>
 
-                </div>
-
-
-                <div className="steps-grid">
-
-                    <div className="step-card">
-
-                        <div className="step-number">
-                            01
-                        </div>
-
-                        <h3>
-                            Explore
-                        </h3>
-
-                        <p>
-                            Browse crops and learn about
-                            their requirements.
-                        </p>
+                        <h2>
+                            From question to planting plan.
+                        </h2>
 
                     </div>
 
 
-                    <div className="step-card">
+                    <div className={styles.stepsGrid}>
 
-                        <div className="step-number">
-                            02
-                        </div>
+                        {STEPS.map(([title, text], index) => (
 
-                        <h3>
-                            Assess
-                        </h3>
+                            <div className={styles.stepCard} key={title}>
 
-                        <p>
-                            Enter your location and growing
-                            conditions.
-                        </p>
+                                <div className={styles.stepNumber}>
+                                    {index + 1}
+                                </div>
 
-                    </div>
+                                <h3>
+                                    {title}
+                                </h3>
 
+                                <p>
+                                    {text}
+                                </p>
 
-                    <div className="step-card">
+                            </div>
 
-                        <div className="step-number">
-                            03
-                        </div>
-
-                        <h3>
-                            Analyze
-                        </h3>
-
-                        <p>
-                            The Compatibility Engine evaluates
-                            your conditions.
-                        </p>
-
-                    </div>
-
-
-                    <div className="step-card">
-
-                        <div className="step-number">
-                            04
-                        </div>
-
-                        <h3>
-                            Recommend
-                        </h3>
-
-                        <p>
-                            Receive explained crop recommendations
-                            based on your conditions.
-                        </p>
-
-                    </div>
-
-
-                    <div className="step-card">
-
-                        <div className="step-number">
-                            05
-                        </div>
-
-                        <h3>
-                            Plan
-                        </h3>
-
-                        <p>
-                            Create a planting plan for your
-                            selected crop.
-                        </p>
-
-                    </div>
-
-
-                    <div className="step-card">
-
-                        <div className="step-number">
-                            06
-                        </div>
-
-                        <h3>
-                            Monitor
-                        </h3>
-
-                        <p>
-                            Track your plant and manage
-                            its growing status.
-                        </p>
+                        ))}
 
                     </div>
 
@@ -541,163 +491,100 @@ export default function Home() {
             </section>
 
 
-            
-{/* =========================================
-    DEVELOPERS SECTION
-========================================= */}
+            {/* =========================================
+                DEVELOPERS
+            ========================================= */}
 
-<section className="developers-section" id="developers">
-    <div className="developers-container">
+            <section className={styles.developersSection} id="developers">
 
-        <div className="developers-heading">
-            <span>THE TEAM</span>
+                <div className={styles.container}>
 
-            <h2>
-                Meet the <span>Developers</span>
-            </h2>
+                    <div className={styles.sectionHeading}>
 
-            <p>
-                The people behind Build & Bloom, working together to
-                create a smarter planting decision support system.
-            </p>
-        </div>
+                        <span className={styles.eyebrow}>
+                            THE TEAM
+                        </span>
 
-        <div className="developers-grid">
+                        <h2>
+                            Meet the <span>Developers</span>
+                        </h2>
 
-            {/* Developer 1 */}
-            <div className="developer-card">
-                <div className="developer-photo">
-                    <img
-                        src="/developers/developer-1.jpg"
-                        alt="Angelica Tulagan"
-                        className="developer-photo-image"
-                    />
+                        <p>
+                            The people behind Build &amp; Bloom, working together to
+                            create a smarter planting decision support system.
+                        </p>
+
+                    </div>
+
+
+                    <div className={styles.developersGrid}>
+
+                        {DEVELOPERS.map(([name, role], index) => (
+
+                            <div className={styles.developerCard} key={name}>
+
+                                <div className={styles.developerPhoto}>
+
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={`/developers/developer-${index + 1}.jpg`}
+                                        alt={name}
+                                        className={styles.developerPhotoImage}
+                                    />
+
+                                </div>
+
+                                <div className={styles.developerInfo}>
+
+                                    <h3>{name}</h3>
+
+                                    <p>{role}</p>
+
+                                </div>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
                 </div>
 
-                <div className="developer-info">
-                    <h3>Angelica Tulagan</h3>
-                    <p>System Developer</p>
-                </div>
-            </div>
-
-
-            {/* Developer 2 */}
-            <div className="developer-card">
-                <div className="developer-photo">
-                    <img
-                        src="/developers/developer-2.jpg"
-                        alt="Francine Nicole De Guzman"
-                        className="developer-photo-image"
-                    />
-                </div>
-
-                <div className="developer-info">
-                    <h3>Francine Nicole De Guzman</h3>
-                    <p>UX Designer</p>
-                </div>
-            </div>
-
-
-            {/* Developer 3 */}
-            <div className="developer-card">
-                <div className="developer-photo">
-                    <img
-                        src="/developers/developer-3.jpg"
-                        alt="Mike Lomibao"
-                        className="developer-photo-image"
-                    />
-                </div>
-
-                <div className="developer-info">
-                    <h3>Mike Lomibao</h3>
-                    <p>Quality Assurance Tester</p>
-                </div>
-            </div>
-
-
-            {/* Developer 4 */}
-            <div className="developer-card">
-                <div className="developer-photo">
-                    <img
-                        src="/developers/developer-4.jpg"
-                        alt="Chris Lawrence Mamaril"
-                        className="developer-photo-image"
-                    />
-                </div>
-
-                <div className="developer-info">
-                    <h3>Chris Lawrence Mamaril</h3>
-                    <p>System Developer</p>
-                </div>
-            </div>
-
-
-            {/* Developer 5 */}
-            <div className="developer-card">
-                <div className="developer-photo">
-                    <img
-                        src="/developers/developer-5.jpg"
-                        alt="Maverick John Diag"
-                        className="developer-photo-image"
-                    />
-                </div>
-
-                <div className="developer-info">
-                    <h3>Maverick John Diag</h3>
-                    <p>System Developer</p>
-                </div>
-            </div>
-
-
-            {/* Developer 6 */}
-            <div className="developer-card">
-                <div className="developer-photo">
-                    <img
-                        src="/developers/developer-6.jpg"
-                        alt="Regie Boy Gamboa"
-                        className="developer-photo-image"
-                    />
-                </div>
-
-                <div className="developer-info">
-                    <h3>Regie Boy Gamboa</h3>
-                    <p>System Developer</p>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</section>
+            </section>
 
 
             {/* =========================================
                 CALL TO ACTION
             ========================================= */}
 
-            <section className="cta-section">
+            <section className={styles.ctaSection}>
 
-                <div className="cta-content">
+                <div className={styles.container}>
 
-                    <span>
-                        READY TO GROW?
-                    </span>
+                    <div className={styles.ctaContent}>
 
-                    <h2>
-                        Start with the right crop.
-                    </h2>
+                        <span>
+                            READY TO GROW?
+                        </span>
 
-                    <p>
-                        Discover what you can grow based on
-                        your conditions.
-                    </p>
+                        <h2>
+                            Start with the right crop.
+                        </h2>
 
-                    <Link
-                        href="/assessment"
-                        className="primary-button"
-                    >
-                        Start Crop Assessment 
-                    </Link>
+                        <p>
+                            Discover what you can grow based on
+                            your conditions.
+                        </p>
+
+                        <Link
+                            href="/assessment"
+                            className={styles.ctaButton}
+                        >
+                            Start Crop Assessment
+                            <ArrowRightIcon />
+                        </Link>
+
+                    </div>
 
                 </div>
 

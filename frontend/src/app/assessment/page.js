@@ -1400,7 +1400,7 @@ export default function AssessmentPage() {
                                                         </Link>
 
                                                         <Link
-                                                            href={`/plants/plan?crop=${crop.crop_id}`}
+                                                            href={`/plants/plan?crop=${crop.crop_id}&location=${encodeURIComponent(form.location)}&environment=${encodeURIComponent(form.environment)}`}
                                                             className={styles.primaryButton}
                                                         >
                                                             Plan This Plant

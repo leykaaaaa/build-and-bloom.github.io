@@ -137,7 +137,7 @@ localStorage.setItem(
                 <div className="auth-header">
 
                     <div className="auth-icon">
-                        
+                        <i className="fa-solid fa-leaf" aria-hidden="true" />
                     </div>
 
                     <h1>

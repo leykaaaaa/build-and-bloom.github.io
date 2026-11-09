@@ -16,7 +16,9 @@ const EMPTY_FORM = {
     min_temperature: "",
     max_temperature: "",
     season: "",
-    environment: ""
+    environment: "",
+    flood_tolerance: "",
+    drainage_requirement: ""
 };
 
 async function fetchWithAdminAuth(url, options = {}) {
@@ -234,7 +236,9 @@ export default function CropManagement() {
             min_temperature: crop.min_temperature ?? "",
             max_temperature: crop.max_temperature ?? "",
             season: crop.season || "",
-            environment: crop.environment || ""
+            environment: crop.environment || "",
+            flood_tolerance: crop.flood_tolerance || "",
+            drainage_requirement: crop.drainage_requirement || ""
         });
     };
 
@@ -591,6 +595,36 @@ export default function CropManagement() {
                                         value={formData.sunlight_requirement}
                                         onChange={updateField("sunlight_requirement")}
                                         placeholder="e.g. Full Sun"
+                                    />
+                                </div>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-flood-tolerance">
+                                        Flood Tolerance <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-flood-tolerance"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.flood_tolerance}
+                                        onChange={updateField("flood_tolerance")}
+                                        placeholder="e.g. Low, Low to Moderate, Managed flooding"
+                                    />
+                                </div>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="crop-drainage-requirement">
+                                        Drainage Requirement <span className={styles.required}>*</span>
+                                    </label>
+
+                                    <input
+                                        id="crop-drainage-requirement"
+                                        className={styles.formInput}
+                                        type="text"
+                                        value={formData.drainage_requirement}
+                                        onChange={updateField("drainage_requirement")}
+                                        placeholder="e.g. Well-drained, Controlled water retention"
                                     />
                                 </div>
 

@@ -107,11 +107,33 @@
     border-top: 1px solid #e3ece5;
 }
 
+.userRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 0 6px;
+}
+
+.avatar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #d4ebda;
+    color: #1f5c33;
+    font-size: 0.875rem;
+    font-weight: 800;
+}
+
 .userName {
     overflow: hidden;
-    padding: 0 8px;
-    color: var(--muted);
-    font-size: 0.85rem;
+    min-width: 0;
+    color: var(--text-soft);
+    font-size: 0.875rem;
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -119,6 +141,10 @@
 
 /* logout is a soft green button, like the mockup */
 .logoutButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     width: 100%;
     min-height: 48px;
     padding: 10px 14px;

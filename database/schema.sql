@@ -70,6 +70,8 @@ CREATE TABLE crop_requirements (
 
     season VARCHAR(255),
     environment VARCHAR(255),
+    flood_tolerance VARCHAR(100),
+    drainage_requirement VARCHAR(100),
 
     FOREIGN KEY (crop_id)
         REFERENCES crops(crop_id)
