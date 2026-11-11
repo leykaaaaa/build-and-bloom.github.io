@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +14,7 @@ import styles from "./layout.module.css";
 export default function AdminLayout({ children }) {
     const router = useRouter();
     const pathname = usePathname();
+    const [authorized, setAuthorized] = useState(false);
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -23,13 +24,13 @@ export default function AdminLayout({ children }) {
 
         if (!isAdmin()) {
             router.replace("/dashboard");
+            return;
         }
+
+        setAuthorized(true);
     }, [router]);
 
-    if (
-        !isAuthenticated() ||
-        !isAdmin()
-    ) {
+    if (!authorized) {
         return null;
     }
 
@@ -63,6 +64,11 @@ export default function AdminLayout({ children }) {
             name: "Recommendations",
             path: "/admin/recommendations",
             icon: <i className="fa-solid fa-bolt" />
+        },
+        {
+            name: "Weather Advisories",
+            path: "/admin/weather",
+            icon: <i className="fa-solid fa-cloud-sun" />
         },
         {
             name: "Settings",

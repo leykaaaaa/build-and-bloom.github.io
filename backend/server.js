@@ -11,6 +11,7 @@ const plantingPlanRoutes = require("./routes/plantingPlanRoutes");
 const authRoutes = require("./routes/authRoutes");
 const plantingCalendarRoutes = require("./routes/plantingCalendarRoutes");
 const locationRoutes = require("./routes/locationRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(
 );
 
 app.use("/api/locations", locationRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use("/api/planting-calendar", plantingCalendarRoutes);
 

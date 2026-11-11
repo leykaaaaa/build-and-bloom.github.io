@@ -273,6 +273,7 @@ export default function WeatherPage() {
         useState("");
 
     const [locations, setLocations] = useState([]);
+    const [locationError, setLocationError] = useState("");
 
     // =========================================================
     // LOAD PANGASINAN LOCATIONS
@@ -291,18 +292,30 @@ export default function WeatherPage() {
                 const result = await response.json();
 
                 if (!response.ok || !result.success) {
+                    if (result.error) {
+                        console.error(
+                            "Location API error details:",
+                            result.error
+                        );
+                    }
+
                     throw new Error(
                         result.message || "Failed to load locations."
                     );
                 }
 
                 setLocations(result.data || []);
+                setLocationError("");
 
             } catch (error) {
 
                 console.error(
                     "Failed to load locations:",
                     error
+                );
+                setLocationError(
+                    error.message ||
+                    "Unable to load locations. Please try again later."
                 );
 
             }
@@ -637,6 +650,16 @@ export default function WeatherPage() {
 
                     </div>
 
+                )}
+
+                {locationError && (
+                    <div className={styles.weatherError} role="alert">
+                        <AlertTriangleIcon />
+                        <div>
+                            <strong>Unable to load locations</strong>
+                            <p>{locationError}</p>
+                        </div>
+                    </div>
                 )}
 
 

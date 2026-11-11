@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import logoImage from "../../../IMAGES/crop images/logo.png";
+import { getNotifications } from "../services/notificationService";
 import styles from "./Navbar.module.css";
 
 // =========================================================
@@ -75,6 +76,13 @@ const SproutIcon = () => (
     </Icon>
 );
 
+const BellIcon = () => (
+    <Icon>
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+        <path d="M10 21h4" />
+    </Icon>
+);
+
 const LogoutIcon = () => (
     <Icon size={18} strokeWidth={2.2}>
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -105,6 +113,7 @@ export default function Navbar() {
     const [user, setUser] = useState(null);
     const [loaded, setLoaded] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0);
     const pathname = usePathname();
 
     const menuItems = [
@@ -112,6 +121,7 @@ export default function Navbar() {
         { label: "Crop Catalogue", href: "/crops", icon: <BookIcon /> },
         { label: "Crop Assessment", href: "/assessment", icon: <ClipboardCheckIcon /> },
         { label: "Weather", href: "/weather", icon: <CloudIcon /> },
+        { label: "Notifications", href: "/notifications", icon: <BellIcon /> },
         { label: "Planting Calendar", href: "/calendar", icon: <CalendarIcon /> },
         { label: "My Plants", href: "/plants", icon: <SproutIcon /> },
     ];
@@ -167,6 +177,33 @@ export default function Navbar() {
         };
 
     }, []);
+
+    useEffect(() => {
+        if (!user) {
+            setUnreadCount(0);
+            return undefined;
+        }
+
+        let active = true;
+        const loadUnreadCount = async () => {
+            try {
+                const result = await getNotifications();
+                if (active) {
+                    setUnreadCount(result.unreadCount || 0);
+                }
+            } catch (error) {
+                console.error("Failed to load notification count:", error);
+            }
+        };
+
+        loadUnreadCount();
+        const intervalId = window.setInterval(loadUnreadCount, 60000);
+
+        return () => {
+            active = false;
+            window.clearInterval(intervalId);
+        };
+    }, [user, pathname]);
 
     useEffect(() => {
         document.body.classList.toggle(
@@ -253,7 +290,12 @@ export default function Navbar() {
                                             {item.icon}
                                         </span>
                                     )}
-                                    {item.label}
+                                    <span>{item.label}</span>
+                                    {item.href === "/notifications" && unreadCount > 0 && (
+                                        <span className={styles.notificationBadge} aria-label={`${unreadCount} unread notifications`}>
+                                            {unreadCount > 99 ? "99+" : unreadCount}
+                                        </span>
+                                    )}
                                 </Link>
                             );
                         })}
