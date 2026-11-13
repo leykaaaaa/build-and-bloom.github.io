@@ -69,8 +69,9 @@ const ArrowIcon = () => (
 // Search-only Tagalog names; crop cards continue to use the catalogue names.
 const cropSearchAliases = {
     "bitter gourd": ["ampalaya"],
-    camote: ["kamote"],
+    "sweet potato": ["kamote"],
     corn: ["mais"],
+    "chili pepper": ["sili"],
     eggplant: ["talong"],
     "mung bean": ["monggo", "munggo"],
     onion: ["sibuyas"],
@@ -79,6 +80,7 @@ const cropSearchAliases = {
     squash: ["kalabasa"],
     "string beans": ["sitaw"],
     tomato: ["kamatis"]
+
 };
 
 
