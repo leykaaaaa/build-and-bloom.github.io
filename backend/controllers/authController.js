@@ -10,16 +10,25 @@ const registerUser = async (req, res) => {
     try {
 
         const {
-            full_name,
+            first_name,
+            middle_name,
+            last_name,
             email,
             location_id,
             password
         } = req.body;
 
+        const firstName =
+            typeof first_name === "string" ? first_name.trim() : "";
+        const middleName =
+            typeof middle_name === "string" ? middle_name.trim() : "";
+        const lastName =
+            typeof last_name === "string" ? last_name.trim() : "";
 
         // Validate required fields
         if (
-            !full_name ||
+            !firstName ||
+            !lastName ||
             !email ||
             !password
         ) {
@@ -27,7 +36,7 @@ const registerUser = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message:
-                    "Full name, email, and password are required."
+                    "First name, last name, email, and password are required."
             });
 
         }
@@ -64,15 +73,19 @@ const registerUser = async (req, res) => {
         const [result] = await pool.query(
             `
             INSERT INTO users (
-                full_name,
+                first_name,
+                middle_name,
+                last_name,
                 email,
                 password,
                 location_id
             )
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?)
             `,
             [
-                full_name,
+                firstName,
+                middleName || null,
+                lastName,
                 email,
                 hashedPassword,
                 location_id || null
@@ -89,7 +102,14 @@ const registerUser = async (req, res) => {
 
             user: {
                 user_id: result.insertId,
-                full_name,
+                first_name: firstName,
+                middle_name: middleName || null,
+                last_name: lastName,
+                full_name: [
+                    firstName,
+                    middleName,
+                    lastName
+                ].filter(Boolean).join(" "),
                 email,
                 location_id:
                     location_id || null
@@ -156,8 +176,11 @@ const loginUser = async (req, res) => {
             `
             SELECT
     user_id,
-    full_name,
-    email,
+                first_name,
+                middle_name,
+                last_name,
+                CONCAT_WS(' ', first_name, NULLIF(middle_name, ''), last_name) AS full_name,
+                email,
     password,
     role,
     location_id
@@ -234,8 +257,10 @@ WHERE email = ?
     user_id:
         user.user_id,
 
-    full_name:
-        user.full_name,
+    first_name: user.first_name,
+    middle_name: user.middle_name,
+    last_name: user.last_name,
+    full_name: user.full_name,
 
     email:
         user.email,
@@ -284,7 +309,15 @@ const getAllUsers = async (req, res) => {
             `
             SELECT
                 u.user_id,
-                u.full_name,
+                u.first_name,
+                u.middle_name,
+                u.last_name,
+                CONCAT_WS(
+                    ' ',
+                    u.first_name,
+                    NULLIF(u.middle_name, ''),
+                    u.last_name
+                ) AS full_name,
                 u.email,
                 u.role,
                 u.location_id,

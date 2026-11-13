@@ -35,19 +35,6 @@ const CalendarIcon = () => (
     </Icon>
 );
 
-const ClockIcon = () => (
-    <Icon size={14}>
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 6v6l4 2" />
-    </Icon>
-);
-
-const CheckIcon = () => (
-    <Icon size={14} strokeWidth={2.6}>
-        <path d="m5 12 5 5 9-10" />
-    </Icon>
-);
-
 const BulbIcon = () => (
     <Icon size={18} strokeWidth={2}>
         <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
@@ -166,8 +153,6 @@ export default function CalendarPage() {
             const scheduleKey = [
                 item.crop_id,
                 item.planting_month?.trim().toLowerCase() || "",
-                item.growing_period?.trim().toLowerCase() || "",
-                item.harvest_period?.trim().toLowerCase() || "",
                 season.toLowerCase(),
             ].join("|");
 
@@ -190,8 +175,6 @@ export default function CalendarPage() {
             if (!seasons[season].crops[item.crop_id].schedules[scheduleKey]) {
                 seasons[season].crops[item.crop_id].schedules[scheduleKey] = {
                     planting_month: item.planting_month,
-                    growing_period: item.growing_period,
-                    harvest_period: item.harvest_period,
                     notes: new Set(),
                 };
             }
@@ -431,16 +414,6 @@ export default function CalendarPage() {
                                                             <div className={styles.detail}>
                                                                 <small><CalendarIcon /> Planting Period</small>
                                                                 <strong>{schedule.planting_month || "Not specified"}</strong>
-                                                            </div>
-
-                                                            <div className={styles.detail}>
-                                                                <small><ClockIcon /> Growing Period</small>
-                                                                <strong>{schedule.growing_period || "Not specified"}</strong>
-                                                            </div>
-
-                                                            <div className={styles.detail}>
-                                                                <small><CheckIcon /> Harvest Period</small>
-                                                                <strong>{schedule.harvest_period || "Not specified"}</strong>
                                                             </div>
 
                                                         </div>

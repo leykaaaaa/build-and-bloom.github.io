@@ -12,7 +12,9 @@ export default function RegisterPage() {
 
     const [form, setForm] = useState({
 
-        full_name: "",
+        first_name: "",
+        middle_name: "",
+        last_name: "",
         email: "",
         location_id: "",
         password: "",
@@ -137,8 +139,14 @@ export default function RegisterPage() {
             const result =
                 await registerUser({
 
-                    full_name:
-                        form.full_name,
+                    first_name:
+                        form.first_name,
+
+                    middle_name:
+                        form.middle_name,
+
+                    last_name:
+                        form.last_name,
 
                     email:
                         form.email,
@@ -168,7 +176,9 @@ export default function RegisterPage() {
             // Clear form
             setForm({
 
-                full_name: "",
+                first_name: "",
+                middle_name: "",
+                last_name: "",
                 email: "",
                 location_id: "",
                 password: "",
@@ -287,12 +297,12 @@ export default function RegisterPage() {
                 >
 
 
-                    {/* FULL NAME */}
+                    {/* NAME */}
 
                     <div className="form-group">
 
-                        <label htmlFor="full_name">
-                            Full Name
+                        <label htmlFor="first_name">
+                            First Name
                         </label>
 
                         <div className={styles.fieldInputWrapper}>
@@ -301,16 +311,57 @@ export default function RegisterPage() {
                                 aria-hidden="true"
                             />
                             <input
-                                id="full_name"
-                                name="full_name"
+                                id="first_name"
+                                name="first_name"
                                 type="text"
-                                value={form.full_name}
+                                value={form.first_name}
                                 onChange={handleChange}
-                                placeholder="Enter your full name"
+                                placeholder="Enter your first name"
                                 required
                             />
                         </div>
 
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="middle_name">
+                            Middle Name <span>(Optional)</span>
+                        </label>
+                        <div className={styles.fieldInputWrapper}>
+                            <i
+                                className={`fa-solid fa-user ${styles.fieldInputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <input
+                                id="middle_name"
+                                name="middle_name"
+                                type="text"
+                                value={form.middle_name}
+                                onChange={handleChange}
+                                placeholder="Enter your middle name"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="last_name">
+                            Last Name
+                        </label>
+                        <div className={styles.fieldInputWrapper}>
+                            <i
+                                className={`fa-solid fa-user ${styles.fieldInputIcon}`}
+                                aria-hidden="true"
+                            />
+                            <input
+                                id="last_name"
+                                name="last_name"
+                                type="text"
+                                value={form.last_name}
+                                onChange={handleChange}
+                                placeholder="Enter your last name"
+                                required
+                            />
+                        </div>
                     </div>
 
 

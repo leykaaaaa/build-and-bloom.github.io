@@ -31,13 +31,10 @@ async function getCoordinates(location) {
         `
         SELECT
             l.location_name,
-            lc.latitude,
-            lc.longitude
+            l.latitude,
+            l.longitude
         FROM locations l
-        INNER JOIN location_characteristics lc
-            ON l.location_id = lc.location_id
         WHERE LOWER(TRIM(l.location_name)) = LOWER(?)
-          AND l.province = 'Pangasinan'
         LIMIT 1
         `,
         [locationName]
@@ -228,4 +225,3 @@ module.exports = {
     getCurrentWeather,
     getWeatherForecast
 };
-

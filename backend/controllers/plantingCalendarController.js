@@ -18,8 +18,6 @@ const getPlantingCalendar = async (req, res) => {
                 l.location_name,
                 pc.planting_month,
                 pc.season,
-                pc.growing_period,
-                pc.harvest_period,
                 pc.notes
             FROM planting_calendar pc
             INNER JOIN crops c
@@ -102,8 +100,6 @@ const getPlantingCalendarByLocation = async (req, res) => {
                 l.location_name,
                 pc.planting_month,
                 pc.season,
-                pc.growing_period,
-                pc.harvest_period,
                 pc.notes
             FROM planting_calendar pc
             INNER JOIN crops c
@@ -149,8 +145,6 @@ const createPlantingCalendar = async (req, res) => {
             location_id,
             planting_month,
             season,
-            growing_period,
-            harvest_period,
             notes
         } = req.body;
 
@@ -207,19 +201,15 @@ const createPlantingCalendar = async (req, res) => {
                 location_id,
                 planting_month,
                 season,
-                growing_period,
-                harvest_period,
                 notes
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?)
             `,
             [
                 crop_id,
                 location_id || null,
                 planting_month || null,
                 season || null,
-                growing_period || null,
-                harvest_period || null,
                 notes || null
             ]
         );
@@ -270,8 +260,6 @@ const updatePlantingCalendarSchedules = async (req, res) => {
             crop_id,
             planting_month,
             season,
-            growing_period,
-            harvest_period,
             notes
         } = req.body;
 
@@ -328,8 +316,6 @@ const updatePlantingCalendarSchedules = async (req, res) => {
                 crop_id = ?,
                 planting_month = ?,
                 season = ?,
-                growing_period = ?,
-                harvest_period = ?,
                 notes = ?
             WHERE calendar_id IN (?)
             `,
@@ -337,8 +323,6 @@ const updatePlantingCalendarSchedules = async (req, res) => {
                 Number(crop_id),
                 planting_month || null,
                 season || null,
-                growing_period || null,
-                harvest_period || null,
                 notes || null,
                 ids
             ]
@@ -436,8 +420,6 @@ const updatePlantingCalendar = async (req, res) => {
             location_id,
             planting_month,
             season,
-            growing_period,
-            harvest_period,
             notes
         } = req.body;
 
@@ -515,8 +497,6 @@ const updatePlantingCalendar = async (req, res) => {
                 location_id = ?,
                 planting_month = ?,
                 season = ?,
-                growing_period = ?,
-                harvest_period = ?,
                 notes = ?
             WHERE calendar_id = ?
             `,
@@ -525,8 +505,6 @@ const updatePlantingCalendar = async (req, res) => {
                 location_id || null,
                 planting_month || null,
                 season || null,
-                growing_period || null,
-                harvest_period || null,
                 notes || null,
                 id
             ]

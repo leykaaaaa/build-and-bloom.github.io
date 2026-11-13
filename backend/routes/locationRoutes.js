@@ -19,10 +19,8 @@ router.get("/", async (req, res) => {
             SELECT
                 location_id,
                 location_name,
-                location_type,
-                province
+                location_type
             FROM locations
-            WHERE province = 'Pangasinan'
             ORDER BY location_name ASC
             `
         );
