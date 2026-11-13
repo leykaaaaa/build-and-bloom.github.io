@@ -161,6 +161,7 @@
     display: flex;
     align-items: center;
     gap: 18px;
+    width: 100%;
     min-width: 0;
     min-height: 116px;
     padding: 24px;
@@ -169,6 +170,10 @@
     border-radius: 22px;
     background: #ffffff;
     box-shadow: var(--shadow-sm);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
@@ -190,7 +195,14 @@
     box-shadow: 0 16px 32px rgba(31, 77, 54, 0.1);
 }
 
+.dashboardStatCard:focus-visible {
+    outline: 3px solid rgba(47, 107, 71, 0.4);
+    outline-offset: 3px;
+}
+
 .dashboardStatIcon {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -219,7 +231,7 @@
     color: #1d6b5a;
 }
 
-.dashboardStatCard > div:last-child {
+.dashboardStatContent {
     position: relative;
     z-index: 1;
     display: flex;
@@ -228,7 +240,7 @@
     min-width: 0;
 }
 
-.dashboardStatCard span {
+.dashboardStatContent > span {
     color: var(--muted);
     font-size: 0.85rem;
     font-weight: 600;
@@ -240,6 +252,150 @@
     font-size: 2.1rem;
     letter-spacing: -0.03em;
     line-height: 1.15;
+}
+
+.summaryOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(18, 36, 26, 0.58);
+}
+
+.summaryModal {
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 620px);
+    max-height: min(82vh, 760px);
+    overflow: hidden;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+}
+
+.summaryHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 26px 30px 22px;
+    border-bottom: 1px solid #e3ece5;
+}
+
+.summaryEyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.summaryHeader h2 {
+    margin: 0 0 6px;
+    color: var(--green-800);
+    font-size: 1.5rem;
+}
+
+.summaryHeader p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.summaryClose {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 12px;
+    background: #eef4ef;
+    color: var(--text-soft);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.summaryClose:hover {
+    background: var(--mint);
+}
+
+.summaryBody {
+    display: grid;
+    gap: 12px;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 20px 30px;
+}
+
+.summaryPlan {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #fbfdfb;
+}
+
+.summaryPlan > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.summaryPlan strong {
+    color: var(--green-800);
+    overflow-wrap: anywhere;
+}
+
+.summaryPlan > div > span {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.summaryEmpty {
+    margin: 0;
+    padding: 28px 16px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.summaryFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 30px;
+    border-top: 1px solid #e3ece5;
+}
+
+.summaryFooter > span {
+    color: var(--muted);
+    font-size: 0.86rem;
+}
+
+.summaryLink {
+    flex: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: var(--green-700);
+    color: #ffffff;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.summaryLink:hover {
+    background: var(--green-800);
 }
 
 /* MAIN DASHBOARD GRID */
@@ -621,7 +777,9 @@
 .dashboardActionButton:focus-visible,
 .dashboardCtaButton:focus-visible,
 .dashboardPanelHeader > a:focus-visible,
-.dashboardActionCard:focus-visible {
+.dashboardActionCard:focus-visible,
+.summaryClose:focus-visible,
+.summaryLink:focus-visible {
     outline: 3px solid rgba(47, 107, 71, 0.4);
     outline-offset: 3px;
 }
@@ -716,6 +874,22 @@
 
     .dashboardCtaButton {
         width: 100%;
+    }
+
+    .summaryOverlay {
+        padding: 14px;
+    }
+
+    .summaryHeader,
+    .summaryBody,
+    .summaryFooter {
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+
+    .summaryFooter {
+        align-items: stretch;
+        flex-direction: column;
     }
 }
 

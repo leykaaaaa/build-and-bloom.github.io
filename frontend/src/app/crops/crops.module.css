@@ -367,6 +367,125 @@
     object-fit: cover;
 }
 
+.cropImageButton {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: zoom-in;
+}
+
+.cropImageButton:focus-visible {
+    position: relative;
+    z-index: 3;
+    outline: 3px solid rgba(47, 107, 71, 0.7);
+    outline-offset: -4px;
+}
+
+.cropImageModalOverlay {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(15, 35, 25, 0.78);
+    backdrop-filter: blur(4px);
+}
+
+.cropImageModal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(620px, calc(100vw - 32px), calc(100vh - 32px));
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+}
+
+.cropImageModalClose {
+    position: absolute;
+    z-index: 2;
+    top: 14px;
+    right: 14px;
+    display: grid;
+    flex: 0 0 42px;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--green-50);
+    color: var(--green-800);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cropImageModalClose:hover {
+    background: var(--green-100);
+}
+
+.cropImageModalClose:focus-visible {
+    outline: 3px solid rgba(47, 107, 71, 0.4);
+    outline-offset: 3px;
+}
+
+.cropImageModalPhoto {
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    flex-shrink: 1;
+    background: #f5f9f6;
+}
+
+.cropImageModalPhoto img {
+    object-fit: contain;
+}
+
+.cropImageModalCaption {
+    display: flex;
+    flex: 0 0 210px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px 34px 24px;
+    text-align: center;
+}
+
+.cropImageModalCaption > span {
+    color: var(--green-700);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.cropImageModalCaption h2 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.2;
+}
+
+.cropImageModalCaption p {
+    display: -webkit-box;
+    max-width: 470px;
+    margin: 0;
+    overflow: hidden;
+    color: #52665a;
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
 .cropCategory {
     position: absolute;
     z-index: 2;
@@ -527,6 +646,24 @@
 
     .cropCardContent {
         padding: 22px;
+    }
+
+    .cropImageModalOverlay {
+        padding: 14px;
+    }
+
+    .cropImageModal {
+        border-radius: 18px;
+    }
+
+    .cropImageModalClose {
+        top: 10px;
+        right: 10px;
+    }
+
+    .cropImageModalCaption {
+        flex-basis: 185px;
+        padding: 14px 20px 20px;
     }
 }
 

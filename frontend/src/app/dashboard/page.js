@@ -17,6 +17,8 @@ export default function DashboardPage() {
 
     const [error, setError] = useState("");
 
+    const [selectedStat, setSelectedStat] = useState(null);
+
 
     useEffect(() => {
 
@@ -90,6 +92,21 @@ export default function DashboardPage() {
 
     }, []);
 
+    useEffect(() => {
+        if (!selectedStat) {
+            return undefined;
+        }
+
+        function closeOnEscape(event) {
+            if (event.key === "Escape") {
+                setSelectedStat(null);
+            }
+        }
+
+        window.addEventListener("keydown", closeOnEscape);
+        return () => window.removeEventListener("keydown", closeOnEscape);
+    }, [selectedStat]);
+
 
     const getPlanStatusClass = (status) => {
         switch (status) {
@@ -104,6 +121,38 @@ export default function DashboardPage() {
                 return styles.statusPlanned;
         }
     };
+
+    const statCards = [
+        {
+            label: "Total Plans",
+            status: null,
+            icon: "fa-seedling"
+        },
+        {
+            label: "Growing",
+            status: "Growing",
+            icon: "fa-leaf"
+        },
+        {
+            label: "Harvested",
+            status: "Harvested",
+            icon: "fa-basket-shopping"
+        },
+        {
+            label: "Completed",
+            status: "Completed",
+            icon: "fa-check"
+        }
+    ].map((stat) => ({
+        ...stat,
+        count: stat.status
+            ? plans.filter((plan) => plan.status === stat.status).length
+            : plans.length
+    }));
+
+    const selectedPlans = selectedStat === "Total Plans"
+        ? plans
+        : plans.filter((plan) => plan.status === selectedStat);
 
     if (loading) {
 
@@ -199,92 +248,25 @@ export default function DashboardPage() {
 
                 <div className={styles.dashboardStats}>
 
-
-                    <div className={styles.dashboardStatCard}>
-
-                        <div className={styles.dashboardStatIcon} aria-hidden="true">
-                            <i className="fa-solid fa-seedling" />
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Total Plans
+                    {statCards.map((stat) => (
+                        <button
+                            type="button"
+                            className={styles.dashboardStatCard}
+                            key={stat.label}
+                            onClick={() => setSelectedStat(stat.label)}
+                            aria-haspopup="dialog"
+                            aria-label={`${stat.label}: ${stat.count} plans. Open summary.`}
+                        >
+                            <span className={styles.dashboardStatIcon} aria-hidden="true">
+                                <i className={`fa-solid ${stat.icon}`} />
                             </span>
 
-                            <strong>
-                                {plans.length}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div className={styles.dashboardStatCard}>
-
-                        <div className={styles.dashboardStatIcon} aria-hidden="true">
-                            <i className="fa-solid fa-leaf" />                            
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Growing
+                            <span className={styles.dashboardStatContent}>
+                                <span>{stat.label}</span>
+                                <strong>{stat.count}</strong>
                             </span>
-
-                            <strong>
-                                {plans.filter((plan) => plan.status === "Growing").length}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div className={styles.dashboardStatCard}>
-
-                        <div className={styles.dashboardStatIcon} aria-hidden="true">
-                            <i className="fa-solid fa-basket-shopping" />                            
-                            
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Harvested
-                            </span>
-
-                            <strong>
-                                {plans.filter((plan) => plan.status === "Harvested").length}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div className={styles.dashboardStatCard}>
-
-                        <div className={styles.dashboardStatIcon} aria-hidden="true">
-                            <i className="fa-solid fa-check" />
-                            
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Completed
-                            </span>
-
-                            <strong>
-                                {plans.filter((plan) => plan.status === "Completed").length}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
+                        </button>
+                    ))}
 
                 </div>
 
@@ -540,6 +522,91 @@ export default function DashboardPage() {
 
                 </div>
 
+                {selectedStat && (
+                    <div
+                        className={styles.summaryOverlay}
+                        onMouseDown={(event) => {
+                            if (event.target === event.currentTarget) {
+                                setSelectedStat(null);
+                            }
+                        }}
+                    >
+                        <section
+                            className={styles.summaryModal}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="plan-summary-title"
+                        >
+                            <header className={styles.summaryHeader}>
+                                <div>
+                                    <span className={styles.summaryEyebrow}>
+                                        Planting activity
+                                    </span>
+                                    <h2 id="plan-summary-title">{selectedStat}</h2>
+                                    <p>
+                                        {selectedPlans.length}{" "}
+                                        {selectedPlans.length === 1 ? "plan" : "plans"}
+                                        {selectedStat === "Total Plans"
+                                            ? " in your account."
+                                            : ` marked ${selectedStat.toLowerCase()}.`}
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className={styles.summaryClose}
+                                    onClick={() => setSelectedStat(null)}
+                                    aria-label="Close plan summary"
+                                >
+                                    ×
+                                </button>
+                            </header>
+
+                            <div className={styles.summaryBody}>
+                                {selectedPlans.length === 0 ? (
+                                    <p className={styles.summaryEmpty}>
+                                        No plans to show for this summary yet.
+                                    </p>
+                                ) : (
+                                    selectedPlans.map((plan) => {
+                                        const status = plan.status || "Planned";
+
+                                        return (
+                                            <div
+                                                className={styles.summaryPlan}
+                                                key={plan.plan_id}
+                                            >
+                                                <div>
+                                                    <strong>
+                                                        {plan.plan_name || "Untitled plan"}
+                                                    </strong>
+                                                    <span>
+                                                        {plan.crop_name || "Crop not specified"}
+                                                    </span>
+                                                </div>
+                                                <span
+                                                    className={`${styles.plantStatus} ${getPlanStatusClass(status)}`}
+                                                >
+                                                    {status}
+                                                </span>
+                                            </div>
+                                        );
+                                    })
+                                )}
+                            </div>
+
+                            <footer className={styles.summaryFooter}>
+                                <span>See and manage all your planting plans.</span>
+                                <Link
+                                    href="/plants"
+                                    className={styles.summaryLink}
+                                >
+                                    Open My Plants
+                                </Link>
+                            </footer>
+                        </section>
+                    </div>
+                )}
 
             </div>
 

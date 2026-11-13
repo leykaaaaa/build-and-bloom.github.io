@@ -66,6 +66,21 @@ const ArrowIcon = () => (
     </Icon>
 );
 
+// Search-only Tagalog names; crop cards continue to use the catalogue names.
+const cropSearchAliases = {
+    "bitter gourd": ["ampalaya"],
+    camote: ["kamote"],
+    corn: ["mais"],
+    eggplant: ["talong"],
+    "mung bean": ["monggo", "munggo"],
+    onion: ["sibuyas"],
+    peanut: ["mani"],
+    rice: ["palay", "bigas", "kanin"],
+    squash: ["kalabasa"],
+    "string beans": ["sitaw"],
+    tomato: ["kamatis"]
+};
+
 
 export default function CropsPage() {
 
@@ -76,6 +91,7 @@ export default function CropsPage() {
     const [error, setError] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedCropImage, setSelectedCropImage] = useState(null);
 
 
     // =========================================================
@@ -165,6 +181,21 @@ export default function CropsPage() {
 
     }, []);
 
+    useEffect(() => {
+        if (!selectedCropImage) {
+            return undefined;
+        }
+
+        function closeOnEscape(event) {
+            if (event.key === "Escape") {
+                setSelectedCropImage(null);
+            }
+        }
+
+        window.addEventListener("keydown", closeOnEscape);
+        return () => window.removeEventListener("keydown", closeOnEscape);
+    }, [selectedCropImage]);
+
     const categories = [...new Set(
         crops
             .map((crop) => crop.category?.trim())
@@ -175,20 +206,19 @@ export default function CropsPage() {
     const filteredCrops = crops.filter((crop) => {
         const matchesCategory =
             !selectedCategory || crop.category === selectedCategory;
-        const searchableFields = [
-            crop.crop_name,
-            crop.category,
-            crop.description,
-            crop.soil_type,
-            crop.water_requirement,
-            crop.sunlight_requirement,
-            crop.season,
-            crop.environment,
+        const cropName = String(crop.crop_name || "").toLocaleLowerCase();
+        const searchTerms = [
+            cropName,
+            ...(cropSearchAliases[cropName] || [])
         ];
+        // Match word prefixes for both catalogue names and search-only aliases.
         const matchesSearch =
             !normalizedSearch ||
-            searchableFields.some((value) =>
-                String(value || "").toLocaleLowerCase().includes(normalizedSearch)
+            searchTerms.some((term) =>
+                term.startsWith(normalizedSearch) ||
+                term.split(/\s+/).some((word) =>
+                    word.startsWith(normalizedSearch)
+                )
             );
 
         return matchesCategory && matchesSearch;
@@ -260,7 +290,7 @@ export default function CropsPage() {
                                 type="search"
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                placeholder="Search crops by name..."
+                                placeholder="Search crop names in English or Tagalog..."
                             />
                             {searchTerm && (
                                 <button
@@ -318,11 +348,18 @@ export default function CropsPage() {
                                 key={crop.crop_id}
                             >
                                 <div className={styles.cropCardMedia}>
-                                    <CropImage
-                                        cropName={crop.crop_name}
-                                        className={styles.cropCardImage}
-                                        sizes="(max-width: 650px) 90vw, (max-width: 1050px) 45vw, 30vw"
-                                    />
+                                    <button
+                                        type="button"
+                                        className={styles.cropImageButton}
+                                        onClick={() => setSelectedCropImage(crop)}
+                                        aria-label={`View ${crop.crop_name} image`}
+                                    >
+                                        <CropImage
+                                            cropName={crop.crop_name}
+                                            className={styles.cropCardImage}
+                                            sizes="(max-width: 650px) 90vw, (max-width: 1050px) 45vw, 30vw"
+                                        />
+                                    </button>
 
                                     {crop.category && (
                                         <span className={styles.cropCategory}>
@@ -387,6 +424,49 @@ export default function CropsPage() {
                         </button>
                     </div>
                 ) : null
+            )}
+
+            {selectedCropImage && (
+                <div
+                    className={styles.cropImageModalOverlay}
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) {
+                            setSelectedCropImage(null);
+                        }
+                    }}
+                >
+                    <section
+                        className={styles.cropImageModal}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="crop-image-title"
+                        aria-describedby="crop-image-description"
+                    >
+                        <button
+                            type="button"
+                            className={styles.cropImageModalClose}
+                            onClick={() => setSelectedCropImage(null)}
+                            aria-label={`Close ${selectedCropImage.crop_name} image`}
+                            autoFocus
+                        >
+                            ×
+                        </button>
+                        <CropImage
+                            cropName={selectedCropImage.crop_name}
+                            className={styles.cropImageModalPhoto}
+                            sizes="(max-width: 700px) 100vw, 1000px"
+                        />
+                        <div className={styles.cropImageModalCaption}>
+                            <span>Crop appearance</span>
+                            <h2 id="crop-image-title">
+                                {selectedCropImage.crop_name}
+                            </h2>
+                            <p id="crop-image-description">
+                                {selectedCropImage.description}
+                            </p>
+                        </div>
+                    </section>
+                </div>
             )}
 
         </section>
