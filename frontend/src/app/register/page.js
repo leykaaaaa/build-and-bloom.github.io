@@ -7,6 +7,8 @@ import { registerUser } from "../../services/authService";
 import styles from "./register.module.css";
 
 const API_URL = "http://localhost:5000";
+const passwordPolicy =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}$/;
 
 export default function RegisterPage() {
 
@@ -120,10 +122,10 @@ export default function RegisterPage() {
         }
 
 
-        if (form.password.length < 6) {
+        if (!passwordPolicy.test(form.password)) {
 
             setError(
-                "Password must be at least 6 characters."
+                "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character."
             );
 
             return;
@@ -465,9 +467,15 @@ export default function RegisterPage() {
                                 value={form.password}
                                 onChange={handleChange}
                                 placeholder="Create a password"
+                                minLength={8}
+                                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}"
+                                title="At least 8 characters, including uppercase and lowercase letters, a number, and a special character."
                                 required
                             />
                         </div>
+                        <small className={styles.passwordHint}>
+                            At least 8 characters, including uppercase and lowercase letters, a number, and a special character.
+                        </small>
 
                     </div>
 

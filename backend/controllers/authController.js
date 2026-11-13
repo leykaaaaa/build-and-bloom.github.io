@@ -2,6 +2,9 @@ const pool = require("../config/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const passwordPolicy =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}$/;
+
 /*
     REGISTER
 */
@@ -30,6 +33,7 @@ const registerUser = async (req, res) => {
             !firstName ||
             !lastName ||
             !email ||
+            typeof password !== "string" ||
             !password
         ) {
 
@@ -41,6 +45,13 @@ const registerUser = async (req, res) => {
 
         }
 
+        if (!passwordPolicy.test(password)) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character."
+            });
+        }
 
         // Check if email already exists
         const [existingUsers] = await pool.query(

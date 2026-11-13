@@ -370,6 +370,15 @@ const updateCrop = async (req, res) => {
             ]
         );
 
+        await connection.query(
+            `
+            UPDATE planting_calendar
+            SET season = ?
+            WHERE crop_id = ?
+            `,
+            [season.trim() || null, id]
+        );
+
         await connection.commit();
 
         res.json({

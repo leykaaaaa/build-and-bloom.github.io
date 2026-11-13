@@ -9,7 +9,6 @@ const API_URL = "http://localhost:5000";
 const EMPTY_FORM = {
     crop_id: "",
     planting_month: "",
-    season: "",
     notes: ""
 };
 
@@ -250,7 +249,6 @@ export default function PlantingCalendarManagement() {
         setFormData({
             crop_id: entry.crop_id || "",
             planting_month: entry.planting_month || "",
-            season: entry.season || "",
             notes: entry.notes || "",
         });
         setFormError("");
@@ -286,7 +284,6 @@ export default function PlantingCalendarManagement() {
                         crop_id: Number(formData.crop_id),
                         planting_month:
                             formData.planting_month,
-                        season: formData.season,
                         notes: formData.notes,
                     }),
                 }
@@ -644,7 +641,7 @@ export default function PlantingCalendarManagement() {
                                         />
                                     </div>
 
-                                    {/* Season */}
+                                    {/* Season is managed on the crop record. */}
                                     <div className={styles.formField}>
                                         <label htmlFor="schedule-season">
                                             Season
@@ -654,14 +651,14 @@ export default function PlantingCalendarManagement() {
                                             id="schedule-season"
                                             className={styles.formInput}
                                             type="text"
-                                            placeholder="e.g. Wet Season"
-                                            value={formData.season}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    season: e.target.value,
-                                                })
+                                            value={
+                                                crops.find(
+                                                    (crop) =>
+                                                        String(crop.crop_id) ===
+                                                        String(formData.crop_id)
+                                                )?.season || "Not specified"
                                             }
+                                            readOnly
                                         />
                                     </div>
 

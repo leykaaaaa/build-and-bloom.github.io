@@ -112,6 +112,13 @@
     font-size: 0.875rem;
 }
 
+.passwordHint {
+    display: block;
+    margin: 8px 0 0;
+    color: #526357;
+    font-size: 0.8rem;
+}
+
 .registerCard .registerFooter {
     grid-area: footer;
     margin: 6px 48px 0;

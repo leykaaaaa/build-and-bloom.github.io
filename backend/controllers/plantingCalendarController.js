@@ -17,11 +17,13 @@ const getPlantingCalendar = async (req, res) => {
                 pc.location_id,
                 l.location_name,
                 pc.planting_month,
-                pc.season,
+                cr.season AS season,
                 pc.notes
             FROM planting_calendar pc
             INNER JOIN crops c
                 ON pc.crop_id = c.crop_id
+            LEFT JOIN crop_requirements cr
+                ON c.crop_id = cr.crop_id
             LEFT JOIN locations l
                 ON pc.location_id = l.location_id
         `;
@@ -47,7 +49,7 @@ const getPlantingCalendar = async (req, res) => {
             ORDER BY
                 CASE WHEN pc.location_id IS NULL THEN 0 ELSE 1 END,
                 c.crop_name ASC,
-                pc.season ASC,
+                cr.season ASC,
                 pc.planting_month ASC,
                 l.location_name ASC
         `;
@@ -99,16 +101,18 @@ const getPlantingCalendarByLocation = async (req, res) => {
                 pc.location_id,
                 l.location_name,
                 pc.planting_month,
-                pc.season,
+                cr.season AS season,
                 pc.notes
             FROM planting_calendar pc
             INNER JOIN crops c
                 ON pc.crop_id = c.crop_id
+            LEFT JOIN crop_requirements cr
+                ON c.crop_id = cr.crop_id
             LEFT JOIN locations l
                 ON pc.location_id = l.location_id
             WHERE pc.location_id IS NULL
                 OR l.location_name = ?
-            ORDER BY c.crop_name ASC, pc.season ASC, pc.planting_month ASC
+            ORDER BY c.crop_name ASC, cr.season ASC, pc.planting_month ASC
             `,
             [location]
         );
@@ -144,7 +148,6 @@ const createPlantingCalendar = async (req, res) => {
             crop_id,
             location_id,
             planting_month,
-            season,
             notes
         } = req.body;
 
@@ -158,9 +161,11 @@ const createPlantingCalendar = async (req, res) => {
         // CHECK IF CROP EXISTS
         const [crop] = await connection.query(
             `
-            SELECT crop_id
-            FROM crops
-            WHERE crop_id = ?
+            SELECT c.crop_id, cr.season
+            FROM crops c
+            LEFT JOIN crop_requirements cr
+                ON c.crop_id = cr.crop_id
+            WHERE c.crop_id = ?
             `,
             [crop_id]
         );
@@ -209,7 +214,7 @@ const createPlantingCalendar = async (req, res) => {
                 crop_id,
                 location_id || null,
                 planting_month || null,
-                season || null,
+                crop[0].season || null,
                 notes || null
             ]
         );
@@ -259,7 +264,6 @@ const updatePlantingCalendarSchedules = async (req, res) => {
             calendar_ids,
             crop_id,
             planting_month,
-            season,
             notes
         } = req.body;
 
@@ -297,7 +301,13 @@ const updatePlantingCalendarSchedules = async (req, res) => {
         }
 
         const [crop] = await connection.query(
-            "SELECT crop_id FROM crops WHERE crop_id = ?",
+            `
+            SELECT c.crop_id, cr.season
+            FROM crops c
+            LEFT JOIN crop_requirements cr
+                ON c.crop_id = cr.crop_id
+            WHERE c.crop_id = ?
+            `,
             [Number(crop_id)]
         );
 
@@ -322,7 +332,7 @@ const updatePlantingCalendarSchedules = async (req, res) => {
             [
                 Number(crop_id),
                 planting_month || null,
-                season || null,
+                crop[0].season || null,
                 notes || null,
                 ids
             ]
@@ -419,7 +429,6 @@ const updatePlantingCalendar = async (req, res) => {
             crop_id,
             location_id,
             planting_month,
-            season,
             notes
         } = req.body;
 
@@ -453,9 +462,11 @@ const updatePlantingCalendar = async (req, res) => {
         const [crop] =
             await connection.query(
                 `
-                SELECT crop_id
-                FROM crops
-                WHERE crop_id = ?
+                SELECT c.crop_id, cr.season
+                FROM crops c
+                LEFT JOIN crop_requirements cr
+                    ON c.crop_id = cr.crop_id
+                WHERE c.crop_id = ?
                 `,
                 [crop_id]
             );
@@ -504,7 +515,7 @@ const updatePlantingCalendar = async (req, res) => {
                 crop_id,
                 location_id || null,
                 planting_month || null,
-                season || null,
+                crop[0].season || null,
                 notes || null,
                 id
             ]
