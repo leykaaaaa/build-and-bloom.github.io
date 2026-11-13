@@ -68,18 +68,27 @@ const ArrowIcon = () => (
 
 // Search-only Tagalog names; crop cards continue to use the catalogue names.
 const cropSearchAliases = {
-    "bitter gourd": ["ampalaya"],
+    banana: ["saging", "ponti"],
+    "bitter gourd": ["ampalaya", "palya"],
+    "bottle gourd": ["upo"],
     "sweet potato": ["kamote"],
+    calamansi: ["kalamansi"],
     corn: ["mais"],
     "chili pepper": ["sili"],
     eggplant: ["talong"],
-    "mung bean": ["monggo", "munggo"],
+    lanzones: ["longkong"],
+    mangoes: ["mangga"],
+    "mung bean": ["monggo", "munggo", "balatong"],
     onion: ["sibuyas"],
+    pomelo: ["suha", "lucban"],
+    potato: ["patatas"],
     peanut: ["mani"],
     rice: ["palay", "bigas", "kanin"],
     squash: ["kalabasa"],
-    "string beans": ["sitaw"],
-    tomato: ["kamatis"]
+    "string beans": ["sitaw", "agayep"],
+    tomato: ["kamatis"],
+    watermelon: ["pakwan"],
+    "water spinach": ["kangkong"]
 
 };
 
