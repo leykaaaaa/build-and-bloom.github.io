@@ -1058,20 +1058,16 @@ const [locationRows] = await pool.query(
         l.location_id,
         l.location_name,
         l.location_type,
-        l.province,
-        lc.latitude,
-        lc.longitude,
-        lc.soil_information,
-        lc.climate,
-        lc.flooding_drainage,
-        lc.flood_risk_level,
-        lc.drainage_condition,
-        lc.notes
+        l.latitude,
+        l.longitude,
+        l.soil_information,
+        l.climate,
+        l.flooding_drainage,
+        l.flood_risk_level,
+        l.drainage_condition,
+        l.notes
     FROM locations l
-    LEFT JOIN location_characteristics lc
-        ON l.location_id = lc.location_id
     WHERE LOWER(TRIM(l.location_name)) = LOWER(?)
-      AND l.province = 'Pangasinan'
     LIMIT 1
     `,
     [normalizedLocation]
@@ -1098,7 +1094,6 @@ const locationDetails = {
     location_id: selectedLocation.location_id,
     location_name: selectedLocation.location_name,
     location_type: selectedLocation.location_type,
-    province: selectedLocation.province,
     latitude: selectedLocation.latitude,
     longitude: selectedLocation.longitude,
     soil_information: selectedLocation.soil_information,
@@ -1700,7 +1695,12 @@ const getRecommendationHistory = async (req, res) => {
             SELECT
                 r.recommendation_id,
                 r.user_id,
-                u.full_name,
+                CONCAT_WS(
+                    ' ',
+                    u.first_name,
+                    NULLIF(u.middle_name, ''),
+                    u.last_name
+                ) AS full_name,
                 r.crop_id,
                 c.crop_name,
                 c.category,

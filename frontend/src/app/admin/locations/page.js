@@ -250,7 +250,6 @@ export default function LocationManagement() {
                                     <th scope="col">ID</th>
                                     <th scope="col">Location</th>
                                     <th scope="col">Type</th>
-                                    <th scope="col">Province</th>
                                 </tr>
                             </thead>
 
@@ -277,7 +276,6 @@ export default function LocationManagement() {
                                             )}
                                         </td>
 
-                                        <td>{location.province || "—"}</td>
                                     </tr>
                                 ))}
                             </tbody>

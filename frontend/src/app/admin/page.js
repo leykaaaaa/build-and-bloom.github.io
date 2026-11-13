@@ -230,7 +230,7 @@ export default function AdminPage() {
                             compatibility factors to generate
                             crop recommendations.
                             </p>
-                            <Link href="/admin/recommendations">Review recommendations <span aria-hidden="true">→</span></Link>
+                            <Link href="/admin/recommendations">Review recommendations <span aria-hidden="true"></span></Link>
                         </div>
                     </article>
 
@@ -250,7 +250,7 @@ export default function AdminPage() {
                             requirements, locations, and
                             planting calendar information.
                             </p>
-                            <Link href="/admin/crops">Manage system data <span aria-hidden="true">→</span></Link>
+                            <Link href="/admin/crops">Manage system data <span aria-hidden="true"></span></Link>
                         </div>
                     </article>
 

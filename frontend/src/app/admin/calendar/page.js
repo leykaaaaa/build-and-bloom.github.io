@@ -10,8 +10,6 @@ const EMPTY_FORM = {
     crop_id: "",
     planting_month: "",
     season: "",
-    growing_period: "",
-    harvest_period: "",
     notes: ""
 };
 
@@ -253,8 +251,6 @@ export default function PlantingCalendarManagement() {
             crop_id: entry.crop_id || "",
             planting_month: entry.planting_month || "",
             season: entry.season || "",
-            growing_period: entry.growing_period || "",
-            harvest_period: entry.harvest_period || "",
             notes: entry.notes || "",
         });
         setFormError("");
@@ -291,10 +287,6 @@ export default function PlantingCalendarManagement() {
                         planting_month:
                             formData.planting_month,
                         season: formData.season,
-                        growing_period:
-                            formData.growing_period,
-                        harvest_period:
-                            formData.harvest_period,
                         notes: formData.notes,
                     }),
                 }
@@ -441,8 +433,6 @@ export default function PlantingCalendarManagement() {
                 entry.crop_id,
                 entry.planting_month,
                 entry.season,
-                entry.growing_period,
-                entry.harvest_period,
                 entry.notes,
             ].map((value) => String(value ?? "").trim().toLowerCase()));
 
@@ -675,50 +665,6 @@ export default function PlantingCalendarManagement() {
                                         />
                                     </div>
 
-                                    {/* Growing Period */}
-                                    <div className={styles.formField}>
-                                        <label htmlFor="schedule-growing">
-                                            Growing Period
-                                        </label>
-
-                                        <input
-                                            id="schedule-growing"
-                                            className={styles.formInput}
-                                            type="text"
-                                            placeholder="e.g. 3-4 months"
-                                            value={formData.growing_period}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    growing_period:
-                                                        e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </div>
-
-                                    {/* Harvest Period */}
-                                    <div className={`${styles.formField} ${styles.fullWidth}`}>
-                                        <label htmlFor="schedule-harvest">
-                                            Harvest Period
-                                        </label>
-
-                                        <input
-                                            id="schedule-harvest"
-                                            className={styles.formInput}
-                                            type="text"
-                                            placeholder="e.g. September-October"
-                                            value={formData.harvest_period}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    harvest_period:
-                                                        e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </div>
-
                                     {/* Notes */}
                                     <div className={`${styles.formField} ${styles.fullWidth}`}>
                                         <label htmlFor="schedule-notes">
@@ -902,8 +848,6 @@ export default function PlantingCalendarManagement() {
                                     <th scope="col">Scope</th>
                                     <th scope="col">Planting Month</th>
                                     <th scope="col">Season</th>
-                                    <th scope="col">Growing Period</th>
-                                    <th scope="col">Harvest Period</th>
                                     <th scope="col" className={styles.alignRight}>
                                         Actions
                                     </th>
@@ -950,10 +894,6 @@ export default function PlantingCalendarManagement() {
                                                 "—"
                                             )}
                                         </td>
-
-                                        <td>{entry.growing_period || "—"}</td>
-
-                                        <td>{entry.harvest_period || "—"}</td>
 
                                         <td className={styles.alignRight}>
                                             <div className={styles.rowActions}>

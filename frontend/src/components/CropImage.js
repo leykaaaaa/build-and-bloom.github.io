@@ -23,6 +23,7 @@ import watermelonImage from "../../../IMAGES/crop images/watermelon.png";
 import bananaImage from "../../../IMAGES/crop images/banana.png";
 import calamansiImage from "../../../IMAGES/crop images/calamansi.png";
 import guavaImage from "../../../IMAGES/crop images/guava.png";
+
 import styles from "./CropImage.module.css";
 
 const cropImages = {
