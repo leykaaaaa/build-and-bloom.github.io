@@ -407,6 +407,23 @@ export default function Navbar() {
                         Features
                     </a>
 
+                    <div className="mobile-nav-actions">
+                        <Link
+                            href="/login"
+                            className="mobile-login-link"
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            Login
+                        </Link>
+                        <Link
+                            href="/register"
+                            className="mobile-register-link"
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            Get Started
+                        </Link>
+                    </div>
+
                 </div>
 
 

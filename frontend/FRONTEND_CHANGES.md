@@ -2,6 +2,15 @@
 
 This document covers frontend changes only. Backend and database changes are not included.
 
+## Landing Page and Responsive Navigation
+
+- Added Login and Get Started links to the collapsed mobile navigation menu.
+- Reduced the floating hero cards on small screens and made the feature cards scroll horizontally.
+- Replaced feature icons with their titles and aligned each How It Works title beside its number.
+- Made the developer cards a horizontal carousel that auto-scrolls on desktop and mobile, while remaining manually scrollable and respecting reduced-motion settings.
+- Tightened card spacing and increased the small section labels for desktop visibility.
+- See [landing page](./src/app/page.js), [landing page styles](./src/app/home.module.css), [developer carousel](./src/app/HomeDeveloperCarousel.js), [navigation](./src/components/Navbar.js), and [global styles](./src/app/globals.css).
+
 ## Crop Catalogue
 
 - Search updates as text is entered and matches the beginning of crop-name words.
