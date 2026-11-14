@@ -4,6 +4,18 @@ import { fileURLToPath } from "node:url";
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
+  images: {
+    localPatterns: [
+      {
+        pathname: "/IMAGES/**",
+        search: "?v=20261114-1951",
+      },
+      {
+        pathname: "/**",
+        search: "",
+      },
+    ],
+  },
   turbopack: {
     root: fileURLToPath(new URL("../", import.meta.url)),
   },

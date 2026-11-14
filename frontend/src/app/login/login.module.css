@@ -1,16 +1,365 @@
+/* =========================================
+   LOGIN PAGE - two panels: brand panel + sign-in card
+   Works together with the updated login/page.js.
+   Uses the CSS variables from globals.css (:root).
+========================================= */
+
+.loginPage {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: calc(100vh - 84px);
+    background: var(--green-50);
+}
+
+/* BRAND PANEL */
+
+.brandPanel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 26px;
+    padding: 72px clamp(32px, 6vw, 80px);
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--green-700) 0%, var(--green-800) 100%);
+    color: #ffffff;
+}
+
+.brandPanel::before,
+.brandPanel::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+}
+
+.brandPanel::before {
+    top: -120px;
+    right: -140px;
+    width: 420px;
+    height: 420px;
+}
+
+.brandPanel::after {
+    bottom: -90px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+}
+
+.brandPanel > * {
+    position: relative;
+}
+
+.brandCircle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: var(--green-700);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.brandPanel h2 {
+    margin: 0;
+    font-size: clamp(2.25rem, 4vw, 2.875rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.brandPanel > p {
+    max-width: 440px;
+    margin: 0;
+    color: #cfe6d6;
+    font-size: 1.125rem;
+    line-height: 1.6;
+}
+
+.benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.benefits li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #e4f1e8;
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.benefitIcon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+/* FORM SIDE */
+
+.formSide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px clamp(20px, 4vw, 48px);
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    width: 100%;
+    max-width: 440px;
+    padding: 44px;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(31, 77, 54, 0.08);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.eyebrow {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.header h1 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: 2.375rem;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+/* error stays red on purpose: it is a warning state */
+.error {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid #f0d5d5;
+    border-radius: 14px;
+    background: #fff5f5;
+    color: #a64b4b;
+}
+
+.error svg {
+    flex: none;
+    margin-top: 1px;
+}
+
+.error strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+}
+
+.error p {
+    margin: 0;
+    color: #806565;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+/* FORM */
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field label {
+    color: var(--green-800);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
 .inputWrapper {
     position: relative;
 }
 
-.inputWrapper input {
-    padding-left: 44px;
-}
-
 .inputIcon {
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 16px;
-    color: var(--green-700);
-    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    height: 58px;
+    color: #6f8377;
     pointer-events: none;
+}
+
+.inputWrapper input {
+    width: 100%;
+    height: 58px;
+    padding: 0 48px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--border-input);
+    border-radius: var(--radius-input);
+    background: #f8fbf9;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.inputWrapper input::placeholder {
+    color: #8a9a90;
+}
+
+.inputWrapper input:focus {
+    border-color: var(--green-700);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(47, 107, 71, 0.12);
+    outline: none;
+}
+
+.togglePassword {
+    position: absolute;
+    top: 0;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 58px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #6f8377;
+    cursor: pointer;
+}
+
+.togglePassword:hover {
+    color: var(--green-700);
+}
+
+.togglePassword:focus-visible {
+    border-radius: 12px;
+    outline: 3px solid rgba(47, 107, 71, 0.4);
+    outline-offset: -4px;
+}
+
+.submitButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 58px;
+    border: 0;
+    border-radius: var(--radius-input);
+    background: var(--green-700);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: var(--shadow-btn);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+    background: var(--green-800);
+    transform: translateY(-2px);
+}
+
+.submitButton:focus-visible {
+    outline: 3px solid rgba(47, 107, 71, 0.4);
+    outline-offset: 3px;
+}
+
+.submitButton:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.footerText {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.footerText a {
+    color: var(--green-700);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.footerText a:hover {
+    text-decoration: underline;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    .loginPage {
+        grid-template-columns: 1fr;
+    }
+
+    .brandPanel {
+        display: none;
+    }
+
+    .formSide {
+        padding: 40px 20px 56px;
+        background: linear-gradient(135deg, #eaf4ec 0%, var(--green-50) 100%);
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 30px 22px;
+        border-radius: 22px;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .inputWrapper input,
+    .submitButton {
+        transition: none;
+    }
+
+    .submitButton:hover:not(:disabled) {
+        transform: none;
+    }
 }

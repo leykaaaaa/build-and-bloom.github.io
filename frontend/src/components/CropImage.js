@@ -1,59 +1,53 @@
 import Image from "next/image";
-import bitterGourdImage from "../../../IMAGES/crop images/bitter gourd.png";
-import camoteImage from "../../../IMAGES/crop images/camote.png";
-import chiliImage from "../../../IMAGES/crop images/18.png";
-import cornImage from "../../../IMAGES/crop images/corn.png";
-import dieffenbachiaImage from "../../../IMAGES/crop images/dieffenbachia.png";
-import eggplantImage from "../../../IMAGES/crop images/eggplant.png";
-import heartOfJesusImage from "../../../IMAGES/crop images/Heart of Jesus.png";
-import hibiscusImage from "../../../IMAGES/crop images/hibiscus.png";
-import leafImage from "../../../IMAGES/crop images/leaf.png";
-import mangoImage from "../../../IMAGES/crop images/mangoes.png";
-import mungBeanImage from "../../../IMAGES/crop images/mung bean.png";
-import okraImage from "../../../IMAGES/crop images/okra.png";
-import onionImage from "../../../IMAGES/crop images/onion.png";
-import peanutImage from "../../../IMAGES/crop images/peanut.png";
-import potatoImage from "../../../IMAGES/crop images/potato.png";
-import riceImage from "../../../IMAGES/crop images/rice_palay.png";
-import snakePlantImage from "../../../IMAGES/crop images/snake plant.png";
-import squashImage from "../../../IMAGES/crop images/squash.png";
-import stringBeansImage from "../../../IMAGES/crop images/string beans.png";
-import tomatoImage from "../../../IMAGES/crop images/tomato.png";
-import watermelonImage from "../../../IMAGES/crop images/watermelon.png";
-import bananaImage from "../../../IMAGES/crop images/banana.png";
-import calamansiImage from "../../../IMAGES/crop images/calamansi.png";
-import guavaImage from "../../../IMAGES/crop images/guava.png";
-
 import styles from "./CropImage.module.css";
 
+const CROP_IMAGE_VERSION = "20261114-1951";
+const cropImage = (filename) => `/IMAGES/crop%20images/${filename}?v=${CROP_IMAGE_VERSION}`;
+
 const cropImages = {
-    rice: riceImage,
-    corn: cornImage,
-    tomato: tomatoImage,
-    onion: onionImage,
-    camote: camoteImage,
-    sweetpotato: camoteImage,
-    eggplant: eggplantImage,
-    bittergourd: bitterGourdImage,
-    okra: okraImage,
-    squash: squashImage,
-    stringbeans: stringBeansImage,
-    mungbean: mungBeanImage,
-    peanut: peanutImage,
-    mango: mangoImage,
-    mangoes: mangoImage,
-    watermelon: watermelonImage,
-    potato: potatoImage,
-    hibiscus: hibiscusImage,
-    heartofjesus: heartOfJesusImage,
-    snakeplant: snakePlantImage,
-    dieffenbachia: dieffenbachiaImage,
-    chili: chiliImage,
-    chilipepper: chiliImage,
-    banana: bananaImage,
-    calamansi:calamansiImage,
-    guava: guavaImage,
+    rice: cropImage("rice_palay.png"),
+    corn: cropImage("corn.png"),
+    tomato: cropImage("tomato.png"),
+    onion: cropImage("onion.png"),
+    camote: cropImage("camote.png"),
+    sweetpotato: cropImage("camote.png"),
+    eggplant: cropImage("eggplant.png"),
+    bittergourd: cropImage("bitter gourd.png"),
+    okra: cropImage("okra.png"),
+    squash: cropImage("squash.png"),
+    stringbeans: cropImage("string beans.png"),
+    mungbean: cropImage("mung bean.png"),
+    peanut: cropImage("peanut.png"),
+    mango: cropImage("mangoes.png"),
+    mangoes: cropImage("mangoes.png"),
+    watermelon: cropImage("watermelon.png"),
+    potato: cropImage("potato.png"),
+    hibiscus: cropImage("hibiscus.png"),
+    heartofjesus: cropImage("Heart of Jesus.png"),
+    snakeplant: cropImage("snake plant.png"),
+    dieffenbachia: cropImage("dieffenbachia.png"),
+    chili: cropImage("chili.png"),
+    chilipepper: cropImage("chili.png"),
+    banana: cropImage("banana.png"),
+    calamansi: cropImage("calamansi.png"),
+    guava: cropImage("guava.png"),
+    bougainvillea: cropImage("bouganviella.png"),
+    bouganviella: cropImage("bouganviella.png"),
+    cassava: cropImage("cassava.png"),
+    coconut: cropImage("coconut.png"),
+    dragonfruit: cropImage("dragon fruit.png"),
+    jackfruit: cropImage("jackfruit.png"),
+    lanzones: cropImage("lanzones.png"),
+    papaya: cropImage("papaya.png"),
+    plumeria: cropImage("plumeria.png"),
+    frangipani: cropImage("plumeria.png"),
+    pomelo: cropImage("pomelo.png"),
+    taro: cropImage("taro.png"),
+    ube: cropImage("ube.png"),
+    waterspinach: cropImage("Water Spinach.png"),
 };
+
+const leafImage = cropImage("leaf.png");
 
 export function getCropImageSource(cropName) {
     const normalizedName = String(cropName || "")

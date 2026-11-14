@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import logoImage from "../../../IMAGES/crop images/logo.png";
 import { getNotifications } from "../services/notificationService";
 import styles from "./Navbar.module.css";
+
+const logoImage = "/IMAGES/crop%20images/logo.png";
 
 // =========================================================
 // SIDEBAR ICONS (inline SVG, no Font Awesome needed)

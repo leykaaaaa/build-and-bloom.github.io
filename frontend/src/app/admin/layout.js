@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import logoImage from "../../../../IMAGES/crop images/logo.png";
 import {
     isAuthenticated,
     isAdmin
 } from "../../services/authGuard";
 import styles from "./layout.module.css";
+
+const logoImage = "/IMAGES/crop%20images/logo.png";
 
 export default function AdminLayout({ children }) {
     const router = useRouter();

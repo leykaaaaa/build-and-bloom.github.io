@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import HomeDeveloperCarousel from "./HomeDeveloperCarousel";
-import logoImage from "../../../IMAGES/crop images/logo.png";
 
 import styles from "./home.module.css";
 
+const logoImage = "/IMAGES/crop%20images/logo.png";
 
 // =========================================================
 // SMALL INLINE ICONS (no extra package needed)
