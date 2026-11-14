@@ -1,52 +1,47 @@
-/* =========================================
-   REGISTER PAGE (green theme)
-   Split card: green panel on the left, form on the right.
-   Same class names as before. Works with globals.updated.css.
-========================================= */
+/* Registration form layout */
 
 .registerPage:global(.auth-page) {
     min-height: calc(100vh - 80px);
-    padding: 40px 20px;
+    align-items: flex-start;
+    padding: 28px 20px;
 }
 
 .registerCard:global(.auth-card) {
     display: grid;
-    grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.2fr);
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-        "header error"
-        "header form"
-        "header footer";
-    grid-template-rows: auto 1fr auto;
+        "header"
+        "error"
+        "form"
+        "footer";
+    grid-template-rows: auto auto 1fr auto;
     gap: 0;
-    width: min(100%, 1040px);
-    max-width: 1040px;
+    width: min(100%, 920px);
+    max-width: 920px;
     padding: 0;
     overflow: hidden;
     border-radius: 32px;
 }
 
-/* LEFT PANEL */
-
 .registerCard .registerHeader {
     grid-area: header;
-    align-self: stretch;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
-    gap: 14px;
+    align-items: center;
+    gap: 10px;
     margin: 0;
-    padding: 48px 40px;
+    padding: 24px 40px;
     border: 0;
     background: linear-gradient(160deg, var(--green-700) 0%, var(--green-800) 100%);
     color: #ffffff;
-    text-align: left;
+    text-align: center;
 }
 
 .registerCard .registerHeader :global(.auth-icon) {
-    width: 76px;
-    height: 76px;
-    margin: 0 0 6px;
+    width: 64px;
+    height: 64px;
+    margin: 0 0 2px;
     border-radius: 22px;
     background: rgba(255, 255, 255, 0.16);
     color: #ffffff;
@@ -55,7 +50,7 @@
 .registerCard .registerHeader h1 {
     margin: 0;
     color: #ffffff;
-    font-size: 2.2rem;
+    font-size: 2rem;
     letter-spacing: -0.03em;
     line-height: 1.1;
 }
@@ -67,11 +62,9 @@
     line-height: 1.6;
 }
 
-/* RIGHT SIDE */
-
 .registerCard .registerError {
     grid-area: error;
-    margin: 36px 48px 0;
+    margin: 24px 48px 0;
 }
 
 .registerCard .registerForm {
@@ -79,13 +72,17 @@
     align-self: center;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px 22px;
-    padding: 40px 48px 8px;
+    gap: 16px 18px;
+    padding: 28px 48px 4px;
 }
 
 .registerCard .registerForm > :global(.auth-button) {
     grid-column: 1 / -1;
     margin-top: 6px;
+}
+
+.confirmPasswordField {
+    grid-column: 1 / -1;
 }
 
 .fieldInputWrapper {
@@ -115,7 +112,7 @@
 .registerCard .registerFooter {
     grid-area: footer;
     margin: 6px 48px 0;
-    padding: 18px 0 32px;
+    padding: 14px 0 24px;
     border-top: 1px solid #e3ece5;
 }
 
@@ -123,21 +120,19 @@
 
 @media (max-width: 800px) {
     .registerCard:global(.auth-card) {
-        display: block;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "header"
+            "error"
+            "form"
+            "footer";
+        grid-template-rows: auto auto 1fr auto;
     }
 
     .registerCard .registerHeader {
-        padding: 32px 28px;
-    }
-
-    .registerCard .registerHeader :global(.auth-icon) {
-        width: 60px;
-        height: 60px;
-        border-radius: 18px;
-    }
-
-    .registerCard .registerHeader h1 {
-        font-size: 1.8rem;
+        align-items: center;
+        padding: 24px 28px;
+        text-align: center;
     }
 
     .registerCard .registerError {
@@ -145,6 +140,7 @@
     }
 
     .registerCard .registerForm {
+        grid-template-columns: minmax(0, 1fr);
         padding: 28px 24px 4px;
     }
 
@@ -164,7 +160,7 @@
     }
 
     .registerCard .registerHeader {
-        padding: 26px 20px;
+        padding: 22px 20px;
     }
 
     .registerCard .registerError {

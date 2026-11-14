@@ -201,25 +201,14 @@ export default function RegisterPage() {
 
             <div className={`auth-card register-card ${styles.registerCard}`}>
 
-
-                {/* HEADER */}
-
                 <div className={`auth-header ${styles.registerHeader}`}>
-
                     <div className="auth-icon">
                         <i className="fa-solid fa-leaf" aria-hidden="true" />
                     </div>
 
-                    <h1>
-                        Create Your Account
-                    </h1>
-
-                    <p>
-                        Start discovering what you can grow.
-                    </p>
-
+                    <h1>Create Your Account</h1>
+                    <p>Start discovering what you can grow.</p>
                 </div>
-
 
                 {/* SUCCESS POPUP */}
                 {success && (
@@ -423,7 +412,7 @@ export default function RegisterPage() {
 
                     {/* CONFIRM PASSWORD */}
 
-                    <div className="form-group">
+                    <div className={`form-group ${styles.confirmPasswordField}`}>
 
                         <label htmlFor="confirmPassword">
                             Confirm Password
