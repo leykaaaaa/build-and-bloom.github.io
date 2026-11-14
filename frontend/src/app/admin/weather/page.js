@@ -8,7 +8,7 @@ import {
 } from "../../../services/notificationService";
 import styles from "./weather.module.css";
 
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function formatDate(value) {
     return new Date(value).toLocaleString(undefined, {

@@ -19,7 +19,7 @@ export default function AdminPage() {
         const fetchCalendarCount = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/planting-calendar"
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/planting-calendar`
                 );
 
                 const result = await response.json();
@@ -46,7 +46,7 @@ export default function AdminPage() {
         const fetchCropCount = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/crops"
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/crops`
                 );
 
                 const result = await response.json();
@@ -71,7 +71,7 @@ export default function AdminPage() {
         const fetchUserCount = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/auth/users",
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/users`,
                     {
                         headers: getAuthHeaders(),
                     }

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import styles from "../adminPages.module.css";
 
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const EMPTY_FORM = {
     crop_id: "",
@@ -156,7 +156,7 @@ export default function PlantingCalendarManagement() {
         const fetchCalendar = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/planting-calendar"
+                        `${API_URL}/api/planting-calendar`
                 );
 
                 const result = await response.json();
@@ -186,7 +186,7 @@ export default function PlantingCalendarManagement() {
         const fetchCrops = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/crops"
+                        `${API_URL}/api/crops`
                 );
 
                 const result = await response.json();
@@ -300,7 +300,7 @@ export default function PlantingCalendarManagement() {
 
             // Refresh calendar records
             const calendarResponse = await fetch(
-                "http://localhost:5000/api/planting-calendar"
+                    `${API_URL}/api/planting-calendar`
             );
 
             const calendarResult =
@@ -389,7 +389,7 @@ export default function PlantingCalendarManagement() {
 
             const calendarResponse =
                 await fetch(
-                    "http://localhost:5000/api/planting-calendar"
+                        `${API_URL}/api/planting-calendar`
                 );
 
             const calendarResult =

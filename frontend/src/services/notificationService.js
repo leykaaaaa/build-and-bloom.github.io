@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function getHeaders() {
     const token = localStorage.getItem("buildAndBloomToken");

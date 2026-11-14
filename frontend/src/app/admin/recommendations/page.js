@@ -5,6 +5,7 @@ import { getAuthHeaders } from "../../../services/authService";
 
 import styles from "../adminPages.module.css";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // =========================================================
 // SMALL INLINE ICONS (no extra package needed)
@@ -81,7 +82,7 @@ export default function RecommendationsPage() {
     const fetchRecommendations = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/recommendations/history",
+          `${API_URL}/api/recommendations/history`,
           {
             headers: getAuthHeaders()
           }

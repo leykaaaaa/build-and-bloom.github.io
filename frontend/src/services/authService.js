@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:5000";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
 export async function registerUser(userData) {
@@ -55,10 +56,13 @@ export async function loginUser(loginData) {
 
 
     if (!response.ok) {
+        console.error("LOGIN ERROR RESPONSE:", result);
+        console.error("LOGIN HTTP STATUS:", response.status);
 
         throw new Error(
             result.message ||
-            "Failed to login."
+            result.error ||
+            `Login failed with status ${response.status}`
         );
 
     }

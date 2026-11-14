@@ -10,6 +10,7 @@ import {
 
 import styles from "./weather.module.css";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // =========================================================
 // SMALL INLINE ICONS (no extra package needed)
@@ -286,7 +287,7 @@ export default function WeatherPage() {
             try {
 
                 const response = await fetch(
-                    "http://localhost:5000/api/locations"
+                    `${API_URL}/api/locations`
                 );
 
                 const result = await response.json();

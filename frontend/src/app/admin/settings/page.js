@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import styles from "../adminPages.module.css";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // =========================================================
 // SMALL INLINE ICONS (no extra package needed)
@@ -54,7 +55,7 @@ export default function AdminSettingsPage() {
     const fetchCrops = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/crops"
+          `${API_URL}/api/crops`
         );
 
         const result = await response.json();
@@ -79,7 +80,7 @@ export default function AdminSettingsPage() {
     const fetchLocations = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/locations"
+          `${API_URL}/api/locations`
         );
 
         const result = await response.json();
@@ -104,7 +105,7 @@ export default function AdminSettingsPage() {
     const fetchCalendar = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/planting-calendar"
+          `${API_URL}/api/planting-calendar`
         );
 
         const result = await response.json();

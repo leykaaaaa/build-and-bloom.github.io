@@ -21,6 +21,8 @@ const EMPTY_FORM = {
     drainage_requirement: ""
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 async function fetchWithAdminAuth(url, options = {}) {
     const token = localStorage.getItem("buildAndBloomToken");
 
@@ -165,7 +167,7 @@ export default function CropManagement() {
         const fetchCrops = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/crops"
+                    `${API_URL}/api/crops`
                 );
 
                 const result = await response.json();
@@ -256,8 +258,8 @@ export default function CropManagement() {
         try {
             const response = await fetchWithAdminAuth(
                 editingCrop
-                    ? `http://localhost:5000/api/crops/${editingCrop.crop_id}`
-                    : "http://localhost:5000/api/crops",
+                    ? `${API_URL}/api/crops/${editingCrop.crop_id}`
+                    : `${API_URL}/api/crops`,
                 {
                     method: editingCrop ? "PUT" : "POST",
                     headers: {
@@ -283,7 +285,7 @@ export default function CropManagement() {
 
             // Refresh crop table
             const cropsResponse = await fetch(
-                "http://localhost:5000/api/crops"
+                `${API_URL}/api/crops`
             );
 
             const cropsResult =
@@ -328,7 +330,7 @@ export default function CropManagement() {
 
         try {
             const response = await fetchWithAdminAuth(
-                `http://localhost:5000/api/crops/${crop.crop_id}`,
+                `${API_URL}/api/crops/${crop.crop_id}`,
                 {
                     method: "DELETE",
                     headers: {
