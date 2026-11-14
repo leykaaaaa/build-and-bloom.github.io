@@ -4231,6 +4231,10 @@ body.user-sidebar-active > .footer {
     color: #315c3b;
 }
 
+.mobile-nav-actions {
+    display: none;
+}
+
 .register-button,
 .primary-button {
     box-shadow: 0 6px 16px rgba(49, 92, 59, 0.14);
@@ -4511,6 +4515,41 @@ textarea:focus-visible {
         grid-template-columns: 1fr;
         max-width: 320px;
         margin: 0 auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar-actions {
+        display: none;
+    }
+
+    .mobile-nav-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+        padding-top: 12px;
+        border-top: 1px solid #e5ebe5;
+    }
+
+    .mobile-nav-actions a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .mobile-nav-actions .mobile-login-link {
+        border: 1px solid #dce9df;
+        color: var(--green-800);
+    }
+
+    .mobile-nav-actions .mobile-register-link {
+        background: var(--green-700);
+        color: #ffffff;
     }
 }
 

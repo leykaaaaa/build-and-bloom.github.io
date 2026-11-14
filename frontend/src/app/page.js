@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import HomeDeveloperCarousel from "./HomeDeveloperCarousel";
 import logoImage from "../../../IMAGES/crop images/logo.png";
 
 import styles from "./home.module.css";
@@ -27,40 +28,11 @@ function Icon({ size = 26, strokeWidth = 1.9, children }) {
     );
 }
 
-const BookIcon = () => (
-    <Icon>
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-    </Icon>
-);
-
-const ClipboardCheckIcon = () => (
-    <Icon>
-        <rect width="8" height="4" x="8" y="2" rx="1" />
-        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-        <path d="m9 14 2 2 4-4" />
-    </Icon>
-);
-
-const MapPinIcon = ({ size }) => (
-    <Icon size={size}>
-        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-        <circle cx="12" cy="10" r="3" />
-    </Icon>
-);
-
 const CloudSunIcon = ({ size }) => (
     <Icon size={size}>
         <path d="M12 2v2M4.9 4.9l1.4 1.4M20 12h2M19.1 4.9l-1.4 1.4M15.9 11.5a4 4 0 0 0-7.8-.5" />
         <path d="M17.5 19H9a5 5 0 1 1 4.9-6.1" />
         <path d="M17.5 19a3.5 3.5 0 0 0 0-7h-.4" />
-    </Icon>
-);
-
-const CalendarIcon = () => (
-    <Icon>
-        <rect width="18" height="18" x="3" y="4" rx="2" />
-        <path d="M16 2v4M8 2v4M3 10h18" />
     </Icon>
 );
 
@@ -97,32 +69,26 @@ const ArrowRightIcon = () => (
 
 const FEATURES = [
     {
-        icon: <BookIcon />,
         title: "Crop Catalogue",
         text: "Browse available crops and learn about their growing requirements, growing period, and other important information."
     },
     {
-        icon: <ClipboardCheckIcon />,
         title: "Crop Compatibility Assessment",
         text: "Evaluate whether a crop matches your soil, water, sunlight, environment, temperature, and other conditions."
     },
     {
-        icon: <MapPinIcon />,
         title: "Location-Based Recommendations",
         text: "Get recommendations based on the selected growing location and its relevant conditions."
     },
     {
-        icon: <CloudSunIcon />,
         title: "Weather & Forecast",
         text: "Check current weather conditions and extended forecasts that can help inform your planting decisions."
     },
     {
-        icon: <CalendarIcon />,
         title: "Planting Calendar",
         text: "Explore planting periods, seasons, growing periods, harvest periods, and notes for available crops."
     },
     {
-        icon: <SproutIcon />,
         title: "Planting Plans & Tracking",
         text: "Create planting plans for selected crops, manage their status, and monitor your growing activities through My Plants."
     }
@@ -401,7 +367,12 @@ export default function Home() {
                     </div>
 
 
-                    <div className={styles.featureGrid}>
+                    <div
+                        className={styles.featureGrid}
+                        role="region"
+                        aria-label="Build & Bloom features"
+                        tabIndex={0}
+                    >
 
                         {FEATURES.map((feature, index) => (
 
@@ -411,20 +382,13 @@ export default function Home() {
                             >
 
                                 <div className={styles.featureTop}>
-
-                                    <span className={styles.featureIcon}>
-                                        {feature.icon}
-                                    </span>
+                                    <h3>{feature.title}</h3>
 
                                     <span className={styles.featureNumber}>
                                         {pad(index + 1)}
                                     </span>
 
                                 </div>
-
-                                <h3>
-                                    {feature.title}
-                                </h3>
 
                                 <p>
                                     {feature.text}
@@ -468,13 +432,13 @@ export default function Home() {
 
                             <div className={styles.stepCard} key={title}>
 
-                                <div className={styles.stepNumber}>
-                                    {index + 1}
-                                </div>
+                                <div className={styles.stepHeading}>
+                                    <div className={styles.stepNumber}>
+                                        {index + 1}
+                                    </div>
 
-                                <h3>
-                                    {title}
-                                </h3>
+                                    <h3>{title}</h3>
+                                </div>
 
                                 <p>
                                     {text}
@@ -517,36 +481,7 @@ export default function Home() {
                     </div>
 
 
-                    <div className={styles.developersGrid}>
-
-                        {DEVELOPERS.map(([name, role], index) => (
-
-                            <div className={styles.developerCard} key={name}>
-
-                                <div className={styles.developerPhoto}>
-
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
-                                        src={`/developers/developer-${index + 1}.jpg`}
-                                        alt={name}
-                                        className={styles.developerPhotoImage}
-                                    />
-
-                                </div>
-
-                                <div className={styles.developerInfo}>
-
-                                    <h3>{name}</h3>
-
-                                    <p>{role}</p>
-
-                                </div>
-
-                            </div>
-
-                        ))}
-
-                    </div>
+                    <HomeDeveloperCarousel developers={DEVELOPERS} />
 
                 </div>
 
