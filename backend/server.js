@@ -62,9 +62,15 @@ app.get("/api/test-db", async (req, res) => {
         res.status(500).json({
             success: false,
             message: "MySQL connection failed.",
-            error: error.message || String(error),
-            code: error.code || null,
-            errno: error.errno || null
+            code: error.code,
+            details: error.errors
+                ? error.errors.map(err => ({
+                    code: err.code,
+                    address: err.address,
+                    port: err.port,
+                    message: err.message
+                }))
+                : error.message
         });
     }
 });
