@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
     useRouter,
@@ -193,7 +193,7 @@ function clampPercent(value) {
 }
 
 
-export default function AssessmentPage() {
+function AssessmentContent() {
 
     const router = useRouter();
 
@@ -1523,4 +1523,12 @@ export default function AssessmentPage() {
 
     );
 
+}
+
+export default function AssessmentPage() {
+    return (
+        <Suspense fallback={<div aria-busy="true">Loading assessment...</div>}>
+            <AssessmentContent />
+        </Suspense>
+    );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import {
     useSearchParams,
@@ -197,6 +197,14 @@ const EMPTY_FORM = {
 
 
 export default function PlanPlantPage() {
+    return (
+        <Suspense fallback={<div aria-busy="true">Loading planting plan...</div>}>
+            <PlanPlantContent />
+        </Suspense>
+    );
+}
+
+function PlanPlantContent() {
 
     const router = useRouter();
 
@@ -577,7 +585,6 @@ export default function PlanPlantPage() {
 
     }
 
-
     /*
         Error state when crop
         cannot be loaded.
@@ -624,7 +631,6 @@ export default function PlanPlantPage() {
         );
 
     }
-
 
     return (
 
