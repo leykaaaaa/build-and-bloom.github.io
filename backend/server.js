@@ -67,6 +67,6 @@ app.get("/api/test-db", async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Build & Bloom API running on port ${PORT}`);
 });
