@@ -13,6 +13,8 @@ const cropImages = {
     sweetpotato: cropImage("camote.png"),
     eggplant: cropImage("eggplant.png"),
     bittergourd: cropImage("bitter gourd.png"),
+    bottlegourd: cropImage("bottle gourd.png"),
+    upo: cropImage("bottle gourd.png"),
     okra: cropImage("okra.png"),
     squash: cropImage("squash.png"),
     stringbeans: cropImage("string beans.png"),
