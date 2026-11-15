@@ -16,6 +16,7 @@ export default function AdminLayout({ children }) {
     const router = useRouter();
     const pathname = usePathname();
     const [authorized, setAuthorized] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -82,7 +83,7 @@ export default function AdminLayout({ children }) {
         <div className={styles.adminContainer}>
 
             {/* Sidebar */}
-            <aside className={styles.sidebar}>
+            <aside className={`${styles.sidebar}${menuOpen ? ` ${styles.mobileMenuOpen}` : ""}`}>
 
                 {/* Logo / Brand */}
                 <div className={styles.brand}>
@@ -103,10 +104,21 @@ export default function AdminLayout({ children }) {
                             Admin Panel
                         </div>
                     </div>
+
+                    <button
+                        type="button"
+                        className={styles.menuToggle}
+                        aria-label={menuOpen ? "Close admin navigation" : "Open admin navigation"}
+                        aria-expanded={menuOpen}
+                        aria-controls="admin-navigation"
+                        onClick={() => setMenuOpen((isOpen) => !isOpen)}
+                    >
+                        <i className={`fa-solid ${menuOpen ? "fa-xmark" : "fa-bars"}`} aria-hidden="true" />
+                    </button>
                 </div>
 
                 {/* Navigation */}
-                <nav className={styles.navigation} aria-label="Admin navigation">
+                <nav id="admin-navigation" className={styles.navigation} aria-label="Admin navigation">
 
                     {menuItems.map((item) => {
                         const isActive = item.path === "/admin"
@@ -119,6 +131,7 @@ export default function AdminLayout({ children }) {
                                 href={item.path}
                                 className={`${styles.navItem}${isActive ? ` ${styles.activeNavItem}` : ""}`}
                                 aria-current={isActive ? "page" : undefined}
+                                onClick={() => setMenuOpen(false)}
                             >
                                 <span className={styles.navIcon} aria-hidden="true">
                                     {item.icon}
@@ -136,6 +149,7 @@ export default function AdminLayout({ children }) {
                     <button
                         type="button"
                         onClick={() => {
+                            setMenuOpen(false);
                             localStorage.removeItem(
                                 "buildAndBloomUser"
                             );

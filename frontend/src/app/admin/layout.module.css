@@ -31,6 +31,10 @@
     box-shadow: 8px 0 30px rgba(31, 77, 54, 0.04);
 }
 
+.menuToggle {
+    display: none;
+}
+
 .brand {
     display: flex;
     align-items: center;
@@ -164,12 +168,13 @@
 }
 
 .navItem:focus-visible,
-.logoutButton:focus-visible {
+.logoutButton:focus-visible,
+.menuToggle:focus-visible {
     outline: 3px solid rgba(47, 107, 71, 0.4);
     outline-offset: 2px;
 }
 
-/* TABLET AND MOBILE: sidebar becomes a top bar */
+/* TABLET AND MOBILE: collapse navigation behind a menu toggle */
 
 @media (max-width: 900px) {
     .adminContainer {
@@ -179,9 +184,8 @@
     .sidebar {
         position: sticky;
         top: 0;
-        bottom: auto;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        z-index: 100;
+        display: block;
         width: 100%;
         min-height: 0;
         border-right: 0;
@@ -194,6 +198,21 @@
         border-bottom: 0;
     }
 
+    .menuToggle {
+        display: grid;
+        flex: 0 0 42px;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        margin-left: auto;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #ffffff;
+        color: var(--green-800);
+        font-size: 1.15rem;
+        cursor: pointer;
+    }
+
     .logo {
         flex-basis: 40px;
         width: 40px;
@@ -201,34 +220,39 @@
     }
 
     .sidebarBottom {
-        display: flex;
-        align-items: center;
-        padding: 8px 16px;
+        display: none;
+        padding: 0 16px 14px;
         border-top: 0;
     }
 
+    .mobileMenuOpen .sidebarBottom {
+        display: block;
+    }
+
     .logoutButton {
-        width: auto;
+        width: 100%;
         min-height: 40px;
         padding: 8px 14px;
         text-align: center;
     }
 
     .navigation {
-        grid-column: 1 / -1;
-        flex-direction: row;
-        gap: 7px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding: 0 14px 12px;
-        scrollbar-width: thin;
+        display: none;
+        gap: 4px;
+        padding: 8px 14px 12px;
+        border-top: 1px solid #e3ece5;
+    }
+
+    .mobileMenuOpen .navigation {
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100dvh - 150px);
+        overflow-y: auto;
     }
 
     .navItem {
-        flex: 0 0 auto;
-        min-height: 42px;
-        padding: 7px 12px;
-        white-space: nowrap;
+        min-height: 46px;
+        padding: 9px 12px;
     }
 
     .navIcon {
@@ -267,7 +291,7 @@
     }
 
     .sidebarBottom {
-        padding: 7px 12px;
+        padding: 0 12px 12px;
     }
 
     .logoutButton {
@@ -277,11 +301,10 @@
     }
 
     .navigation {
-        padding: 0 10px 10px;
+        padding: 8px 10px 10px;
     }
 
     .navItem {
-        gap: 7px;
         font-size: 0.78rem;
     }
 
