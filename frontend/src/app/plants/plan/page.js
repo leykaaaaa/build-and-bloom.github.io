@@ -732,7 +732,7 @@ function PlanPlantContent() {
                                 className={styles.modalButton}
                             >
                                 View My Plants
-                                <ArrowRightIcon />
+                                
                             </Link>
 
                         </div>
@@ -980,7 +980,7 @@ function PlanPlantContent() {
                                     : (
                                         <>
                                             Create Planting Plan
-                                            <ArrowRightIcon />
+                                            
                                         </>
                                     )
                                 }

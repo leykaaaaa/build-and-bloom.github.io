@@ -404,7 +404,7 @@ localStorage.setItem(
                                 : (
                                     <>
                                         Login
-                                        <ArrowRightIcon />
+                                        
                                     </>
                                 )
                             }

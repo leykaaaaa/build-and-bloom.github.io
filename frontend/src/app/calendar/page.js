@@ -446,7 +446,7 @@ export default function CalendarPage() {
                                                 className={styles.planLink}
                                             >
                                                 Plan this crop
-                                                <ArrowRightIcon />
+                                                
                                             </Link>
 
                                         </article>

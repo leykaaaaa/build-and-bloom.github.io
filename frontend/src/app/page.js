@@ -170,7 +170,7 @@ export default function Home() {
                                 className={styles.primaryButton}
                             >
                                 Start Crop Assessment
-                                <ArrowRightIcon />
+                                
                             </Link>
 
                             <Link
@@ -516,7 +516,7 @@ export default function Home() {
                             className={styles.ctaButton}
                         >
                             Start Crop Assessment
-                            <ArrowRightIcon />
+                            
                         </Link>
 
                     </div>

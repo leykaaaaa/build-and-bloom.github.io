@@ -440,7 +440,7 @@ export default function RegisterPage() {
                                     className={styles.modalButton}
                                 >
                                     Proceed to Login
-                                    <ArrowRightIcon />
+                                    
                                 </Link>
 
                             </div>
@@ -743,7 +743,7 @@ export default function RegisterPage() {
                                 : (
                                     <>
                                         Create Account
-                                        <ArrowRightIcon />
+                                        
                                     </>
                                 )
                             }

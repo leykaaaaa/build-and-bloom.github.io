@@ -360,7 +360,7 @@ export default function CropDetailsPage() {
                                 className={styles.planRecommendation}
                             >
                                 Plan This Plant
-                                <ArrowRightIcon />
+                                
                             </Link>
 
                             <Link

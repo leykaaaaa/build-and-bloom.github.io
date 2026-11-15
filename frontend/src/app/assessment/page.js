@@ -946,7 +946,7 @@ function AssessmentContent() {
                                     : (
                                         <>
                                             Analyze Growing Conditions
-                                            <ArrowRightIcon />
+                                            
                                         </>
                                     )
                                 }
@@ -1282,7 +1282,7 @@ function AssessmentContent() {
                                     className={styles.primaryButton}
                                 >
                                     Explore Crop Catalogue
-                                    <ArrowRightIcon />
+                                    
                                 </Link>
 
                             </div>
