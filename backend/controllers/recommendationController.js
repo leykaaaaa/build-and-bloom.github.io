@@ -658,8 +658,7 @@ function getCropLocationRisk(
 
     const highCaution =
         (floodScoreAvailable && Number(floodFactor) <= 40) ||
-        (drainageScoreAvailable && Number(drainageFactor) <= 40) ||
-        flood.includes("high");
+        (drainageScoreAvailable && Number(drainageFactor) <= 40);
 
     const moderateCaution =
         (floodScoreAvailable && Number(floodFactor) < 80) ||
@@ -1431,12 +1430,32 @@ planting_season: currentSeason,
 
 
         /*
-         * Only highly suitable crops qualify as recommendations.
-         * Apply the same threshold to general and crop-specific assessments.
-         */
-        const recommendations = evaluatedCrops.filter(
-            (crop) => crop.score >= HIGH_SUITABILITY_THRESHOLD
-        );
+        |--------------------------------------------------------------------------
+        | HIGHLY SUITABLE RECOMMENDATION FILTER
+        |--------------------------------------------------------------------------
+        |
+        | A crop must satisfy BOTH conditions:
+        |
+        | 1. Overall weighted score is at least 70%.
+        | 2. Crop-specific location risk is not High.
+        |
+        | Crops with critical environmental limitations
+        | are excluded from recommendations.
+        |--------------------------------------------------------------------------
+        */
+
+        const recommendations = evaluatedCrops.filter((crop) => {
+            const meetsSuitabilityThreshold =
+                crop.score >= HIGH_SUITABILITY_THRESHOLD;
+
+            const hasAcceptableLocationRisk =
+                crop.crop_location_risk !== "High";
+
+            return (
+                meetsSuitabilityThreshold &&
+                hasAcceptableLocationRisk
+            );
+        });
 
 
         /*
