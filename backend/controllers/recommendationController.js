@@ -1663,6 +1663,14 @@ function seasonScore(plantingMonth, cropSeason) {
 
     const requirement = normalize(cropSeason);
 
+    // Year-round crops are compatible with every planting month.
+    if (
+        requirement.includes("year-round") ||
+        requirement.includes("year round")
+    ) {
+        return 100;
+    }
+
     // Crops that can grow during both wet and dry seasons.
     if (requirement.includes("wet and dry")) {
         return 100;
