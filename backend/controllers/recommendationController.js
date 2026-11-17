@@ -438,6 +438,7 @@ function floodCompatibilityScore(floodRisk, cropTolerance) {
     if (risk.includes("moderate")) {
         if (isRice) return 70;
         if (isLowToModerate) return 75;
+        if (tolerance === "very low") return 40;
         if (tolerance === "low") return 60;
         return 50;
     }
@@ -445,6 +446,7 @@ function floodCompatibilityScore(floodRisk, cropTolerance) {
     if (risk.includes("high")) {
         if (isRice) return 50;
         if (isLowToModerate) return 40;
+        if (tolerance === "very low") return 20;
         if (tolerance === "low") return 20;
         return 50;
     }
