@@ -424,34 +424,33 @@ function floodCompatibilityScore(floodRisk, cropTolerance) {
     const risk = normalize(floodRisk);
     const tolerance = normalize(cropTolerance);
 
-    const isRice =
-        tolerance.includes("managed flooding") ||
-        tolerance.includes("variety-dependent");
+    const scores = {
+        low: {
+            "very low": 100,
+            "low": 100,
+            "low to moderate": 100
+        },
+        moderate: {
+            "very low": 40,
+            "low": 60,
+            "low to moderate": 75
+        },
+        high: {
+            "very low": 20,
+            "low": 20,
+            "low to moderate": 40
+        }
+    };
 
-    const isLowToModerate =
-        tolerance.includes("low to moderate");
-
-    if (risk.includes("low")) {
-        return 100;
-    }
-
-    if (risk.includes("moderate")) {
-        if (isRice) return 70;
-        if (isLowToModerate) return 75;
-        if (tolerance === "very low") return 40;
-        if (tolerance === "low") return 60;
+    if (tolerance === "unknown") {
         return 50;
     }
 
-    if (risk.includes("high")) {
-        if (isRice) return 50;
-        if (isLowToModerate) return 40;
-        if (tolerance === "very low") return 20;
-        if (tolerance === "low") return 20;
+    if (risk === "unknown" || !scores[risk]) {
         return 50;
     }
 
-    return 50;
+    return scores[risk][tolerance] ?? 50;
 }
 
 
@@ -472,71 +471,30 @@ function drainageCompatibilityScore(
     const condition = normalize(drainageCondition);
     const requirement = normalize(cropDrainageRequirement);
 
-    const isRice =
-        requirement.includes("controlled water retention");
-
-    /*
-     * Rice needs managed water conditions.
-     * This does not mean uncontrolled flooding is suitable.
-     */
-
-    if (isRice) {
-        if (
-            condition.includes("moderate")
-        ) {
-            return 80;
-        }
-
-        if (
-            condition.includes("poor") ||
-            condition.includes("low")
-        ) {
-            return 60;
-        }
-
-        if (
-            condition.includes("good") ||
-            condition.includes("well-drained") ||
-            condition.includes("high")
-        ) {
-            return 60;
-        }
-
+    if (requirement === "unknown") {
         return 50;
     }
 
-    /*
-     * Other crops in the current dataset
-     * require well-drained conditions.
-     */
-
-    if (
-        requirement.includes("well-drained")
-    ) {
-        if (
-            condition.includes("good") ||
-            condition.includes("well-drained") ||
-            condition.includes("high")
-        ) {
-            return 100;
+    const scores = {
+        good: {
+            "well-drained": 100,
+            "good to excellent drainage": 100
+        },
+        moderate: {
+            "well-drained": 70,
+            "good to excellent drainage": 60
+        },
+        poor: {
+            "well-drained": 20,
+            "good to excellent drainage": 20
         }
+    };
 
-        if (
-            condition.includes("moderate")
-        ) {
-            return 70;
-        }
-
-        if (
-            condition.includes("poor") ||
-            condition.includes("low") ||
-            condition.includes("waterlogged")
-        ) {
-            return 20;
-        }
+    if (condition === "unknown" || !scores[condition]) {
+        return 50;
     }
 
-    return 50;
+    return scores[condition][requirement] ?? 50;
 }
 
 
@@ -1332,6 +1290,18 @@ const locationScore = locationSuitabilityScore(
 const floodFactor = locationScore.flood;
 const drainageFactor = locationScore.drainage;
 const locationSuitabilityFactor = locationScore.overall;
+
+console.log("[LOCATION COMPATIBILITY DEBUG]", {
+    location: selectedLocation.location_name,
+    floodRisk: selectedLocation.flood_risk_level,
+    drainageCondition: selectedLocation.drainage_condition,
+    crop: crop.crop_name,
+    cropFloodTolerance: crop.flood_tolerance,
+    cropDrainageRequirement: crop.drainage_requirement,
+    floodFactor,
+    drainageFactor,
+    locationSuitabilityFactor
+});
 
 const cropLocationRisk = getCropLocationRisk(
     selectedLocation.flood_risk_level,
