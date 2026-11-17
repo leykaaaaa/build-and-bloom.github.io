@@ -428,17 +428,23 @@ function floodCompatibilityScore(floodRisk, cropTolerance) {
         low: {
             "very low": 100,
             "low": 100,
-            "low to moderate": 100
+            "low to moderate": 100,
+            "moderate": 100,
+            "high": 100
         },
         moderate: {
             "very low": 40,
             "low": 60,
-            "low to moderate": 75
+            "low to moderate": 75,
+            "moderate": 85,
+            "high": 100
         },
         high: {
             "very low": 20,
             "low": 20,
-            "low to moderate": 40
+            "low to moderate": 40,
+            "moderate": 60,
+            "high": 85
         }
     };
 
@@ -478,15 +484,24 @@ function drainageCompatibilityScore(
     const scores = {
         good: {
             "well-drained": 100,
-            "good to excellent drainage": 100
+            "good to excellent drainage": 100,
+            "good": 100,
+            "moderate": 100,
+            "poor": 60
         },
         moderate: {
             "well-drained": 70,
-            "good to excellent drainage": 60
+            "good to excellent drainage": 60,
+            "good": 85,
+            "moderate": 100,
+            "poor": 85
         },
         poor: {
             "well-drained": 20,
-            "good to excellent drainage": 20
+            "good to excellent drainage": 20,
+            "good": 40,
+            "moderate": 60,
+            "poor": 100
         }
     };
 
