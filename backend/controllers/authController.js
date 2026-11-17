@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const passwordPolicy =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}$/;
+const namePolicy = /^[\p{L}\p{M} .'-]+$/u;
 
 /*
     REGISTER
@@ -43,6 +44,28 @@ const registerUser = async (req, res) => {
                     "First name, last name, email, and password are required."
             });
 
+        }
+
+        // Validate name fields
+        if (!namePolicy.test(firstName)) {
+            return res.status(400).json({
+                success: false,
+                message: "First name must contain letters only."
+            });
+        }
+
+        if (middleName && !namePolicy.test(middleName)) {
+            return res.status(400).json({
+                success: false,
+                message: "Middle name must contain letters only."
+            });
+        }
+
+        if (!namePolicy.test(lastName)) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name must contain letters only."
+            });
         }
 
         if (!passwordPolicy.test(password)) {

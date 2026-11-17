@@ -132,6 +132,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const passwordPolicy =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}$/;
 
+const isValidName = (name) => {
+    return /^[\p{L}\p{M} .'-]+$/u.test(name.trim());
+};
+
 export default function RegisterPage() {
 
     const [form, setForm] = useState({
@@ -210,21 +214,32 @@ export default function RegisterPage() {
 
 
     function handleChange(event) {
+        const { name, value } = event.target;
 
-        const {
-            name,
-            value
-        } = event.target;
+        const nameFields = [
+            "first_name",
+            "middle_name",
+            "last_name"
+        ];
 
+        if (nameFields.includes(name)) {
+            const sanitizedValue = value.replace(
+                /[^\p{L}\p{M} .'-]/gu,
+                ""
+            );
+
+            setForm((previous) => ({
+                ...previous,
+                [name]: sanitizedValue
+            }));
+
+            return;
+        }
 
         setForm((previous) => ({
-
             ...previous,
-
             [name]: value
-
         }));
-
     }
 
 
@@ -233,6 +248,27 @@ export default function RegisterPage() {
         event.preventDefault();
         setError("");
         setSuccess(false);
+
+        // Validate first name
+        if (!isValidName(form.first_name)) {
+            setError("First name must contain letters only.");
+            return;
+        }
+
+        // Validate middle name if provided
+        if (
+            form.middle_name.trim() &&
+            !isValidName(form.middle_name)
+        ) {
+            setError("Middle name must contain letters only.");
+            return;
+        }
+
+        // Validate last name
+        if (!isValidName(form.last_name)) {
+            setError("Last name must contain letters only.");
+            return;
+        }
 
 
         // Check passwords
@@ -503,6 +539,8 @@ export default function RegisterPage() {
                                     value={form.first_name}
                                     onChange={handleChange}
                                     placeholder="Enter your first name"
+                                    autoComplete="given-name"
+                                    maxLength={50}
                                     required
                                 />
 
@@ -529,7 +567,8 @@ export default function RegisterPage() {
                                     value={form.middle_name}
                                     onChange={handleChange}
                                     placeholder="Enter your middle name"
-
+                                    autoComplete="additional-name"
+                                    maxLength={50}
                                 />
 
                             </div>
@@ -555,6 +594,8 @@ export default function RegisterPage() {
                                     value={form.last_name}
                                     onChange={handleChange}
                                     placeholder="Enter your last name"
+                                    autoComplete="family-name"
+                                    maxLength={50}
                                     required
                                 />
 
