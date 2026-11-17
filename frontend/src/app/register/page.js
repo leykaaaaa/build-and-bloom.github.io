@@ -124,7 +124,7 @@ const BENEFITS = [
 ];
 
 const PASSWORD_HINT =
-    "At least 8 characters, including uppercase and lowercase letters, a number, and a special character.";
+    "";
 
 
 
