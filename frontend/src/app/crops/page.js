@@ -88,7 +88,8 @@ const cropSearchAliases = {
     "string beans": ["sitaw", "agayep"],
     tomato: ["kamatis"],
     watermelon: ["pakwan"],
-    "water spinach": ["kangkong"]
+    "water spinach": ["kangkong"],
+    "plumeria": ["kalacuchi"]
 
 };
 

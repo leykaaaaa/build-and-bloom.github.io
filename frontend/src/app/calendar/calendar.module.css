@@ -265,6 +265,29 @@
     background: #ffffff;
 }
 
+.viewMoreButton {
+    align-self: center;
+    padding: 11px 22px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--green-800);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.viewMoreButton:hover {
+    background: #e6f0e8;
+}
+
+.viewMoreButton:focus-visible {
+    outline: 3px solid var(--green-500);
+    outline-offset: 2px;
+}
+
 .cropTop {
     display: flex;
     align-items: center;
@@ -443,7 +466,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .planLink {
+    .planLink,
+    .viewMoreButton {
         transition: none;
     }
 }

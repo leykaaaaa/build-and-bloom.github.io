@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
     getPlantingCalendar
@@ -64,6 +65,8 @@ const ArrowRightIcon = () => (
 );
 
 export default function CalendarPage() {
+    const router = useRouter();
+
     const [calendar, setCalendar] =
         useState([]);
 
@@ -72,6 +75,9 @@ export default function CalendarPage() {
 
     const [error, setError] =
         useState("");
+
+    const [expandedSeasons, setExpandedSeasons] =
+        useState(() => new Set());
 
 
     // =========================================================
@@ -87,7 +93,7 @@ export default function CalendarPage() {
 
         if (!storedUser) {
 
-            window.location.href = "/login";
+            router.replace("/login");
 
             return;
 
@@ -104,7 +110,7 @@ export default function CalendarPage() {
                     "buildAndBloomUser"
                 );
 
-                window.location.href = "/login";
+                router.replace("/login");
 
             }
 
@@ -119,11 +125,11 @@ export default function CalendarPage() {
                 "buildAndBloomUser"
             );
 
-            window.location.href = "/login";
+            router.replace("/login");
 
         }
 
-    }, []);
+    }, [router]);
 
 
     // Load all schedules so the calendar can show a general guide.
@@ -349,8 +355,11 @@ export default function CalendarPage() {
 
                     <div className={styles.results} aria-label="Planting schedules by season">
 
-                        {scheduleGroups.map((group) => (
+                        {scheduleGroups.map((group, groupIndex) => {
+                            const isExpanded = expandedSeasons.has(group.name);
+                            const cropListId = `season-crops-${groupIndex}`;
 
+                            return (
                             <section
                                 className={styles.season}
                                 key={group.name}
@@ -373,9 +382,11 @@ export default function CalendarPage() {
                                 </div>
 
 
-                                <div className={styles.cropGrid}>
+                                <div className={styles.cropGrid} id={cropListId}>
 
-                                    {group.crops.map((crop) => (
+                                    {group.crops
+                                        .slice(0, isExpanded ? group.crops.length : 2)
+                                        .map((crop) => (
 
                                         <article
                                             className={styles.cropCard}
@@ -455,9 +466,32 @@ export default function CalendarPage() {
 
                                 </div>
 
+                                {group.crops.length > 2 && (
+                                    <button
+                                        type="button"
+                                        className={styles.viewMoreButton}
+                                        aria-expanded={isExpanded}
+                                        aria-controls={cropListId}
+                                        onClick={() => {
+                                            setExpandedSeasons((current) => {
+                                                const next = new Set(current);
+                                                if (next.has(group.name)) {
+                                                    next.delete(group.name);
+                                                } else {
+                                                    next.add(group.name);
+                                                }
+                                                return next;
+                                            });
+                                        }}
+                                    >
+                                        {isExpanded ? "View less" : "View more"}
+                                    </button>
+                                )}
+
                             </section>
 
-                        ))}
+                            );
+                        })}
 
                     </div>
 
