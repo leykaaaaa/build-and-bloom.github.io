@@ -713,47 +713,6 @@ function getCropLocationRisk(
     return { level, message };
 }
 
-/*
-|--------------------------------------------------------------------------
-| ENVIRONMENT ELIGIBILITY
-|--------------------------------------------------------------------------
-|
-| Environment is a hard eligibility requirement.
-| A high compatibility score cannot override an
-| incompatible growing environment.
-|--------------------------------------------------------------------------
-*/
-
-function isEnvironmentEligible(userEnvironment, cropEnvironment) {
-    const userEnv = normalize(userEnvironment);
-    const cropEnv = normalize(cropEnvironment);
-
-    if (!userEnv || !cropEnv) {
-        return false;
-    }
-
-    if (
-        userEnv.includes("rooftop") ||
-        userEnv.includes("balcony")
-    ) {
-        return cropEnv.includes("container");
-    }
-
-    if (userEnv.includes("indoor")) {
-        return cropEnv.includes("indoor");
-    }
-
-    if (userEnv.includes("backyard")) {
-        return cropEnv.includes("backyard");
-    }
-
-    if (userEnv.includes("open field")) {
-        return cropEnv.includes("open field");
-    }
-
-    return matchesRequirement(userEnvironment, cropEnvironment);
-}
-
 const HIGH_SUITABILITY_THRESHOLD = 80;
 
 function getCompatibilityLevel(score) {
@@ -1482,12 +1441,11 @@ planting_season: currentSeason,
         | HIGHLY SUITABLE RECOMMENDATION FILTER
         |--------------------------------------------------------------------------
         |
-        | A crop must satisfy ALL conditions:
+        | A crop must satisfy all conditions:
         |
         | 1. Overall weighted score is at least 80%.
         | 2. No individual compatibility factor is 40 or lower.
         | 3. Crop-specific location risk is not High.
-        | 4. Growing environment is eligible.
         |
         | Crops with critical environmental limitations
         | are excluded from recommendations.
@@ -1505,17 +1463,10 @@ planting_season: currentSeason,
             const hasAcceptableLocationRisk =
                 crop.crop_location_risk !== "High";
 
-            const isSuitableEnvironment =
-                isEnvironmentEligible(
-                    environment,
-                    crop.environment
-                );
-
             return (
                 meetsSuitabilityThreshold &&
                 hasNoSevereMismatch &&
-                hasAcceptableLocationRisk &&
-                isSuitableEnvironment
+                hasAcceptableLocationRisk
             );
         });
 
