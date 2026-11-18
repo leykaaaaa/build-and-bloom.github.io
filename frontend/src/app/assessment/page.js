@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Fragment, Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
     useRouter,
@@ -522,6 +522,28 @@ function AssessmentContent() {
             (crop) => crop.compatibility_level === levelFilter
         )
         : rankedResults;
+
+    const resultGroups = [
+        {
+            level: "Highly Suitable",
+            description: "Best matches for the conditions you selected."
+        },
+        {
+            level: "Moderately Suitable",
+            description: "May work with adjustments to growing conditions."
+        },
+        {
+            level: "Not Recommended",
+            description: "Significant mismatches; review crop and location risks before planting."
+        }
+    ]
+        .map((group) => ({
+            ...group,
+            crops: visibleResults.filter(
+                (crop) => crop.compatibility_level === group.level
+            )
+        }))
+        .filter((group) => group.crops.length > 0);
 
 
     return (
@@ -1074,8 +1096,8 @@ function AssessmentContent() {
                                 </strong>
 
                                 {results.length === 1
-                                    ? "highly suitable crop found"
-                                    : "highly suitable crops found"}
+                                    ? "crop assessed"
+                                    : "crops assessed"}
 
                             </div>
 
@@ -1113,7 +1135,9 @@ function AssessmentContent() {
                                 <div className={styles.topPickBody}>
 
                                     <span className={styles.eyebrow}>
-                                        Top Recommendation
+                                        {topPick.compatibility_level === "Not Recommended"
+                                            ? "Highest score — not recommended"
+                                            : "Top compatibility match"}
                                     </span>
 
                                     <h3>
@@ -1155,6 +1179,16 @@ function AssessmentContent() {
                                         )}
 
                                     </div>
+
+                                    {topPick.crop_location_risk === "High" && (
+                                        <div className={styles.highRiskWarning} role="alert">
+                                            <strong>High crop-specific location risk</strong>
+                                            <p>
+                                                {topPick.crop_location_risk_message ||
+                                                    "This crop has significant flood or drainage concerns at the selected location. A high compatibility score does not mean the site is safe."}
+                                            </p>
+                                        </div>
+                                    )}
 
                                 </div>
 
@@ -1267,13 +1301,13 @@ function AssessmentContent() {
                                 </span>
 
                                 <h3>
-                                    No highly suitable crops found
+                                    No crop results available
                                 </h3>
 
                                 <p>
                                     {specificCrop
-                                        ? `${specificCrop.crop_name} did not meet the 80% minimum score for a highly suitable recommendation based on the conditions you entered.`
-                                        : "None of the available crops met the 80% minimum score for a highly suitable recommendation based on the conditions you entered."}
+                                        ? `${specificCrop.crop_name} could not be assessed with the available crop requirement data.`
+                                        : "No crop requirement data was available to assess the selected conditions."}
                                     {" "}Try adjusting your growing conditions or explore the Crop Catalogue to learn more about different crops.
                                 </p>
 
@@ -1327,7 +1361,7 @@ function AssessmentContent() {
 
                                 <div className={styles.rankList}>
 
-                                    {visibleResults.map((crop) => {
+                                    {visibleResults.map((crop, index) => {
 
                                         const rank =
                                             rankedResults.indexOf(crop) + 1;
@@ -1335,12 +1369,28 @@ function AssessmentContent() {
                                         const factors =
                                             crop.factors || {};
 
+                                        const group = resultGroups.find(
+                                            (item) => item.level === crop.compatibility_level
+                                        );
+                                        const isFirstInGroup =
+                                            visibleResults.findIndex(
+                                                (item) => item.compatibility_level === crop.compatibility_level
+                                            ) === index;
+
                                         return (
 
-                                            <article
-                                                className={styles.rankCard}
-                                                key={crop.crop_id}
-                                            >
+                                            <Fragment key={crop.crop_id}>
+                                                {isFirstInGroup && group && (
+                                                    <header className={styles.resultGroupHeader}>
+                                                        <div>
+                                                            <h3>{group.level}</h3>
+                                                            <p>{group.description}</p>
+                                                        </div>
+                                                        <span>{group.crops.length}</span>
+                                                    </header>
+                                                )}
+
+                                                <article className={styles.rankCard}>
 
                                                 <div className={styles.rankRow}>
 
@@ -1401,17 +1451,28 @@ function AssessmentContent() {
                                                             <ArrowRightIcon size={16} />
                                                         </Link>
 
-                                                        <Link
-                                                            href={`/plants/plan?crop=${crop.crop_id}&location=${encodeURIComponent(form.location)}&environment=${encodeURIComponent(form.environment)}`}
-                                                            className={styles.primaryButton}
-                                                        >
-                                                            Plan This Plant
-                                                        </Link>
+                                                        {crop.compatibility_level !== "Not Recommended" && (
+                                                            <Link
+                                                                href={`/plants/plan?crop=${crop.crop_id}&location=${encodeURIComponent(form.location)}&environment=${encodeURIComponent(form.environment)}`}
+                                                                className={styles.primaryButton}
+                                                            >
+                                                                Plan This Plant
+                                                            </Link>
+                                                        )}
 
                                                     </div>
 
                                                 </div>
 
+                                                {crop.crop_location_risk === "High" && (
+                                                    <div className={styles.highRiskWarning} role="alert">
+                                                        <strong>High crop-specific location risk</strong>
+                                                        <p>
+                                                            {crop.crop_location_risk_message ||
+                                                                "This crop has significant flood or drainage concerns at the selected location. A high compatibility score does not mean the site is safe."}
+                                                        </p>
+                                                    </div>
+                                                )}
 
                                                 {/* WHY THIS MATCH */}
 
@@ -1487,7 +1548,8 @@ function AssessmentContent() {
 
                                                 </details>
 
-                                            </article>
+                                                </article>
+                                            </Fragment>
 
                                         );
 

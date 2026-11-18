@@ -81,6 +81,14 @@ function matchesRequirement(
             return true;
         }
 
+        if (user.includes(requirement)) {
+            return true;
+        }
+
+        if (requirement.includes(user)) {
+            return true;
+        }
+
         /*
          * Handle common wording differences.
          */
@@ -713,7 +721,8 @@ function getCropLocationRisk(
     return { level, message };
 }
 
-const HIGH_SUITABILITY_THRESHOLD = 80;
+const HIGH_SUITABILITY_THRESHOLD = 70;
+const MODERATE_SUITABILITY_THRESHOLD = 60;
 
 function getCompatibilityLevel(score) {
 
@@ -721,7 +730,7 @@ function getCompatibilityLevel(score) {
         return "Highly Suitable";
     }
 
-    if (score >= 60) {
+    if (score >= MODERATE_SUITABILITY_THRESHOLD) {
         return "Moderately Suitable";
     }
 
@@ -1438,47 +1447,16 @@ planting_season: currentSeason,
 
         /*
         |--------------------------------------------------------------------------
-        | HIGHLY SUITABLE RECOMMENDATION FILTER
+        | CROP RECOMMENDATION RESULTS
         |--------------------------------------------------------------------------
         |
-        | A crop must satisfy all conditions:
-        |
-        | 1. Overall weighted score is at least 80%.
-        | 2. No individual compatibility factor is 40 or lower.
-        | 3. Crop-specific location risk is not High.
-        |
-        | Crops with critical environmental limitations
-        | are excluded from recommendations.
+        | Retain all evaluated crops so users can explore alternatives.
+        | Sort by compatibility score, highest first.
         |--------------------------------------------------------------------------
         */
 
-        const recommendations = evaluatedCrops.filter((crop) => {
-            const meetsSuitabilityThreshold =
-                crop.score >= HIGH_SUITABILITY_THRESHOLD;
-
-            const hasNoSevereMismatch =
-                Object.values(crop.factors)
-                    .every((factor) => factor > 40);
-
-            const hasAcceptableLocationRisk =
-                crop.crop_location_risk !== "High";
-
-            return (
-                meetsSuitabilityThreshold &&
-                hasNoSevereMismatch &&
-                hasAcceptableLocationRisk
-            );
-        });
-
-
-        /*
-         * RANK
-         */
-
-        recommendations.sort(
-            (a, b) =>
-                b.score - a.score
-        );
+        const recommendations = evaluatedCrops
+            .sort((a, b) => b.score - a.score);
 
 
         /*

@@ -617,6 +617,46 @@
     color: #ffffff;
 }
 
+/* GROUPED COMPATIBILITY RESULTS */
+
+.resultGroupHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #ffffff;
+}
+
+.resultGroupHeader h3 {
+    margin: 0;
+    color: var(--green-800);
+    font-size: 1.125rem;
+}
+
+.resultGroupHeader p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.resultGroupHeader > span {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--green-100);
+    color: var(--green-800);
+    font-weight: 800;
+}
+
 /* RANKED LIST */
 
 .rankList {
@@ -852,6 +892,32 @@
     color: #4a5c51;
     font-size: 0.875rem;
     line-height: 1.6;
+}
+
+.highRiskWarning {
+    padding: 14px 16px;
+    border: 1px solid #f4b4b4;
+    border-radius: 14px;
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.highRiskWarning strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--danger);
+    font-size: 0.875rem;
+}
+
+.highRiskWarning p {
+    margin: 0;
+    color: var(--danger);
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.rankCard > .highRiskWarning {
+    margin: 0 24px 16px;
 }
 
 /* NO RESULTS */
